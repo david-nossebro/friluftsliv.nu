@@ -17,6 +17,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="sv">
+      <head>
+        {/* Warm the DNS + TLS handshake for Unsplash-hosted hero/card images. */}
+        <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="" />
+      </head>
       <body>{children}</body>
     </html>
   )

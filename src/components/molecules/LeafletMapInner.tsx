@@ -8,14 +8,14 @@ import * as React from 'react'
 import {
   MapContainer,
   TileLayer,
-  Marker,
-  Popup,
   useMap,
   ZoomControl,
   Polyline,
 } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import 'leaflet.markercluster'
+import 'leaflet.markercluster/dist/MarkerCluster.css'
 import type { MapFeatureLayer, MapLayer, MapPosition } from '@/types'
 
 // ─── Brand marker factory ────────────────────────────────────────────────────
@@ -23,21 +23,29 @@ import type { MapFeatureLayer, MapLayer, MapPosition } from '@/types'
 /**
  * Creates a custom Leaflet DivIcon using a brand-styled SVG pin.
  * Avoids the broken default PNG icons that Leaflet ships.
+ *
+ * The visual pin renders at `pinSize` (default 36px) but sits inside a
+ * `hitSize` (default 48px) transparent wrapper so the tap target meets
+ * WCAG 2.5.5 (≥ 48×48 CSS px).
  */
-function createBrandMarker(color = '#2C4A3E', size = 36): L.DivIcon {
-  const svg = `
-    <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7z"
-        fill="${color}" stroke="white" stroke-width="1.5"/>
-      <circle cx="12" cy="9" r="2.5" fill="white" opacity="0.9"/>
-    </svg>
+function createBrandMarker(color = '#2C4A3E', pinSize = 36, hitSize = 48): L.DivIcon {
+  const offset = (hitSize - pinSize) / 2
+  const html = `
+    <div style="width:${hitSize}px;height:${hitSize}px;display:flex;align-items:flex-end;justify-content:center;pointer-events:auto;">
+      <svg width="${pinSize}" height="${pinSize}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+        <path d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7z"
+          fill="${color}" stroke="white" stroke-width="1.5"/>
+        <circle cx="12" cy="9" r="2.5" fill="white" opacity="0.9"/>
+      </svg>
+    </div>
   `
   return L.divIcon({
-    html: svg,
+    html,
     className: '', // clear Leaflet's default white box
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size], // tip of pin at the coordinate
-    popupAnchor: [0, -size],
+    iconSize: [hitSize, hitSize],
+    // Pin tip sits at the bottom of the wrapper (offset from the wrapper bottom is 0).
+    iconAnchor: [hitSize / 2, hitSize - offset],
+    popupAnchor: [0, -pinSize],
   })
 }
 
@@ -57,6 +65,89 @@ function getMarkerIcon(color?: string): L.DivIcon {
   const icon = createBrandMarker(color)
   MARKER_ICONS[color.toLowerCase()] = icon
   return icon
+}
+
+// ─── Brand cluster icon ──────────────────────────────────────────────────────
+
+const escapeHtml = (s: string) =>
+  s.replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
+  )
+
+/**
+ * Cluster icon factory. Returns a Pine-filled circle with a Snow-coloured count.
+ * Sized 40 / 48 / 56 by cluster magnitude; sits inside a 48×48 hit area minimum.
+ */
+function createClusterIcon(cluster: L.MarkerCluster): L.DivIcon {
+  const count = cluster.getChildCount()
+  const size = count < 10 ? 40 : count < 100 ? 48 : 56
+  const hit = Math.max(size, 48)
+  const html = `
+    <div style="width:${hit}px;height:${hit}px;display:flex;align-items:center;justify-content:center;">
+      <div style="width:${size}px;height:${size}px;border-radius:9999px;background:#2C4A3E;color:#F8FAF7;display:flex;align-items:center;justify-content:center;font-family:var(--font-body),system-ui,sans-serif;font-weight:500;font-size:${size >= 56 ? 15 : 14}px;line-height:1;box-shadow:0 1px 4px rgba(28,43,37,.3);border:2px solid #F8FAF7;">${count}</div>
+    </div>
+  `
+  return L.divIcon({
+    html,
+    className: 'marker-cluster-brand',
+    iconSize: L.point(hit, hit),
+  })
+}
+
+// ─── Clustered feature markers ───────────────────────────────────────────────
+
+/**
+ * Imperatively renders the feature markers inside an L.markerClusterGroup.
+ * react-leaflet doesn't ship a cluster component, so we mount the group via
+ * the leaflet API directly and tear it down on changes/unmount.
+ */
+function ClusteredFeatureMarkers({
+  visibleLayers,
+}: {
+  visibleLayers: MapFeatureLayer[]
+}) {
+  const map = useMap()
+
+  React.useEffect(() => {
+    const clusterGroup = L.markerClusterGroup({
+      iconCreateFunction: createClusterIcon,
+      showCoverageOnHover: false,
+      spiderfyOnMaxZoom: true,
+      disableClusteringAtZoom: 16,
+      maxClusterRadius: 60,
+      // Keyboard reach: cluster bubbles must be focusable + activatable.
+      chunkedLoading: false,
+    })
+
+    for (const featureLayer of visibleLayers) {
+      for (const m of featureLayer.markers) {
+        const marker = L.marker([m.position.lat, m.position.lng], {
+          icon: getMarkerIcon(featureLayer.color),
+          title: m.label,
+          keyboard: true,
+        })
+        if (m.label || m.description) {
+          const popupHtml = `<div class="font-body">
+            <p class="font-medium text-pine text-sm leading-snug">${escapeHtml(m.label ?? '')}</p>
+            ${
+              m.description
+                ? `<p class="text-xs text-stone mt-1 leading-relaxed">${escapeHtml(m.description)}</p>`
+                : ''
+            }
+          </div>`
+          marker.bindPopup(popupHtml)
+        }
+        clusterGroup.addLayer(marker)
+      }
+    }
+
+    map.addLayer(clusterGroup)
+    return () => {
+      map.removeLayer(clusterGroup)
+    }
+  }, [map, visibleLayers])
+
+  return null
 }
 
 // ─── Sync center/zoom when controlled props change ───────────────────────────
@@ -155,32 +246,9 @@ export default function LeafletMapInner({
         />
       ))}
 
-      {/* Feature markers */}
-      {visibleLayers.map((featureLayer) =>
-        featureLayer.markers.map((marker) => (
-          <Marker
-            key={marker.id}
-            position={[marker.position.lat, marker.position.lng]}
-            icon={getMarkerIcon(featureLayer.color)}
-            title={marker.label}
-          >
-            {(marker.label || marker.description) && (
-              <Popup>
-                <div className="font-body">
-                  <p className="font-medium text-pine text-sm leading-snug">
-                    {marker.label}
-                  </p>
-                  {marker.description && (
-                    <p className="text-xs text-stone mt-1 leading-relaxed">
-                      {marker.description}
-                    </p>
-                  )}
-                </div>
-              </Popup>
-            )}
-          </Marker>
-        ))
-      )}
+      {/* Feature markers — clustered to keep tap targets WCAG-compliant when
+          markers cluster geographically. */}
+      <ClusteredFeatureMarkers visibleLayers={visibleLayers} />
     </MapContainer>
   )
 }

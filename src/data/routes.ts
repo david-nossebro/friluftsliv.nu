@@ -24,11 +24,11 @@ export const routes: RouteDetail[] = [
     duration: 6900,
     difficulty: 'hard',
     isRoundTrip: false,
-    imageUrl: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=70&auto=format',
     images: [
-      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=70',
-      'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=70',
-      'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=70',
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=70&auto=format',
+      'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=70&auto=format',
+      'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=70&auto=format',
     ],
     description:
       'Den klassiska sträckan av Kungsleden tar dig genom den svenska fjällvärldens mest varierade landskap. Du går genom björkskog vid Abisko, passerar Tjäktja-passet — den högsta punkten på leden — och avslutar vid Kebnekaise fjällstation. Längs vägen ligger STF-stugor med ungefär en dagsetapp emellan.',
@@ -57,10 +57,10 @@ export const routes: RouteDetail[] = [
     duration: 270,
     difficulty: 'easy',
     isRoundTrip: false,
-    imageUrl: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1200&q=70&auto=format',
     images: [
-      'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&q=70',
-      'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=70',
+      'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&q=70&auto=format',
+      'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=70&auto=format',
     ],
     description:
       'En lättgången etapp av Sörmlandsleden som börjar vid tunnelbanans slutstation och tar dig direkt ut i tystnad. Du följer markerade leder genom Nackareservatet, passerar Söderbysjön och fortsätter ned mot Erstavik. Perfekt som dagsetapp året om — och du tar dig hem med kollektivtrafik.',
@@ -87,7 +87,7 @@ export const routes: RouteDetail[] = [
     duration: 180,
     difficulty: 'easy',
     isRoundTrip: true,
-    imageUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=70&auto=format',
     description:
       'En rundslinga genom Söderåsens dramatiska sprickdal med uråldriga bokskogar och utsikt över Skäralid. Leden är välmarkerad och passar både familjer och vana vandrare. På toppen vid Kopparhatten breder utsikten ut sig över det skånska landskapet.',
     startPoint: 'Naturum vid Söderåsens nationalpark, Skäralid. Parkering på plats.',
@@ -112,10 +112,10 @@ export const routes: RouteDetail[] = [
     duration: 210,
     difficulty: 'medium',
     isRoundTrip: true,
-    imageUrl: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=70&auto=format',
     images: [
-      'https://images.unsplash.com/photo-1506260408121-e353d10b87c7?w=800&q=70',
-      'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=800&q=70',
+      'https://images.unsplash.com/photo-1506260408121-e353d10b87c7?w=800&q=70&auto=format',
+      'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=800&q=70&auto=format',
     ],
     description:
       'Skuleberget reser sig 295 meter rakt upp ur Bottenhavet och bjuder på en av Sveriges mest dramatiska utsikter. Leden går genom mossig granskog innan den klättrar branta passager med stegar och rep. På toppen ligger en grottformation och utsiktsplats över Höga Kustens unika landhöjningskust.',
@@ -142,7 +142,7 @@ export const routes: RouteDetail[] = [
     duration: 9000,
     difficulty: 'hard',
     isRoundTrip: false,
-    imageUrl: 'https://images.unsplash.com/photo-1455156218388-5e61b526818b?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1455156218388-5e61b526818b?w=1200&q=70&auto=format',
     description:
       'Padjelantaleden går genom Padjelanta nationalpark — Sveriges största — och bjuder på vidsträckta hedar, glaciärälvar och samiska kulturlandskap. Leden är T-markerad och har stugor från Stiftelsen för Padjelanta med ungefär en dagsetapp emellan. Passar dig som söker tystnad och har erfarenhet av flera dagar i fjällen.',
     startPoint: 'Vaisaluokta — nås med båt från Ritsem. Båten går flera turer dagligen sommartid.',
@@ -169,10 +169,10 @@ export const routes: RouteDetail[] = [
     duration: 720,
     difficulty: 'hard',
     isRoundTrip: true,
-    imageUrl: 'https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?w=1200&q=70&auto=format',
     images: [
-      'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=70',
-      'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=70',
+      'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=70&auto=format',
+      'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=70&auto=format',
     ],
     description:
       'Bestigning av Kebnekaise sydtopp via västra leden från Kebnekaise fjällstation. Leden är välmarkerad men kräver god kondition och lämpliga kläder för fjällklimat. Räkna med 10–14 timmar tur och retur. På toppen får du utsikt över hela Sareks och Kebnekaises massiv.',
@@ -199,7 +199,7 @@ export const routes: RouteDetail[] = [
     duration: 240,
     difficulty: 'easy',
     isRoundTrip: true,
-    imageUrl: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1200&q=70&auto=format',
     description:
       'Tyresta nationalpark är ett av södra Sveriges äldsta urskogsområden och en lugn andningspaus från storstaden. Rundslingan tar dig förbi tjärnar, gamla tallar och bärrika myrar. Du startar och slutar vid Tyresta by där det finns naturum, café och övernattningsstugor.',
     startPoint: 'Tyresta by, naturum. Parkeringen är avgiftsfri.',
@@ -224,7 +224,7 @@ export const routes: RouteDetail[] = [
     duration: 1800,
     difficulty: 'medium',
     isRoundTrip: false,
-    imageUrl: 'https://images.unsplash.com/photo-1551524559-8af4e6624178?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1551524559-8af4e6624178?w=1200&q=70&auto=format',
     description:
       'Den klassiska Vasaloppssträckan på dina egna villkor — utan tävlingsstart. Spåren prepareras hela vintern och du kan välja att gå hela sträckan på flera dagar eller bryta vid någon av kontrollerna. Boende finns vid checkpoints längs vägen.',
     startPoint: 'Berga by, Sälen. Mårbackavägen leder fram till start.',
@@ -249,7 +249,7 @@ export const routes: RouteDetail[] = [
     duration: 360,
     difficulty: 'medium',
     isRoundTrip: false,
-    imageUrl: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1200&q=70&auto=format',
     description:
       'Vandring upp till STF Helags fjällstation, vid foten av Sveriges sydligaste glaciär. Leden går från Ljungdalen genom björkskog och vidare upp på kalfjället. Vid framkomsten väntar varm bastu, mat och möjlighet att fortsätta upp på Helagsfjället.',
     startPoint: 'Kläppen, Ljungdalen. Bilväg går nästan ända fram.',
@@ -274,7 +274,7 @@ export const routes: RouteDetail[] = [
     duration: 330,
     difficulty: 'medium',
     isRoundTrip: false,
-    imageUrl: 'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=1200&q=70&auto=format',
     description:
       'En vacker etapp av Bohusleden som tar dig genom granskogar, över hällmarker och förbi små skogssjöar. Leden är välmarkerad med orange ringar och har flera vindskydd där du kan rasta eller övernatta. Lagom utmaning för en helgs vandring.',
     startPoint: 'Bottnafjorden, parkering vid ledens början.',

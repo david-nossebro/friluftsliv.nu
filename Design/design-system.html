@@ -26,10 +26,11 @@
   --earth-light:#8C7A62;
   --ember:      #D97B4F;
   --ember-dark: #C06030;
+  --ember-deep: #8B3F1A;
   --snow:       #F8FAF7;
   --ink:        #1C2B25;
   --ink-soft:   #3D5248;
-  --stone:      #7A9080;
+  --stone:      #5F7568;
   --stone-light:#A0B8AB;
   --white:      #FFFFFF;
 
@@ -464,11 +465,11 @@ body {
 .btn-primary:hover { background: var(--pine-dark); box-shadow: var(--shadow-md); }
 
 .btn-accent {
-  background: var(--ember);
+  background: var(--ember-dark);
   color: var(--white);
-  box-shadow: 0 1px 2px rgba(217,123,79,.2);
+  box-shadow: 0 1px 2px rgba(192,96,48,.25);
 }
-.btn-accent:hover { background: var(--ember-dark); box-shadow: 0 4px 12px rgba(217,123,79,.25); }
+.btn-accent:hover { background: var(--ember-deep); box-shadow: 0 4px 12px rgba(139,63,26,.3); }
 
 .btn-secondary {
   background: var(--white);
@@ -914,7 +915,7 @@ body {
 .badge-moss    { background: #e6f3ea;       color: var(--moss); }
 .badge-sky     { background: #e0eef5;       color: var(--sky-dark); }
 .badge-earth   { background: #f0ebe4;       color: var(--earth); }
-.badge-ember   { background: #fdeee6;       color: var(--ember-dark); }
+.badge-ember   { background: #fdeee6;       color: var(--ember-deep); }
 .badge-outline { background: transparent;   color: var(--pine); box-shadow: inset 0 0 0 1.5px var(--birch); }
 
 /* ─────────────────────────────────────────
@@ -1070,17 +1071,18 @@ hr.divider {
   <ul class="sidebar-nav">
     <li class="nav-section">Foundations</li>
     <li><a href="#colors">01 — Color Palette</a></li>
-    <li><a href="#typography">02 — Typography</a></li>
-    <li><a href="#spacing">03 — Spacing</a></li>
+    <li><a href="#accessibility">02 — Accessibility</a></li>
+    <li><a href="#typography">03 — Typography</a></li>
+    <li><a href="#spacing">04 — Spacing</a></li>
     <li class="nav-section">Components</li>
-    <li><a href="#buttons">04 — Buttons</a></li>
-    <li><a href="#cards">05 — Cards</a></li>
-    <li><a href="#navigation">06 — Navigation</a></li>
-    <li><a href="#forms">07 — Forms & Search</a></li>
-    <li><a href="#badges">08 — Badges & Tags</a></li>
+    <li><a href="#buttons">05 — Buttons</a></li>
+    <li><a href="#cards">06 — Cards</a></li>
+    <li><a href="#navigation">07 — Navigation</a></li>
+    <li><a href="#forms">08 — Forms & Search</a></li>
+    <li><a href="#badges">09 — Badges & Tags</a></li>
     <li class="nav-section">Principles</li>
-    <li><a href="#layout">09 — Layout & Grid</a></li>
-    <li><a href="#motion">10 — Motion</a></li>
+    <li><a href="#layout">10 — Layout & Grid</a></li>
+    <li><a href="#motion">11 — Motion</a></li>
   </ul>
 </nav>
 
@@ -1167,13 +1169,19 @@ hr.divider {
           <div class="swatch-block" style="background:#D97B4F;"></div>
           <span class="swatch-name">Ember</span>
           <span class="swatch-hex">#D97B4F</span>
-          <span class="swatch-role">Primary CTA only</span>
+          <span class="swatch-role">Brand identity · large text/icons</span>
         </div>
         <div class="color-swatch">
           <div class="swatch-block" style="background:#C06030;"></div>
           <span class="swatch-name">Ember Dark</span>
           <span class="swatch-hex">#C06030</span>
-          <span class="swatch-role">CTA hover</span>
+          <span class="swatch-role">CTA background · white text AA</span>
+        </div>
+        <div class="color-swatch">
+          <div class="swatch-block" style="background:#8B3F1A;"></div>
+          <span class="swatch-name">Ember Deep</span>
+          <span class="swatch-hex">#8B3F1A</span>
+          <span class="swatch-role">Text/icon on ember-tint · CTA hover</span>
         </div>
         <div class="color-swatch">
           <div class="swatch-block" style="background:#A8C4D4;"></div>
@@ -1194,10 +1202,10 @@ hr.divider {
           <span class="swatch-role">Body text</span>
         </div>
         <div class="color-swatch">
-          <div class="swatch-block" style="background:#7A9080;"></div>
+          <div class="swatch-block" style="background:#5F7568;"></div>
           <span class="swatch-name">Stone</span>
-          <span class="swatch-hex">#7A9080</span>
-          <span class="swatch-role">Muted / meta text</span>
+          <span class="swatch-hex">#5F7568</span>
+          <span class="swatch-role">Muted / meta text · WCAG AA</span>
         </div>
       </div>
     </div>
@@ -1235,9 +1243,9 @@ hr.divider {
         </tr>
         <tr>
           <td><code class="token-pill">--color-text-muted</code></td>
-          <td><span class="color-dot" style="background:#7A9080;"></span>#7A9080</td>
+          <td><span class="color-dot" style="background:#5F7568;"></span>#5F7568</td>
           <td>Meta / supporting text</td>
-          <td>✅ AA (4.6:1)</td>
+          <td>✅ AA (4.85:1)</td>
         </tr>
         <tr>
           <td><code class="token-pill">--color-border</code></td>
@@ -1254,12 +1262,69 @@ hr.divider {
       </tbody>
     </table>
 
-    <div class="note">⚠ Never use Ember (#D97B4F) for small body text — contrast ratio (3.6:1) only meets WCAG AA for text ≥18px bold or ≥24px regular. Use Pine for text-based links.</div>
+    <div class="note">⚠ Ember (#D97B4F) does not meet AA for normal-weight body text on white (3.6:1) and white-on-Ember fails too (3.0:1). For text-based links use Pine. For CTA backgrounds use <strong>Ember Dark</strong> (#C06030, white-on-bg = 5.1:1 ✓). For text/icons sitting on the light Ember tint (Ember /15) use <strong>Ember Deep</strong> (#8B3F1A, 6.6:1 ✓). Reserve plain Ember for hero accents and decorative use ≥ 18 px.</div>
   </section>
 
-  <!-- ── 02 TYPOGRAPHY ── -->
-  <section class="section" id="typography">
+  <!-- ── 02 ACCESSIBILITY ── -->
+  <section class="section" id="accessibility">
     <div class="section-eyebrow">02 — Foundation</div>
+    <div class="section-title">Accessibility</div>
+    <p class="section-desc">Accessibility is non-negotiable. Every screen must pass WCAG 2.2 Level AA on both mobile and desktop. These rules apply to all components, content, and interactions. When in doubt, choose the more accessible option.</p>
+
+    <div class="color-group-label" style="margin-top:24px;">Contrast — the floor</div>
+    <table class="semantic-table">
+      <thead>
+        <tr><th>Context</th><th>Minimum ratio</th><th>Token to use on Snow</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Body text (&lt; 18px regular / &lt; 14px bold)</td><td>4.5:1</td><td><code class="token-pill">--color-text</code> (Ink) or <code class="token-pill">--color-text-soft</code> (Ink-soft)</td></tr>
+        <tr><td>Muted / meta text</td><td>4.5:1</td><td><code class="token-pill">--color-text-muted</code> (Stone <code>#5F7568</code>)</td></tr>
+        <tr><td>Large text (≥ 18px regular / ≥ 14px bold)</td><td>3:1</td><td>Ember acceptable here only</td></tr>
+        <tr><td>UI components, focus rings, icons that convey meaning</td><td>3:1</td><td>Moss, Pine, or darker</td></tr>
+        <tr><td>Decorative / disabled / placeholder</td><td>—</td><td>Stone Light <code>#A0B8AB</code> permitted (WCAG 1.4.3 exception)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="color-group-label" style="margin-top:32px;">Heading order</div>
+    <p class="section-desc" style="margin-top:8px;">Heading levels carry semantics, not styling. Tailwind classes (<code>text-xl</code>, <code>uppercase</code>, etc.) provide visual treatment; the tag conveys structure to assistive tech.</p>
+    <ul style="font-size:14px; line-height:1.8; color:var(--ink-soft); padding-left:20px;">
+      <li>Exactly one <code>&lt;h1&gt;</code> per page — the page title.</li>
+      <li>Each landmark section (including the <code>&lt;footer&gt;</code>) opens with an <code>&lt;h2&gt;</code>. Footer column labels are h2, not h4.</li>
+      <li><code>&lt;h3&gt;</code> nests under an <code>&lt;h2&gt;</code>; <code>&lt;h4&gt;</code> nests under an <code>&lt;h3&gt;</code>. Never skip a level.</li>
+      <li>Never choose a heading level for its visual size — restyle with classes instead.</li>
+    </ul>
+
+    <div class="color-group-label" style="margin-top:32px;">Touch targets</div>
+    <p class="section-desc" style="margin-top:8px;">Any tappable, clickable, or focusable control needs ≥ 48 × 48 CSS pixels of hit area (WCAG 2.5.5 AAA, mirrored in 2.5.8 AA). The visible glyph may be smaller — pad with transparent space.</p>
+    <ul style="font-size:14px; line-height:1.8; color:var(--ink-soft); padding-left:20px;">
+      <li>Buttons, links in body copy, form controls, and icon-only buttons: <strong>48 × 48</strong> minimum.</li>
+      <li>Map markers and similar visual pins: keep the artwork at design size, wrap in a 48 × 48 transparent hit container.</li>
+      <li>Adjacent targets need at least 8 px of separation so a thumb can land on one without overlapping the next.</li>
+    </ul>
+
+    <div class="color-group-label" style="margin-top:32px;">ARIA</div>
+    <p class="section-desc" style="margin-top:8px;">ARIA is a last resort — semantic HTML first, ARIA only when no native element fits.</p>
+    <ul style="font-size:14px; line-height:1.8; color:var(--ink-soft); padding-left:20px;">
+      <li><code>aria-label</code> is valid only on elements whose role permits it (links, buttons, landmarks, <code>role="img"</code>). It is <strong>prohibited</strong> on a generic <code>&lt;div&gt;</code> or <code>&lt;span&gt;</code>.</li>
+      <li>When a graphic carries meaning, use <code>role="img" aria-label="…"</code> on the wrapper and <code>aria-hidden="true"</code> on the decorative SVG.</li>
+      <li>Prefer visible text as the accessible name; reach for <code>aria-label</code> only when visible labelling is impossible.</li>
+      <li>Never duplicate the accessible name (e.g. <code>aria-label</code> on a link whose visible text already names it).</li>
+    </ul>
+
+    <div class="color-group-label" style="margin-top:32px;">Keyboard, focus, and motion</div>
+    <ul style="font-size:14px; line-height:1.8; color:var(--ink-soft); padding-left:20px;">
+      <li>All interactive elements must be reachable and operable with the keyboard.</li>
+      <li>Focus ring: 1.5 px solid Moss + 3 px <code>rgba(74,124,89,0.12)</code> outer glow. Never remove without replacement.</li>
+      <li>Honour <code>prefers-reduced-motion</code>: disable parallax, hero auto-rotates, and decorative motion ≥ 200 ms.</li>
+      <li>Trap focus inside open modals and mobile menus; restore focus to the trigger on close.</li>
+    </ul>
+
+    <div class="note" style="margin-top:32px;">Verified in CI: Lighthouse Accessibility category must score ≥ 0.95 on every audited route (mobile + desktop). Axe rules <code>color-contrast</code>, <code>heading-order</code>, <code>aria-prohibited-attr</code>, and <code>target-size</code> are zero-tolerance.</div>
+  </section>
+
+  <!-- ── 03 TYPOGRAPHY ── -->
+  <section class="section" id="typography">
+    <div class="section-eyebrow">03 — Foundation</div>
     <div class="section-title">Typography Scale</div>
     <p class="section-desc">Fraunces (serif) carries the brand's warmth and editorial identity. DM Sans (humanist sans) handles all UI, body copy, and data. Two fonts, no exceptions.</p>
 
@@ -1354,9 +1419,9 @@ hr.divider {
     </div>
   </section>
 
-  <!-- ── 03 SPACING ── -->
+  <!-- ── 04 SPACING ── -->
   <section class="section" id="spacing">
-    <div class="section-eyebrow">03 — Foundation</div>
+    <div class="section-eyebrow">04 — Foundation</div>
     <div class="section-title">Spacing System</div>
     <p class="section-desc">All spacing is based on a 4px unit. Use tokens — never hardcode pixel values in components.</p>
 
@@ -1401,9 +1466,9 @@ hr.divider {
     </div>
   </section>
 
-  <!-- ── 04 BUTTONS ── -->
+  <!-- ── 05 BUTTONS ── -->
   <section class="section" id="buttons">
-    <div class="section-eyebrow">04 — Components</div>
+    <div class="section-eyebrow">05 — Components</div>
     <div class="section-title">Buttons</div>
     <p class="section-desc">Buttons follow a strict hierarchy. One Ember CTA per view maximum. Pine is the default action color. Ghost/outline for secondary actions.</p>
 
@@ -1453,7 +1518,7 @@ hr.divider {
       <thead><tr><th>Variant</th><th>Background</th><th>Text</th><th>Use when</th></tr></thead>
       <tbody>
         <tr><td><strong>Primary (Pine)</strong></td><td>#2C4A3E</td><td>#F8FAF7</td><td>Default action — search, navigate, filter</td></tr>
-        <tr><td><strong>Accent (Ember)</strong></td><td>#D97B4F</td><td>#FFFFFF</td><td>Single high-urgency CTA per view only — "Boka", "Ge dig av"</td></tr>
+        <tr><td><strong>Accent (Ember Dark)</strong></td><td>#C06030</td><td>#FFFFFF (5.1:1 ✓ AA)</td><td>Single high-urgency CTA per view only — "Boka", "Ge dig av". Hover deepens to Ember Deep (#8B3F1A).</td></tr>
         <tr><td><strong>Secondary</strong></td><td>#FFFFFF</td><td>#2C4A3E</td><td>Alternative actions alongside a primary button</td></tr>
         <tr><td><strong>Ghost</strong></td><td>transparent</td><td>#2C4A3E</td><td>Low-priority tertiary actions, "Läs mer" links</td></tr>
         <tr><td><strong>Filter chip</strong></td><td>#FFFFFF / #2C4A3E</td><td>—</td><td>Activity/category toggles only</td></tr>
@@ -1461,9 +1526,9 @@ hr.divider {
     </table>
   </section>
 
-  <!-- ── 05 CARDS ── -->
+  <!-- ── 06 CARDS ── -->
   <section class="section" id="cards">
-    <div class="section-eyebrow">05 — Components</div>
+    <div class="section-eyebrow">06 — Components</div>
     <div class="section-title">Cards</div>
     <p class="section-desc">Three card types serve distinct contexts. All share the same shadow system and hover behavior — lift + deepen shadow.</p>
 
@@ -1595,9 +1660,9 @@ hr.divider {
     </table>
   </section>
 
-  <!-- ── 06 NAVIGATION ── -->
+  <!-- ── 07 NAVIGATION ── -->
   <section class="section" id="navigation">
-    <div class="section-eyebrow">06 — Components</div>
+    <div class="section-eyebrow">07 — Components</div>
     <div class="section-title">Navigation</div>
     <p class="section-desc">Desktop uses a compact horizontal nav. Mobile uses a sticky bottom tab bar — thumb-first, 2 taps to any destination.</p>
 
@@ -1667,9 +1732,9 @@ hr.divider {
     </table>
   </section>
 
-  <!-- ── 07 FORMS ── -->
+  <!-- ── 08 FORMS ── -->
   <section class="section" id="forms">
-    <div class="section-eyebrow">07 — Components</div>
+    <div class="section-eyebrow">08 — Components</div>
     <div class="section-title">Forms & Search</div>
     <p class="section-desc">The hero search bar is the single most important UI element on the homepage. It must feel fast, responsive, and immediate.</p>
 
@@ -1712,9 +1777,9 @@ hr.divider {
     </table>
   </section>
 
-  <!-- ── 08 BADGES ── -->
+  <!-- ── 09 BADGES ── -->
   <section class="section" id="badges">
-    <div class="section-eyebrow">08 — Components</div>
+    <div class="section-eyebrow">09 — Components</div>
     <div class="section-title">Badges & Tags</div>
     <p class="section-desc">Used for difficulty levels, activity types, availability status and amenity labels. Always use semantic color — never arbitrary.</p>
 
@@ -1746,9 +1811,9 @@ hr.divider {
     </div>
   </section>
 
-  <!-- ── 09 LAYOUT ── -->
+  <!-- ── 10 LAYOUT ── -->
   <section class="section" id="layout">
-    <div class="section-eyebrow">09 — Principles</div>
+    <div class="section-eyebrow">10 — Principles</div>
     <div class="section-title">Layout & Grid</div>
     <p class="section-desc">Homepage uses a 12-column fluid grid with a max-width of 1280px. All content zones respect 80px vertical rhythm. Mobile collapses to single column below 768px.</p>
 
@@ -1824,9 +1889,9 @@ hr.divider {
     </table>
   </section>
 
-  <!-- ── 10 MOTION ── -->
+  <!-- ── 11 MOTION ── -->
   <section class="section" id="motion">
-    <div class="section-eyebrow">10 — Principles</div>
+    <div class="section-eyebrow">11 — Principles</div>
     <div class="section-title">Motion</div>
     <p class="section-desc">Motion serves navigation and feedback — never decoration. One orchestrated page-load reveal. All transitions use --ease-out for responsiveness.</p>
 

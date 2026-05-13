@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>
 
 export const WithImage: Story = {
   args: {
-    imageUrl: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=70&auto=format',
     suggestions: mockSuggestions,
   },
 }
@@ -31,7 +31,7 @@ export const NoImage: Story = {
 
 export const WithSubheadline: Story = {
   args: {
-    imageUrl: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=70&auto=format',
     subheadline: 'Planera övernattningen. Packa ryggsäcken. Ge dig av.',
     suggestions: mockSuggestions,
   },

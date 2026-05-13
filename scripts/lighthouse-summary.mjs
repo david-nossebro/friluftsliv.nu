@@ -19,7 +19,7 @@
  */
 import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { join, relative, isAbsolute, dirname } from 'node:path';
+import { join, relative, isAbsolute } from 'node:path';
 
 const PROJECT_ROOT = process.cwd();
 const BASE_DIR = join(PROJECT_ROOT, '.lighthouseci');

@@ -52,12 +52,13 @@ export function Logo({ variant = 'default', size = 'md', className }: LogoProps)
   const colors = colorMap[variant]
   const markHeight = markSize
   const markWidth = Math.round(markSize * 1.2)
+  const isMarkOnly = variant === 'mark-only'
 
   return (
     <div
       className={cn('inline-flex items-center', className)}
       style={{ gap }}
-      aria-label="friluftsliv.nu"
+      {...(isMarkOnly ? { role: 'img', 'aria-label': 'friluftsliv.nu' } : {})}
     >
       {/* The Ridgeline mark */}
       <svg
@@ -74,10 +75,9 @@ export function Logo({ variant = 'default', size = 'md', className }: LogoProps)
         <polygon points="10,48 28,2 46,48" fill={colors.front} />
       </svg>
 
-      {/* Wordmark */}
-      {variant !== 'mark-only' && (
+      {/* Wordmark — visible text is the accessible name for non-mark-only variants */}
+      {!isMarkOnly && (
         <span
-          aria-hidden="true"
           style={{
             fontSize: textSize,
             lineHeight: 1,

@@ -56,6 +56,8 @@
 
 > **Rule:** Always maintain high contrast. Accessibility is non-negotiable. Never rely on color alone to communicate meaning.
 
+> **Muted text:** All muted/meta text uses **Stone `#5F7568`** from the extended palette (see `design-system.html`). WCAG 2.2 AA (4.5:1) is the contrast floor for body copy; AAA preferred where comfortable.
+
 ### Typography
 
 | Role | Style | Examples |

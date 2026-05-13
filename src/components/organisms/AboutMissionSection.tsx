@@ -18,7 +18,7 @@ export interface AboutMissionSectionProps {
 export function AboutMissionSection({
   heading = 'Varför vi finns',
   paragraphs = defaultParagraphs,
-  imageUrl = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&q=80',
+  imageUrl = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&q=70&auto=format',
   imageAlt = 'En vandrare ser ut över en svensk fjälldal',
   className,
 }: AboutMissionSectionProps) {

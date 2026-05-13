@@ -19,7 +19,7 @@ export function HomePageView({
   featuredRoutes,
   featuredCabins,
   heroHeadline = 'Hitta din tur — från Skåne till Lappland',
-  heroImageUrl = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600&q=80',
+  heroImageUrl = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600&q=70&auto=format',
 }: HomePageViewProps) {
   return (
     <PageLayout currentPath="/">

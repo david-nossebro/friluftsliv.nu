@@ -11,7 +11,7 @@ const badgeVariants = cva(
         moss:    'bg-moss/15 text-pine',
         sky:     'bg-sky/20 text-sky-dark',
         earth:   'bg-earth/15 text-earth',
-        ember:   'bg-ember/15 text-ember-dark',
+        ember:   'bg-ember/15 text-ember-deep',
         outline: 'bg-transparent ring-1 ring-inset ring-birch text-ink-soft',
         mist:    'bg-mist text-ink-soft',
       },

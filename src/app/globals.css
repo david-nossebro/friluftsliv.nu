@@ -29,11 +29,12 @@
 
   --color-ember:        #D97B4F;
   --color-ember-dark:   #C06030;
+  --color-ember-deep:   #8B3F1A;
 
   --color-snow:         #F8FAF7;
   --color-ink:          #1C2B25;
   --color-ink-soft:     #3D5248;
-  --color-stone:        #7A9080;
+  --color-stone:        #5F7568;
   --color-stone-light:  #A0B8AB;
 
   /* ── SEMANTIC ALIASES ── */
@@ -205,4 +206,20 @@
 /* Attribution link */
 .leaflet-control-attribution a {
   color: var(--color-pine);
+}
+
+/* Marker cluster — neutralise the plugin's default appearance and let our
+   custom DivIcon HTML drive the look (see createClusterIcon in
+   LeafletMapInner.tsx). Default plugin CSS isn't imported; this clears any
+   inherited box styling and ensures the cluster bubble is keyboard-focusable
+   with a brand focus ring. */
+.marker-cluster-brand {
+  background: transparent !important;
+  border: 0 !important;
+  cursor: pointer;
+}
+.marker-cluster-brand:focus-visible {
+  outline: 2px solid var(--color-moss);
+  outline-offset: 2px;
+  border-radius: 9999px;
 }

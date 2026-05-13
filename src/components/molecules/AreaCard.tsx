@@ -7,9 +7,11 @@ export interface AreaCardProps {
   area: Area
   className?: string
   onClick?: () => void
+  /** Mark as LCP candidate — disables lazy loading on the image. */
+  priority?: boolean
 }
 
-export function AreaCard({ area, className, onClick }: AreaCardProps) {
+export function AreaCard({ area, className, onClick, priority = false }: AreaCardProps) {
   const content = (
     <>
       {area.imageUrl ? (
@@ -18,6 +20,7 @@ export function AreaCard({ area, className, onClick }: AreaCardProps) {
           alt={area.title}
           fill
           className="object-cover"
+          priority={priority}
           sizes="(max-width: 768px) 100vw, 280px"
         />
       ) : (

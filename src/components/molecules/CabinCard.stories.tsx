@@ -9,7 +9,7 @@ const mockCabin: Cabin = {
   amenities: ['Sovplatser', 'Kök', 'Torrtoalett', 'Vedspis'],
   pricePerNight: 350,
   available: true,
-  imageUrl: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=560&q=80',
+  imageUrl: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=560&q=70&auto=format',
 }
 
 const meta = {

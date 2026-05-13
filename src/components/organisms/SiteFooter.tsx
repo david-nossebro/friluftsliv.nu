@@ -33,9 +33,9 @@ export function SiteFooter() {
 
           {/* Content links */}
           <div>
-            <h4 className="text-xs font-body font-medium uppercase tracking-widest text-snow/40 mb-4">
+            <h2 className="text-xs font-body font-medium uppercase tracking-widest text-snow/70 mb-4">
               Innehåll
-            </h4>
+            </h2>
             <ul className="flex flex-col">
               {contentLinks.map((link) => (
                 <li key={link.href}>
@@ -52,9 +52,9 @@ export function SiteFooter() {
 
           {/* About links */}
           <div>
-            <h4 className="text-xs font-body font-medium uppercase tracking-widest text-snow/40 mb-4">
+            <h2 className="text-xs font-body font-medium uppercase tracking-widest text-snow/70 mb-4">
               Om oss
-            </h4>
+            </h2>
             <ul className="flex flex-col">
               {aboutLinks.map((link) => (
                 <li key={link.href}>
@@ -71,9 +71,9 @@ export function SiteFooter() {
 
           {/* Tagline */}
           <div className="flex flex-col gap-3">
-            <h4 className="text-xs font-body font-medium uppercase tracking-widest text-snow/40 mb-1">
+            <h2 className="text-xs font-body font-medium uppercase tracking-widest text-snow/70 mb-1">
               Friluftsliv för alla
-            </h4>
+            </h2>
             <p className="text-sm text-snow/60 leading-relaxed font-body font-light">
               Sveriges hem för friluftsliv — hitta rutter, stugor och naturupplevelser nära dig.
             </p>
@@ -82,10 +82,10 @@ export function SiteFooter() {
 
         {/* Bottom bar */}
         <div className="mt-12 pt-6 border-t border-snow/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-          <p className="text-xs text-snow/40 font-body font-light">
+          <p className="text-xs text-snow/70 font-body font-light">
             © {new Date().getFullYear()} friluftsliv.nu — Upphovsrätt, där inget annat anges
           </p>
-          <p className="text-xs text-snow/30 font-body font-light">
+          <p className="text-xs text-snow/60 font-body font-light">
             Byggd med kärlek till svenska naturen
           </p>
         </div>

@@ -31,10 +31,11 @@ export function ExploreGrid({ items, className }: ExploreGridProps) {
     >
       <div className="max-w-[1200px] mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {items.map((item) => {
+          {items.map((item, index) => {
             const linkBase =
               'rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-2'
             const cardHover = 'h-full hover:-translate-y-0.5 hover:shadow-lg cursor-pointer'
+            const isLcp = index === 0
             if (item.kind === 'area') {
               return (
                 <Link
@@ -43,7 +44,7 @@ export function ExploreGrid({ items, className }: ExploreGridProps) {
                   aria-label={`Filtrera på ${item.data.title}`}
                   className={linkBase}
                 >
-                  <AreaCard area={item.data} className={cardHover} />
+                  <AreaCard area={item.data} className={cardHover} priority={isLcp} />
                 </Link>
               )
             }
@@ -55,7 +56,7 @@ export function ExploreGrid({ items, className }: ExploreGridProps) {
                   aria-label={`Visa ${item.data.title}`}
                   className={linkBase}
                 >
-                  <RouteCard route={item.data} className={cardHover} />
+                  <RouteCard route={item.data} className={cardHover} priority={isLcp} />
                 </Link>
               )
             }
@@ -66,7 +67,7 @@ export function ExploreGrid({ items, className }: ExploreGridProps) {
                 aria-label={`Visa ${item.data.title}`}
                 className={linkBase}
               >
-                <CabinCard cabin={item.data} className={cardHover} />
+                <CabinCard cabin={item.data} className={cardHover} priority={isLcp} />
               </Link>
             )
           })}

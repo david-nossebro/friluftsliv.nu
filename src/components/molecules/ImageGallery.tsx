@@ -29,6 +29,7 @@ export function ImageGallery({ src, alt, images = [], overlay, className }: Imag
           alt={alt}
           fill
           priority
+          quality={70}
           className="object-cover transition-opacity duration-300"
           sizes="100vw"
         />

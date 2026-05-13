@@ -11,7 +11,7 @@ export interface AboutHeroSectionProps {
 export function AboutHeroSection({
   title = 'Vi hjälper dig hitta vägen ut',
   description = 'friluftsliv.nu är en plats för dig som vill ge dig ut i naturen — för en eftermiddag, en helg eller en hel vecka. Vi samlar rutter, stugor och naturområden från hela Sverige på ett ställe.',
-  imageUrl = 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=1600&q=80',
+  imageUrl = 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=1200&q=70&auto=format',
   className,
 }: AboutHeroSectionProps) {
   return (
@@ -23,6 +23,7 @@ export function AboutHeroSection({
           fill
           className="object-cover"
           priority
+          quality={70}
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-pine/60" />

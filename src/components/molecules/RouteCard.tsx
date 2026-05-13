@@ -19,9 +19,11 @@ export interface RouteCardProps {
   route: RouteType
   className?: string
   onClick?: () => void
+  /** Mark as LCP candidate — disables lazy loading on the image. */
+  priority?: boolean
 }
 
-export function RouteCard({ route, className, onClick }: RouteCardProps) {
+export function RouteCard({ route, className, onClick, priority = false }: RouteCardProps) {
   const content = (
     <>
       <div className="relative h-[148px] bg-mist shrink-0">
@@ -31,6 +33,7 @@ export function RouteCard({ route, className, onClick }: RouteCardProps) {
             alt={route.title}
             fill
             className="object-cover"
+            priority={priority}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 260px"
           />
         ) : (

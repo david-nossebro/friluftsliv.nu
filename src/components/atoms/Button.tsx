@@ -23,7 +23,7 @@ const buttonVariants = cva(
           'hover:bg-mist hover:ring-moss',
         ],
         ghost: 'bg-transparent text-pine hover:bg-pine/10',
-        accent: 'bg-ember text-white shadow-sm hover:bg-ember-dark hover:shadow-md',
+        accent: 'bg-ember-dark text-white shadow-sm hover:bg-ember-deep hover:shadow-md',
         icon: [
           'bg-white text-pine',
           'ring-1 ring-inset ring-birch',

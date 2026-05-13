@@ -8,10 +8,10 @@ export const cabins: CabinDetail[] = [
     amenities: ['Sängplatser', 'Köksutrustning', 'Vedspis', 'Proviantförsäljning'],
     available: true,
     pricePerNight: 395,
-    imageUrl: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=1200&q=70&auto=format',
     images: [
-      'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=70',
-      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=70',
+      'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=70&auto=format',
+      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=70&auto=format',
     ],
     description:
       'Abiskojaure ligger ungefär en dagsetapp från Abisko Turiststation och är den första stugan på Kungsleden söderut. Här bor du enkelt vid Abiskojaures strand med utsikt över fjällen. Stugvärden hjälper dig med tips inför nästa etapp.',
@@ -35,10 +35,10 @@ export const cabins: CabinDetail[] = [
     amenities: ['Restaurang', 'Bastu', 'Helpension', 'Bokningsbar'],
     available: true,
     pricePerNight: 695,
-    imageUrl: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=1200&q=70&auto=format',
     images: [
-      'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=70',
-      'https://images.unsplash.com/photo-1455156218388-5e61b526818b?w=800&q=70',
+      'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=70&auto=format',
+      'https://images.unsplash.com/photo-1455156218388-5e61b526818b?w=800&q=70&auto=format',
     ],
     description:
       'Sylarna fjällstation ligger inbäddad i en av Jämtlands mest karakteristiska bergskedjor. Här erbjuds både helpension med restaurang och självhushållsstugor. Bastun vid bäcken är en härlig avslutning på en lång dag i fjällen.',
@@ -62,10 +62,10 @@ export const cabins: CabinDetail[] = [
     amenities: ['Restaurang', 'Bastu', 'Helpension', 'Guideservice'],
     available: true,
     pricePerNight: 745,
-    imageUrl: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&q=70&auto=format',
     images: [
-      'https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?w=800&q=70',
-      'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=70',
+      'https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?w=800&q=70&auto=format',
+      'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=70&auto=format',
     ],
     description:
       'Vid foten av Sveriges högsta fjäll ligger Kebnekaise fjällstation — utgångspunkten för toppbestigningar och vidare vandringar i Kungsleden. Här finns restaurang, bastu och guidade turer. Ett ideellt basläger för fjällvandring i världsklass.',
@@ -89,9 +89,9 @@ export const cabins: CabinDetail[] = [
     amenities: ['Restaurang', 'Bastu', 'Helpension', 'Glaciärguide'],
     available: false,
     pricePerNight: 595,
-    imageUrl: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1200&q=70&auto=format',
     images: [
-      'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=800&q=70',
+      'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=800&q=70&auto=format',
     ],
     description:
       'Helags fjällstation ligger vid foten av Sveriges sydligaste glaciär och har en av landets vackraste utsikter direkt från frukostbordet. Du kan vandra hit från Ljungdalen eller från Sylarna. På sommaren erbjuds guidade glaciärvandringar.',
@@ -115,7 +115,7 @@ export const cabins: CabinDetail[] = [
     amenities: ['Sängplatser', 'Köksutrustning', 'Vedspis', 'Bastu'],
     available: true,
     pricePerNight: 395,
-    imageUrl: 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=1200&q=70&auto=format',
     description:
       'Sälka är den högst belägna stugan på Kungsleden och ligger strax söder om Tjäktjapasset. Stugan är liten och enkel men med en magisk plats vid Tjäktjajaure. Här samlas vandrare för att utbyta tips inför pasagen norrut eller söderut.',
     beds: 36,
@@ -138,7 +138,7 @@ export const cabins: CabinDetail[] = [
     amenities: ['Sängplatser', 'Frukost', 'Trädgård', 'Bokningsbar'],
     available: true,
     pricePerNight: 425,
-    imageUrl: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=70&auto=format',
     description:
       'Ett gammalt skogvaktarhus omvandlat till mysig vandrarstuga vid kanten av Söderåsens nationalpark. Här kan du börja och avsluta dina vandringar i bokskogen utan att behöva köra. Servering av enkel frukost ingår.',
     beds: 18,

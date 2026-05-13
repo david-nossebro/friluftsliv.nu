@@ -7,9 +7,11 @@ export interface CabinCardProps {
   cabin: Cabin
   className?: string
   onClick?: () => void
+  /** Mark as LCP candidate — disables lazy loading on the image. */
+  priority?: boolean
 }
 
-export function CabinCard({ cabin, className, onClick }: CabinCardProps) {
+export function CabinCard({ cabin, className, onClick, priority = false }: CabinCardProps) {
   const content = (
     <>
       <div className="relative h-[168px] bg-mist shrink-0">
@@ -19,6 +21,7 @@ export function CabinCard({ cabin, className, onClick }: CabinCardProps) {
             alt={cabin.title}
             fill
             className="object-cover"
+            priority={priority}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 280px"
           />
         ) : (

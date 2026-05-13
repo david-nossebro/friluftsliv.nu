@@ -40,6 +40,7 @@ export function HeroSearch({
             fill
             className="object-cover"
             priority
+            quality={70}
             sizes="100vw"
           />
           <div className="absolute inset-0 bg-pine/55" />

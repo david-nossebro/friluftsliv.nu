@@ -12,7 +12,7 @@ const mockRoutes: Route[] = [
     elevation: 2400,
     duration: 300,
     difficulty: 'medium',
-    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=520&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=520&q=70&auto=format',
   },
   {
     id: '2',
@@ -23,7 +23,7 @@ const mockRoutes: Route[] = [
     elevation: 120,
     duration: 180,
     difficulty: 'easy',
-    imageUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=520&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=520&q=70&auto=format',
   },
   {
     id: '3',
@@ -34,7 +34,7 @@ const mockRoutes: Route[] = [
     elevation: 1450,
     duration: 540,
     difficulty: 'hard',
-    imageUrl: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=520&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=520&q=70&auto=format',
   },
   {
     id: '4',

@@ -23,6 +23,6 @@ export const Default: Story = {
 export const AutumnImage: Story = {
   args: {
     title: 'Fler människor ut i naturen',
-    imageUrl: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=70&auto=format',
   },
 }
