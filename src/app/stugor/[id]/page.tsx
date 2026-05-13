@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { PageLayout } from '@/components/layout/PageLayout'
-import { CabinDetailPage } from '@/components/organisms/CabinDetailPage'
-import { CabinCardGrid } from '@/components/organisms/CabinCardGrid'
+import { CabinDetailPage } from '@/components/sections/CabinDetailPage'
+import { CabinCardGrid } from '@/components/cards/CabinCardGrid'
 import { getCabinById, getRelatedCabins, cabins } from '@/data'
 import { toFacilityItems, toSuitableForItems } from '@/lib/facilityIcons'
 

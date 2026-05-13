@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { PageLayout } from '@/components/layout/PageLayout'
-import { RouteDetailPage } from '@/components/organisms/RouteDetailPage'
-import { RouteCardGrid } from '@/components/organisms/RouteCardGrid'
+import { RouteDetailPage } from '@/components/sections/RouteDetailPage'
+import { RouteCardGrid } from '@/components/cards/RouteCardGrid'
 import { getRouteById, getRelatedRoutes, routes } from '@/data'
 
 export async function generateStaticParams() {

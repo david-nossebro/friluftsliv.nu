@@ -6,7 +6,7 @@ import type {
   Area,
   MapFeatureLayer,
 } from '@/types'
-import type { ExploreItem } from '@/components/organisms/ExploreGrid'
+import type { ExploreItem } from '@/components/search/ExploreGrid'
 import { routes } from './routes'
 import { cabins } from './cabins'
 import { areas } from './areas'

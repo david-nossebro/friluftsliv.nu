@@ -1,4 +1,4 @@
-import { HomePageView } from '@/components/organisms/HomePageView'
+import { HomePageView } from '@/components/sections/HomePageView'
 import { defaultSuggestions, getFeaturedRoutes, getFeaturedCabins } from '@/data'
 
 export default function HomePage() {

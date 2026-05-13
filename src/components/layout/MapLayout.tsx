@@ -4,8 +4,8 @@ import * as React from 'react'
 import type { ReactNode } from 'react'
 import { SlidersHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { HeaderSearchAdapter } from '@/components/organisms/HeaderSearchAdapter'
-import { MapSidebar, type MapSidebarProps } from '@/components/organisms/MapSidebar'
+import { HeaderSearchAdapter } from '@/components/search/HeaderSearchAdapter'
+import { MapSidebar, type MapSidebarProps } from '@/components/map/MapSidebar'
 
 export interface MapLayoutProps {
   /** Sidebar configuration. Filter state is owned externally — pass controlled props. */

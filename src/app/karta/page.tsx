@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { MapView } from '@/components/organisms/MapView'
+import { MapView } from '@/components/map/MapView'
 import { getMapFeatureLayers } from '@/data'
 
 export const metadata: Metadata = {

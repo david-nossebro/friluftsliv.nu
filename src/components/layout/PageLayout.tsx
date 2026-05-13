@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
-import { HeaderSearchAdapter } from '@/components/organisms/HeaderSearchAdapter'
-import { SiteFooter } from '@/components/organisms/SiteFooter'
+import { HeaderSearchAdapter } from '@/components/search/HeaderSearchAdapter'
+import { SiteFooter } from '@/components/layout/SiteFooter'
 
 export interface PageLayoutProps {
   children: React.ReactNode

@@ -1,50 +1,43 @@
-"use client"
+import * as React from 'react'
+import * as AvatarPrimitive from '@radix-ui/react-avatar'
+import { cn } from '@/lib/utils'
 
-import * as React from "react"
-import * as AvatarPrimitive from "@radix-ui/react-avatar"
+export type AvatarSize = 'sm' | 'md' | 'lg'
 
-import { cn } from "@/lib/utils"
+export interface AvatarProps {
+  src?: string
+  alt?: string
+  fallback?: string
+  size?: AvatarSize
+  className?: string
+}
 
-const Avatar = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Root
-    ref={ref}
-    className={cn(
-      "relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full",
-      className
-    )}
-    {...props}
-  />
-))
-Avatar.displayName = AvatarPrimitive.Root.displayName
+const sizeMap: Record<AvatarSize, string> = {
+  sm: 'w-8 h-8 text-2xs',
+  md: 'w-10 h-10 text-xs',
+  lg: 'w-14 h-14 text-sm',
+}
 
-const AvatarImage = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Image>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Image
-    ref={ref}
-    className={cn("aspect-square h-full w-full", className)}
-    {...props}
-  />
-))
-AvatarImage.displayName = AvatarPrimitive.Image.displayName
-
-const AvatarFallback = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Fallback>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Fallback
-    ref={ref}
-    className={cn(
-      "flex h-full w-full items-center justify-center rounded-full bg-muted",
-      className
-    )}
-    {...props}
-  />
-))
-AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName
-
-export { Avatar, AvatarImage, AvatarFallback }
+export function Avatar({ src, alt, fallback, size = 'md', className }: AvatarProps) {
+  return (
+    <AvatarPrimitive.Root
+      className={cn(
+        'relative inline-flex shrink-0 overflow-hidden rounded-full',
+        sizeMap[size],
+        className
+      )}
+    >
+      <AvatarPrimitive.Image
+        src={src}
+        alt={alt}
+        className="aspect-square w-full h-full object-cover"
+      />
+      <AvatarPrimitive.Fallback
+        className="flex w-full h-full items-center justify-center bg-mist text-pine font-body font-medium"
+        delayMs={300}
+      >
+        {fallback ?? alt?.slice(0, 2).toUpperCase() ?? '?'}
+      </AvatarPrimitive.Fallback>
+    </AvatarPrimitive.Root>
+  )
+}

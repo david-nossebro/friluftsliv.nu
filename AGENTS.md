@@ -35,11 +35,26 @@ see `Brand/BRAND.md`.
 
 - `src/app/` — App Router pages with Swedish URLs: `/`, `/karta`, `/om`,
   `/utforska`, `/turer/[id]`, `/stugor/[id]`. Root layout sets `lang="sv"`.
-- `src/components/` — atomic design: `atoms/`, `molecules/`, `organisms/`,
-  `layout/`, `brand/`. Each non-trivial component has a sibling
-  `*.stories.tsx`.
-- `src/components/ui/` — shadcn primitives. Add new ones with
-  `pnpm dlx shadcn@latest add <name>` and adjust to brand tokens.
+- `src/components/` — grouped by feature, not atomic-design tiers. Each
+  non-trivial component has a sibling `*.stories.tsx`.
+  - `ui/` — shadcn primitives + project variants (`button`, `badge`, `input`,
+    `avatar`, `icon`, `filter-chip`). Lowercase filenames per shadcn
+    convention. Add new ones with `pnpm dlx shadcn@latest add <name>` and edit
+    them in place to use brand tokens (`bg-pine`, `text-snow`, ...) — don't
+    wrap shadcn primitives in extra files.
+  - `brand/` — logotype + loader.
+  - `layout/` — `PageLayout`, `MapLayout`, `SiteHeader`, `SiteFooter`,
+    `NotFoundPage`.
+  - `cards/` — route/cabin/area cards, card grids, booking card.
+  - `map/` — Leaflet wrappers, `MapView`, `MapSidebar`, layer toggles,
+    `MapPromo`.
+  - `search/` — `SearchBar`, hero/header search, activity chips,
+    `ExploreView`/`Filters`/`Grid`.
+  - `sections/` — page views (`HomePageView`, `AboutPageView`) and detail
+    sections for route/cabin/about pages, plus `ContentBlock` and
+    `ImageGallery`.
+  - `common/` — small shared bits (`DifficultyBadge`, `StatItem`,
+    `FacilityGrid`).
 - `src/data/` — static seed data (`routes.ts`, `cabins.ts`, `areas.ts`,
   `suggestions.ts`) plus lookup helpers in `index.ts`.
 - `src/lib/` — `utils.ts` (`cn`), `a11y.ts` (focus helpers), `gpx.ts`,
@@ -79,16 +94,16 @@ see `Brand/BRAND.md`.
   an arbitrary value inline. Class merging goes through `cn()` from
   `@/lib/utils`.
 - **Map code is client-only.** Anything that touches Leaflet must be loaded via
-  `next/dynamic` with `ssr: false` (see `src/components/molecules/LeafletMap.tsx`).
+  `next/dynamic` with `ssr: false` (see `src/components/map/LeafletMap.tsx`).
 - **Every non-trivial component gets a Storybook story.** Stories double as
   visual regression and accessibility surface (Storybook a11y addon + browser
   test project).
 - **Accessibility is enforced, not aspirational.** `eslint-plugin-jsx-a11y` runs
   on every lint; component tests use `vitest-axe`'s `toHaveNoViolations`;
   Lighthouse mobile a11y is an *error* below 0.95. Don't regress these.
-- **Add new shadcn components via the CLI**, not by hand. After adding,
-  reconcile colors to the brand tokens (`bg-primary` etc. map through CSS vars
-  in `globals.css`).
+- **Add new shadcn components via the CLI**, not by hand. After adding, edit
+  the primitive in `src/components/ui/<name>.tsx` to use brand tokens
+  (`bg-pine`, `text-snow`, etc.) — don't introduce a separate wrapper layer.
 - Keep diffs focused. Conventional Commits style (`feat:`, `fix:`, `chore:` —
   see recent history).
 

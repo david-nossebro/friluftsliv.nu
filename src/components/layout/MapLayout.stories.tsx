@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { MapLayout } from './MapLayout'
-import { LeafletMap } from '@/components/molecules/LeafletMap'
+import { LeafletMap } from '@/components/map/LeafletMap'
 
 const meta = {
   title: 'Layout/MapLayout',

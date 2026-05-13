@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { AboutPageView } from '@/components/organisms/AboutPageView'
+import { AboutPageView } from '@/components/sections/AboutPageView'
 
 export const metadata: Metadata = {
   title: 'Om oss',

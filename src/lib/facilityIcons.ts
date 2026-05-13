@@ -17,7 +17,7 @@ import {
   Home,
   type LucideIcon,
 } from 'lucide-react'
-import type { FacilityItem } from '@/components/molecules/FacilityGrid'
+import type { FacilityItem } from '@/components/common/FacilityGrid'
 
 const facilityIconMap: Record<string, LucideIcon> = {
   vedspis: Flame,
