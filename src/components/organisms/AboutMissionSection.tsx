@@ -1,0 +1,55 @@
+import Image from 'next/image'
+import { ContentBlock } from '@/components/molecules/ContentBlock'
+import { cn } from '@/lib/utils'
+
+const defaultParagraphs = [
+  'För många stannar drömmen om en tur ute i naturen vid just en dröm. Inte för att viljan saknas — utan för att det är svårt att veta var man ska börja. Vilken rutt passar för en nybörjare? Vart kan man ta vägen om det regnar? Behöver man boka stugan i förväg?',
+  'Vi tror att svaret ska vara enkelt att hitta. Här samlar vi det du behöver för att planera din nästa tur — utan reklamprat, utan komplicerade menyer.',
+]
+
+export interface AboutMissionSectionProps {
+  heading?: string
+  paragraphs?: string[]
+  imageUrl?: string
+  imageAlt?: string
+  className?: string
+}
+
+export function AboutMissionSection({
+  heading = 'Varför vi finns',
+  paragraphs = defaultParagraphs,
+  imageUrl = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&q=80',
+  imageAlt = 'En vandrare ser ut över en svensk fjälldal',
+  className,
+}: AboutMissionSectionProps) {
+  return (
+    <section className={cn('max-w-[1200px] mx-auto px-6 py-12 md:py-20', className)}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
+        <div className="flex flex-col gap-6">
+          <ContentBlock heading={heading}>
+            {paragraphs.map((paragraph, index) => (
+              <p
+                key={paragraph}
+                className={cn(
+                  'font-body text-base text-ink leading-relaxed',
+                  index > 0 && 'mt-4',
+                )}
+              >
+                {paragraph}
+              </p>
+            ))}
+          </ContentBlock>
+        </div>
+        <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
+          <Image
+            src={imageUrl}
+            alt={imageAlt}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        </div>
+      </div>
+    </section>
+  )
+}

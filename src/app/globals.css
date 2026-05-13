@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+@import "tailwindcss";
+
+:root {
+  --font-fraunces: 'Fraunces';
+  --font-dm-sans: 'DM Sans';
+}
+
+@theme {
+  /* ── COLORS ── */
+  --color-pine:         #2C4A3E;
+  --color-pine-dark:    #1C3029;
+  --color-pine-light:   #3D6657;
+
+  --color-moss:         #4A7C59;
+  --color-moss-light:   #5E9B6E;
+
+  --color-birch:        #B5C9A1;
+  --color-birch-pale:   #D4E4C8;
+
+  --color-mist:         #EFF4EC;
+  --color-mist-dark:    #E2EBE0;
+
+  --color-sky:          #A8C4D4;
+  --color-sky-dark:     #7AABBE;
+
+  --color-earth:        #6B5B45;
+  --color-earth-light:  #8C7A62;
+
+  --color-ember:        #D97B4F;
+  --color-ember-dark:   #C06030;
+
+  --color-snow:         #F8FAF7;
+  --color-ink:          #1C2B25;
+  --color-ink-soft:     #3D5248;
+  --color-stone:        #7A9080;
+  --color-stone-light:  #A0B8AB;
+
+  /* ── SEMANTIC ALIASES ── */
+  --color-background:     var(--color-snow);
+  --color-surface:        #FFFFFF;
+  --color-surface-alt:    var(--color-mist);
+  --color-border:         var(--color-mist-dark);
+  --color-text:           var(--color-ink);
+  --color-text-soft:      var(--color-ink-soft);
+  --color-text-muted:     var(--color-stone);
+  --color-primary:        var(--color-pine);
+  --color-primary-hover:  var(--color-pine-dark);
+  --color-accent:         var(--color-ember);
+  --color-accent-hover:   var(--color-ember-dark);
+
+  /* ── FONTS ── */
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-body:    var(--font-dm-sans), system-ui, sans-serif;
+
+  /* ── TYPE SCALE (Major Third 1.25) ── */
+  --text-2xs:  0.6875rem;   /* 11px */
+  --text-xs:   0.8125rem;   /* 13px */
+  --text-sm:   0.9375rem;   /* 15px */
+  --text-base: 1.0625rem;   /* 17px */
+  --text-lg:   1.3125rem;   /* 21px */
+  --text-xl:   1.625rem;    /* 26px */
+  --text-2xl:  2rem;        /* 32px */
+  --text-3xl:  2.625rem;    /* 42px */
+  --text-4xl:  3.375rem;    /* 54px */
+  --text-5xl:  4.25rem;     /* 68px */
+
+  /* ── SPACING (4px base) ── */
+  --spacing: 0.25rem;
+
+  /* ── BORDER RADIUS ── */
+  --radius-sm:   0.25rem;      /*  4px */
+  --radius-md:   0.5rem;       /*  8px */
+  --radius:      0.5rem;       /*  8px – shadcn default */
+  --radius-lg:   0.75rem;      /* 12px */
+  --radius-xl:   1.25rem;      /* 20px */
+  --radius-full: 624.9375rem;
+
+  /* ── SHADOWS ── */
+  --shadow-sm:   0 1px 3px rgba(28,43,37,.07), 0 1px 2px rgba(28,43,37,.04);
+  --shadow-md:   0 4px 12px rgba(28,43,37,.09), 0 2px 4px rgba(28,43,37,.05);
+  --shadow-lg:   0 12px 32px rgba(28,43,37,.12), 0 4px 8px rgba(28,43,37,.06);
+  --shadow-card: 0 2px 8px rgba(28,43,37,.08);
+
+  /* ── EASING ── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:  cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-io:  cubic-bezier(0.87, 0, 0.13, 1);
+
+  /* ── DURATION ── */
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --duration-slow: 380ms;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-weight: 300;
+    line-height: 1.65;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--color-pine);
+  }
+
+  *, *::before, *::after {
+    border-color: var(--color-border);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0ms !important;
+  }
+}
+
+/* Hide scrollbars visually while keeping scroll functional (WebKit + standard) */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Leaflet brand overrides ────────────────────────────────────────────────
+   Scope to .leaflet-container to avoid leaking into non-map contexts.          */
+
+.leaflet-container {
+  font-family: var(--font-body, sans-serif);
+}
+
+/* Popup shell */
+.leaflet-popup-content-wrapper {
+  background-color: var(--color-snow);
+  border: 1px solid var(--color-mist-dark);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(44, 74, 62, 0.12), 0 1px 4px rgba(44, 74, 62, 0.08);
+  padding: 0;
+}
+
+/* Popup body */
+.leaflet-popup-content {
+  margin: 12px 16px;
+  font-size: var(--text-sm, 0.875rem);
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+/* Popup tip (arrow) */
+.leaflet-popup-tip {
+  background-color: var(--color-snow);
+}
+
+/* Popup close button */
+.leaflet-popup-close-button {
+  color: var(--color-stone) !important;
+  font-size: 18px !important;
+  line-height: 20px !important;
+  width: 24px !important;
+  height: 24px !important;
+  top: 6px !important;
+  right: 6px !important;
+}
+.leaflet-popup-close-button:hover {
+  color: var(--color-pine) !important;
+  background: none !important;
+}
+
+/* Zoom control buttons */
+.leaflet-control-zoom a {
+  color: var(--color-pine) !important;
+  border-color: var(--color-mist-dark) !important;
+  background-color: rgba(248, 250, 247, 0.95) !important;
+  backdrop-filter: blur(4px);
+}
+.leaflet-control-zoom a:hover {
+  background-color: var(--color-mist) !important;
+  color: var(--color-pine) !important;
+}
+.leaflet-control-zoom {
+  border-color: var(--color-mist-dark) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(44, 74, 62, 0.12) !important;
+}
+
+/* Attribution link */
+.leaflet-control-attribution a {
+  color: var(--color-pine);
+}

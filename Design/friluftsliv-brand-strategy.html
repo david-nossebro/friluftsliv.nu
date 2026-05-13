@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>friluftsliv.nu — Brand Strategy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pine:      #2C4A3E;
+    --moss:      #4A7C59;
+    --birch:     #B5C9A1;
+    --mist:      #EFF4EC;
+    --stone:     #8A9E8C;
+    --earth:     #6B5B45;
+    --sky:       #A8C4D4;
+    --snow:      #F8FAF7;
+    --ink:       #1C2B25;
+    --accent:    #D97B4F;
+
+    --font-head: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--snow);
+    color: var(--ink);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* ── COVER ── */
+  .cover {
+    background: var(--pine);
+    color: var(--snow);
+    padding: 80px 64px 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: -60px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    border: 2px solid rgba(181,201,161,.18);
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: 80px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    border: 2px solid rgba(181,201,161,.10);
+  }
+  .cover-label {
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--birch);
+    margin-bottom: 24px;
+  }
+  .cover h1 {
+    font-family: var(--font-head);
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 400;
+    line-height: 1.12;
+    margin-bottom: 16px;
+  }
+  .cover h1 em {
+    font-style: italic;
+    color: var(--birch);
+  }
+  .cover-sub {
+    font-size: 15px;
+    color: rgba(248,250,247,.6);
+    max-width: 480px;
+    margin-top: 8px;
+  }
+  .cover-meta {
+    margin-top: 48px;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .cover-meta-item { font-size: 12px; color: var(--birch); }
+  .cover-meta-item strong { display: block; font-size: 13px; color: var(--snow); font-weight: 500; margin-bottom: 2px; }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; }
+
+  /* ── SECTION ── */
+  section { margin-top: 72px; }
+  .section-number {
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--stone);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--pine);
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--birch);
+  }
+
+  /* ── PERSONALITY CARDS ── */
+  .personality-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .personality-card {
+    background: var(--mist);
+    border-left: 3px solid var(--moss);
+    padding: 20px 20px 22px;
+    border-radius: 0 6px 6px 0;
+  }
+  .personality-card .word {
+    font-family: var(--font-head);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--pine);
+    margin-bottom: 8px;
+  }
+  .personality-card p {
+    font-size: 13.5px;
+    color: #4a5e50;
+    line-height: 1.6;
+  }
+
+  /* ── VOICE ── */
+  .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+  .voice-card {
+    padding: 18px 22px;
+    border-radius: 6px;
+    font-size: 13.5px;
+  }
+  .voice-card.do { background: var(--pine); color: rgba(248,250,247,.88); }
+  .voice-card.dont { background: #f2ede8; color: #6b5b45; text-decoration: none; }
+  .voice-card .label { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 6px; opacity: .6; }
+  .voice-card .text { font-style: italic; font-family: var(--font-head); font-size: 15px; line-height: 1.4; }
+
+  .phrase-list { list-style: none; }
+  .phrase-list li {
+    padding: 14px 20px;
+    border-radius: 6px;
+    background: var(--mist);
+    margin-bottom: 10px;
+    font-style: italic;
+    font-family: var(--font-head);
+    font-size: 16px;
+    color: var(--pine);
+    position: relative;
+    padding-left: 44px;
+  }
+  .phrase-list li::before {
+    content: '"';
+    position: absolute;
+    left: 18px;
+    top: 12px;
+    font-size: 22px;
+    color: var(--moss);
+    font-family: var(--font-head);
+    line-height: 1;
+  }
+
+  /* ── VISUAL DIRECTION ── */
+  .palette-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--stone);
+    text-align: center;
+    width: 72px;
+  }
+  .swatch-color {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  }
+  .swatch-hex { font-size: 10px; letter-spacing: .06em; }
+
+  .type-row { margin-bottom: 28px; }
+  .type-sample {
+    padding: 20px 24px;
+    background: var(--mist);
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+  .type-sample .role { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--stone); margin-bottom: 6px; }
+  .type-sample .display { font-family: var(--font-head); font-size: 28px; font-weight: 400; color: var(--pine); line-height: 1.2; }
+  .type-sample .body-text { font-family: var(--font-body); font-size: 15px; color: #4a5e50; font-weight: 300; }
+
+  .imagery-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .tag {
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .04em;
+  }
+  .tag.yes { background: var(--pine); color: var(--snow); }
+  .tag.no  { background: #f2ede8; color: var(--earth); text-decoration: line-through; }
+
+  /* ── TAGLINE ── */
+  .tagline-options { display: grid; gap: 16px; }
+  .tagline-card {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 22px 24px;
+    background: var(--mist);
+    border-radius: 8px;
+  }
+  .tagline-num {
+    font-family: var(--font-head);
+    font-size: 28px;
+    color: var(--birch);
+    line-height: 1;
+    min-width: 28px;
+  }
+  .tagline-line {
+    font-family: var(--font-head);
+    font-size: 22px;
+    color: var(--pine);
+    font-style: italic;
+    margin-bottom: 6px;
+  }
+  .tagline-note { font-size: 12.5px; color: var(--stone); }
+
+  .hero-tagline {
+    background: var(--pine);
+    color: var(--snow);
+    text-align: center;
+    padding: 40px 32px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  .hero-tagline p { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--birch); margin-bottom: 12px; }
+  .hero-tagline h2 { font-family: var(--font-head); font-size: clamp(24px, 4vw, 38px); font-weight: 400; font-style: italic; line-height: 1.2; }
+
+  /* ── DOS DONTS ── */
+  .dos-donts { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .rule-col h3 {
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    font-weight: 500;
+  }
+  .rule-col.do h3   { color: var(--moss); border-bottom: 2px solid var(--moss); }
+  .rule-col.dont h3 { color: var(--accent); border-bottom: 2px solid var(--accent); }
+  .rule-col ul { list-style: none; }
+  .rule-col ul li {
+    padding: 10px 14px 10px 36px;
+    font-size: 13.5px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .rule-col.do ul li   { background: #edf4ea; color: #2c4a3e; }
+  .rule-col.dont ul li { background: #fdf2ec; color: #6b3e28; }
+  .rule-col ul li::before {
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .rule-col.do ul li::before   { content: '✓'; color: var(--moss); }
+  .rule-col.dont ul li::before { content: '✗'; color: var(--accent); }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 80px;
+    padding: 32px 40px;
+    background: var(--ink);
+    color: rgba(248,250,247,.4);
+    font-size: 12px;
+    text-align: center;
+    letter-spacing: .04em;
+  }
+  footer strong { color: rgba(248,250,247,.7); }
+
+  @media (max-width: 600px) {
+    .cover { padding: 48px 28px; }
+    .page { padding: 0 24px 60px; }
+    .voice-grid { grid-template-columns: 1fr; }
+    .dos-donts { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-label">Brand Strategy Document</div>
+  <h1>friluftsliv<em>.nu</em></h1>
+  <div class="cover-sub">A design foundation for a digital home of Nordic outdoor life — routes, cabins and the open air, for everyone.</div>
+  <div class="cover-meta">
+    <div class="cover-meta-item"><strong>Industry</strong>Outdoor life & Adventure</div>
+    <div class="cover-meta-item"><strong>Market</strong>Sweden</div>
+    <div class="cover-meta-item"><strong>Audience</strong>All ages, nature lovers</div>
+    <div class="cover-meta-item"><strong>Positioning</strong>Accessible & trustworthy</div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- 1. BRAND PERSONALITY -->
+  <section>
+    <div class="section-number">01 — Brand Personality</div>
+    <div class="section-title">Five words that define friluftsliv.nu</div>
+    <div class="personality-grid">
+      <div class="personality-card">
+        <div class="word">Grounded</div>
+        <p>The brand feels as solid and trustworthy as the trails it maps. No hype, no exaggeration — just honest, reliable information for every adventure.</p>
+      </div>
+      <div class="personality-card">
+        <div class="word">Inviting</div>
+        <p>Nature belongs to everyone. The brand opens its arms wide — to the seasoned hiker, the weekend cyclist, and the first-time paddler alike.</p>
+      </div>
+      <div class="personality-card">
+        <div class="word">Clear</div>
+        <p>Like a well-marked trail, the experience is never confusing. Information is structured, purposeful, and easy to act on — no noise, no clutter.</p>
+      </div>
+      <div class="personality-card">
+        <div class="word">Calm</div>
+        <p>The brand carries the quiet confidence of a forest on a still morning. It doesn't shout; it guides. It reassures rather than overwhelms.</p>
+      </div>
+      <div class="personality-card">
+        <div class="word">Purposeful</div>
+        <p>Every feature, every page, every word serves the user's need to get outside. Form follows function — beautiful because it works, not the other way around.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. VOICE & TONE -->
+  <section>
+    <div class="section-number">02 — Voice & Tone</div>
+    <div class="section-title">How friluftsliv.nu speaks</div>
+
+    <div class="voice-grid">
+      <div class="voice-card do">
+        <div class="label">Speak like this</div>
+        <div class="text">Direct. Warm. A knowledgeable friend who has hiked every trail and slept in every cabin — and wants you to as well.</div>
+      </div>
+      <div class="voice-card dont">
+        <div class="label">Not like this</div>
+        <div class="text">Corporate. Formal. Over-enthusiastic marketing language that treats the user like a consumer rather than an explorer.</div>
+      </div>
+    </div>
+
+    <ul class="phrase-list">
+      <li>Hitta din nästa rutt — oavsett om det är 3 km eller 30.</li>
+      <li>Planera övernattningen. Packa ryggsäcken. Ge dig av.</li>
+      <li>Naturen väntar. Vi hjälper dig hitta vägen dit.</li>
+    </ul>
+
+    <p style="margin-top:20px; font-size:13.5px; color:var(--stone);">Voice principles: Use second person ("du/dig"). Prefer active verbs. Sentences should be short. Swedish before English in all UI copy. Avoid jargon — a 12-year-old and a 70-year-old should both feel welcome.</p>
+  </section>
+
+  <!-- 3. VISUAL DIRECTION -->
+  <section>
+    <div class="section-number">03 — Visual Direction</div>
+    <div class="section-title">Color, typography & imagery</div>
+
+    <div class="section-number" style="margin-bottom:12px;">Color Palette</div>
+    <div class="palette-row">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#2C4A3E;"></div>
+        <div>Pine</div>
+        <div class="swatch-hex">#2C4A3E</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#4A7C59;"></div>
+        <div>Moss</div>
+        <div class="swatch-hex">#4A7C59</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#B5C9A1;"></div>
+        <div>Birch</div>
+        <div class="swatch-hex">#B5C9A1</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#EFF4EC;"></div>
+        <div>Mist</div>
+        <div class="swatch-hex">#EFF4EC</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#A8C4D4;"></div>
+        <div>Sky</div>
+        <div class="swatch-hex">#A8C4D4</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#6B5B45;"></div>
+        <div>Earth</div>
+        <div class="swatch-hex">#6B5B45</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#D97B4F;"></div>
+        <div>Ember</div>
+        <div class="swatch-hex">#D97B4F</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#F8FAF7;"></div>
+        <div>Snow</div>
+        <div class="swatch-hex">#F8FAF7</div>
+      </div>
+    </div>
+    <p style="font-size:13px; color:var(--stone); margin-bottom:32px;">Primary: Pine + Mist. Accent: Ember (CTAs, highlights only). Sky for water/paddling contexts, Earth for elevation/terrain maps. Always high contrast — accessibility is non-negotiable.</p>
+
+    <div class="section-number" style="margin-bottom:12px;">Typography</div>
+    <div class="type-row">
+      <div class="type-sample">
+        <div class="role">Display / Headings — Serif (e.g. Playfair Display, Lora, or Fraunces)</div>
+        <div class="display">Hitta din väg ut i naturen</div>
+      </div>
+      <div class="type-sample">
+        <div class="role">Body / UI — Humanist Sans (e.g. DM Sans, Instrument Sans, or Nunito)</div>
+        <div class="body-text">Välj bland hundratals rutter, stugor och övernattningsplatser. Filter efter aktivitet, svårighet och avstånd — och ge dig av.</div>
+      </div>
+    </div>
+    <p style="font-size:13px; color:var(--stone); margin-bottom:32px;">Type scale: Large, confident headings paired with lightweight body text. Generous line-height (1.6–1.7). No more than two typefaces in the entire product.</p>
+
+    <div class="section-number" style="margin-bottom:12px;">Imagery Style</div>
+    <div class="imagery-tags">
+      <span class="tag yes">Real people in real landscapes</span>
+      <span class="tag yes">Natural light — golden hour, mist, blue hour</span>
+      <span class="tag yes">Wide, breathing compositions</span>
+      <span class="tag yes">Seasonal variety (snow, autumn, summer)</span>
+      <span class="tag yes">All ages & group sizes</span>
+      <span class="tag yes">Lightly desaturated — let nature's palette speak</span>
+      <span class="tag no">Stock-photo perfection</span>
+      <span class="tag no">Heavily filtered Instagram aesthetic</span>
+      <span class="tag no">Only elite athletes / extreme sports</span>
+      <span class="tag no">City or built environments</span>
+    </div>
+  </section>
+
+  <!-- 4. TAGLINE -->
+  <section>
+    <div class="section-number">04 — Key Message & Tagline Direction</div>
+    <div class="section-title">What the brand says above all else</div>
+
+    <div class="hero-tagline">
+      <p>Core Brand Promise</p>
+      <h2>"Sweden's outdoor life — planned in minutes, remembered forever."</h2>
+    </div>
+
+    <div class="tagline-options">
+      <div class="tagline-card">
+        <div class="tagline-num">A</div>
+        <div>
+          <div class="tagline-line">Naturen väntar. Vi visar vägen.</div>
+          <div class="tagline-note">Simple and functional. Positions the brand as a guide, not a gatekeeper. Works for all audiences.</div>
+        </div>
+      </div>
+      <div class="tagline-card">
+        <div class="tagline-num">B</div>
+        <div>
+          <div class="tagline-line">Friluftsliv — för alla, överallt.</div>
+          <div class="tagline-note">Echoes the brand name. Inclusivity-first. Emphasizes that the product covers the whole country and every activity type.</div>
+        </div>
+      </div>
+      <div class="tagline-card">
+        <div class="tagline-num">C</div>
+        <div>
+          <div class="tagline-line">Din nästa äventyr börjar här.</div>
+          <div class="tagline-note">Action-oriented. Puts the user in the center. Pairs well with a search bar or map as the hero UI element.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. DOS AND DONTS -->
+  <section>
+    <div class="section-number">05 — Design Do's & Don'ts</div>
+    <div class="section-title">What to build — and what to avoid</div>
+
+    <div class="dos-donts">
+      <div class="rule-col do">
+        <h3>✓ Do</h3>
+        <ul>
+          <li>Use generous whitespace — let the content breathe like a forest clearing</li>
+          <li>Lead with the map or search as the hero — the product IS the utility</li>
+          <li>Make the filter/search interaction fast and tactile on mobile</li>
+          <li>Use rounded but not cartoonish UI components (radius: 6–10px)</li>
+          <li>Keep the navigation shallow — 2 taps max to a route or cabin</li>
+          <li>Use subtle terrain-texture backgrounds on landing areas</li>
+          <li>Design for thumb-first mobile use — most planning happens on phones</li>
+          <li>Show elevation, distance, and difficulty at a glance on route cards</li>
+          <li>Use icons that are simple and universally understood (hike, bike, paddle, ski)</li>
+          <li>Trust the photography — let it fill the space</li>
+        </ul>
+      </div>
+      <div class="rule-col dont">
+        <h3>✗ Don't</h3>
+        <ul>
+          <li>Don't use dark mode as default — this is a daylight, outdoors product</li>
+          <li>Don't use gradients that look like a sports-energy brand or app store screenshot</li>
+          <li>Don't crowd the map UI with excessive overlays and toolbars</li>
+          <li>Don't use more than 2 typefaces or more than 4 type sizes per page</li>
+          <li>Don't rely on color alone to communicate information (accessibility)</li>
+          <li>Don't animate for the sake of it — motion must serve navigation or feedback</li>
+          <li>Don't use drop shadows heavier than 10% opacity — keep surfaces flat-ish</li>
+          <li>Don't use generic hero images with lone hikers on summits — it alienates beginners</li>
+          <li>Don't over-gamify (badges, streaks) — this isn't a fitness tracker</li>
+          <li>Don't let ads or promoted content look like organic results</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Brand Strategy — <strong>friluftsliv.nu</strong> &nbsp;·&nbsp; For internal design use &nbsp;·&nbsp; May 2026
+</footer>
+
+</body>
+</html>
