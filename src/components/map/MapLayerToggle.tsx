@@ -47,6 +47,19 @@ export interface MapLayerToggleProps {
   className?: string
 }
 
+const FALLBACK_LAYER: MapLayer = {
+  id: 'osm',
+  label: 'Karta',
+  tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  previewColor: '#EFF4EC',
+  maxZoom: 19,
+}
+
+function getLayerById(layers: MapLayer[], activeLayerId: string) {
+  return layers.find((layer) => layer.id === activeLayerId) ?? layers[0] ?? FALLBACK_LAYER
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function MapLayerToggle({
@@ -59,7 +72,7 @@ export function MapLayerToggle({
   const optionRefs = React.useRef<Array<HTMLButtonElement | null>>([])
   const triggerRef = React.useRef<HTMLButtonElement>(null)
   const [isExpanded, setIsExpanded] = React.useState(false)
-  const activeLayer = layers.find((l) => l.id === activeLayerId) ?? layers[0]
+  const activeLayer = getLayerById(layers, activeLayerId)
 
   // Collapse on outside click
   const ref = React.useRef<HTMLDivElement>(null)
@@ -91,8 +104,14 @@ export function MapLayerToggle({
   }
 
   function selectOption(index: number) {
+    if (layers.length === 0) {
+      onLayerChange(FALLBACK_LAYER.id)
+      return
+    }
+
     const nextIndex = (index + layers.length) % layers.length
-    onLayerChange(layers[nextIndex].id)
+    const nextLayer = layers[nextIndex] ?? FALLBACK_LAYER
+    onLayerChange(nextLayer.id)
   }
 
   return (

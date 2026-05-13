@@ -8,26 +8,34 @@ export interface RouteDetailSidebarProps {
 }
 
 export function RouteDetailSidebar({ route }: RouteDetailSidebarProps) {
+  const featureLayers = route.coordinates
+    ? [
+        {
+          type: 'start',
+          label: route.region,
+          color: '#2C4A3E',
+          markers: [
+            {
+              id: route.id,
+              position: route.coordinates,
+              type: 'start',
+              label: route.title,
+              description: route.region,
+            },
+          ],
+        },
+      ]
+    : undefined
+
   return (
     <aside className="flex flex-col gap-4 lg:sticky lg:top-[76px]" aria-label="Kartinfo och åtgärder">
       <LeafletMap
         center={route.coordinates ?? SWEDEN_CENTER}
         zoom={route.coordinates ? 12 : 5}
-        featureLayers={route.coordinates ? [{
-          type: 'start',
-          label: route.region,
-          color: '#2C4A3E',
-          markers: [{
-            id: route.id,
-            position: route.coordinates,
-            type: 'start',
-            label: route.title,
-            description: route.region,
-          }],
-        }] : undefined}
-        tracks={route.gpxTrack ? [route.gpxTrack] : undefined}
         height="220px"
         aria-label={`Karta för ${route.title}`}
+        {...(featureLayers ? { featureLayers } : {})}
+        {...(route.gpxTrack ? { tracks: [route.gpxTrack] } : {})}
       />
 
       <div className="flex flex-col gap-2">

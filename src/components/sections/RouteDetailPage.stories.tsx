@@ -6,7 +6,13 @@ import { routes } from '@/data/routes'
 import type { Route } from '@/types'
 
 const mockRoute = routes[0]
-const tyresta = routes.find((r) => r.id === 'tyresta-runt')!
+const tyresta = routes.find((r) => r.id === 'tyresta-runt')
+
+if (!mockRoute || !tyresta) {
+  throw new Error('Expected seeded route fixtures for RouteDetailPage stories.')
+}
+
+const { imageUrl: _imageUrl, images: _images, ...mockRouteWithoutImages } = mockRoute
 
 const relatedRoutes: Route[] = routes
   .filter((r) => r.id !== mockRoute.id)
@@ -20,7 +26,7 @@ const relatedRoutes: Route[] = routes
     elevation,
     duration,
     difficulty,
-    imageUrl,
+    ...(imageUrl ? { imageUrl } : {}),
   }))
 
 const meta = {
@@ -57,11 +63,7 @@ export const WithRelatedRoutes: Story = {
 
 export const NoImage: Story = {
   args: {
-    route: {
-      ...mockRoute,
-      imageUrl: undefined,
-      images: undefined,
-    },
+    route: mockRouteWithoutImages,
   },
 }
 

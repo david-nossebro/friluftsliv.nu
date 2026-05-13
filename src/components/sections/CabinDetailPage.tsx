@@ -43,6 +43,24 @@ export function CabinDetailPage({
 }: CabinDetailPageProps) {
   const availabilityVariant = cabin.available ? 'moss' : 'ember'
   const availabilityLabel  = cabin.available ? 'Tillgänglig' : 'Bokad'
+  const featureLayers = cabin.coordinates
+    ? [
+        {
+          type: 'stuga',
+          label: cabin.title,
+          color: '#2C4A3E',
+          markers: [
+            {
+              id: cabin.id,
+              position: cabin.coordinates,
+              type: 'stuga',
+              label: cabin.title,
+              description: cabin.region,
+            },
+          ],
+        },
+      ]
+    : undefined
 
   return (
     <article className={cn('bg-snow min-h-screen', className)}>
@@ -50,7 +68,6 @@ export function CabinDetailPage({
       <ImageGallery
         src={cabin.imageUrl ?? ''}
         alt={cabin.title}
-        images={cabin.images}
         overlay={
           <div className="flex flex-col gap-2">
             {onBack && (
@@ -77,6 +94,7 @@ export function CabinDetailPage({
             </p>
           </div>
         }
+        {...(cabin.images ? { images: cabin.images } : {})}
       />
 
       {/* ── Key info bar ─────────────────────────── */}
@@ -109,8 +127,8 @@ export function CabinDetailPage({
 
             {/* Access */}
             <CabinDetailAccessSection
-              accessSummer={cabin.accessSummer}
-              accessWinter={cabin.accessWinter}
+              {...(cabin.accessSummer ? { accessSummer: cabin.accessSummer } : {})}
+              {...(cabin.accessWinter ? { accessWinter: cabin.accessWinter } : {})}
             />
 
             {/* Facilities */}
@@ -133,26 +151,15 @@ export function CabinDetailPage({
             <LeafletMap
               center={cabin.coordinates ?? SWEDEN_CENTER}
               zoom={cabin.coordinates ? 13 : 5}
-              featureLayers={cabin.coordinates ? [{
-                type: 'stuga',
-                label: cabin.title,
-                color: '#2C4A3E',
-                markers: [{
-                  id: cabin.id,
-                  position: cabin.coordinates,
-                  type: 'stuga',
-                  label: cabin.title,
-                  description: cabin.region,
-                }],
-              }] : undefined}
               height="220px"
               aria-label={`Karta för ${cabin.title}`}
+              {...(featureLayers ? { featureLayers } : {})}
             />
 
             {/* Booking CTA */}
             <CabinBookingCard
-              pricePerNight={cabin.pricePerNight}
-              bookingUrl={cabin.bookingUrl}
+              {...(cabin.pricePerNight != null ? { pricePerNight: cabin.pricePerNight } : {})}
+              {...(cabin.bookingUrl ? { bookingUrl: cabin.bookingUrl } : {})}
             />
           </aside>
         </div>
@@ -167,9 +174,9 @@ export function CabinDetailPage({
       <CabinDetailMobileBar
         title={cabin.title}
         beds={cabin.beds}
-        pricePerNight={cabin.pricePerNight}
-        openPeriod={cabin.openPeriod}
-        bookingUrl={cabin.bookingUrl}
+        {...(cabin.pricePerNight != null ? { pricePerNight: cabin.pricePerNight } : {})}
+        {...(cabin.openPeriod ? { openPeriod: cabin.openPeriod } : {})}
+        {...(cabin.bookingUrl ? { bookingUrl: cabin.bookingUrl } : {})}
       />
     </article>
   )

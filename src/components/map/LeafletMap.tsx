@@ -3,6 +3,7 @@
 import * as React from 'react'
 import dynamic from 'next/dynamic'
 import { Maximize2, Minimize2 } from 'lucide-react'
+import { useBodyScrollLock } from '@/lib/overlay'
 import { cn } from '@/lib/utils'
 import type { MapFeatureLayer, MapLayer, MapPosition } from '@/types'
 import { DEFAULT_MAP_LAYERS } from '@/types'
@@ -70,6 +71,19 @@ export interface LeafletMapProps {
 /** Sweden's geographic center — sensible default for this product. */
 export const SWEDEN_CENTER: MapPosition = { lat: 62.5, lng: 16.5 }
 
+const FALLBACK_LAYER: MapLayer = {
+  id: 'osm',
+  label: 'Karta',
+  tileUrl: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  previewColor: '#EFF4EC',
+  maxZoom: 19,
+}
+
+function getPreferredLayer(layers: MapLayer[], activeLayerId?: string) {
+  return layers.find((layer) => layer.id === activeLayerId) ?? layers[0] ?? FALLBACK_LAYER
+}
+
 export function LeafletMap({
   center = SWEDEN_CENTER,
   zoom = 5,
@@ -84,9 +98,11 @@ export function LeafletMap({
   className,
   'aria-label': ariaLabel = 'Interaktiv karta',
 }: LeafletMapProps) {
+  const defaultLayer = getPreferredLayer(layers)
+
   // Support both controlled (activeLayerId + onLayerChange) and uncontrolled usage
   const [internalLayerId, setInternalLayerId] = React.useState(
-    controlledLayerId ?? layers[0]?.id ?? 'osm'
+    controlledLayerId ?? defaultLayer.id
   )
   const [isFullscreen, setIsFullscreen] = React.useState(false)
 
@@ -115,17 +131,9 @@ export function LeafletMap({
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [isFullscreen])
 
-  // Prevent body scroll when fullscreen
-  React.useEffect(() => {
-    if (isFullscreen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => { document.body.style.overflow = '' }
-  }, [isFullscreen])
+  useBodyScrollLock(isFullscreen)
 
-  const activeLayer = layers.find((l) => l.id === activeLayerId) ?? layers[0]
+  const activeLayer = getPreferredLayer(layers, activeLayerId)
 
   return (
     <div
@@ -145,9 +153,9 @@ export function LeafletMap({
         center={center}
         zoom={zoom}
         activeLayer={activeLayer}
-        featureLayers={featureLayers}
-        activeFeatureTypes={activeFeatureTypes}
-        tracks={tracks}
+        {...(featureLayers ? { featureLayers } : {})}
+        {...(activeFeatureTypes ? { activeFeatureTypes } : {})}
+        {...(tracks ? { tracks } : {})}
       />
 
       {/* Fullscreen toggle — top-left, symmetric to layer toggle at top-right */}
@@ -187,5 +195,3 @@ export function LeafletMap({
     </div>
   )
 }
-
-

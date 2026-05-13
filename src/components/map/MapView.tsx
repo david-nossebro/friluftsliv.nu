@@ -54,14 +54,14 @@ export function MapView({
       }}
       mapSlot={
         <LeafletMap
-          center={initialCenter}
-          zoom={initialZoom}
-          featureLayers={filteredLayers}
-          tracks={tracks}
           height="100%"
           showFullscreenToggle={false}
           className="h-full w-full rounded-none border-0"
           aria-label="Sverige — rutter och stugor"
+          zoom={initialZoom}
+          featureLayers={filteredLayers}
+          {...(initialCenter ? { center: initialCenter } : {})}
+          {...(tracks ? { tracks } : {})}
         />
       }
     />

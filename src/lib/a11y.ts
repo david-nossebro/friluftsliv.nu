@@ -38,6 +38,12 @@ export function trapFocus(container: HTMLElement, event: KeyboardEvent | ReactKe
 
   const first = focusable[0]
   const last = focusable[focusable.length - 1]
+
+  if (!first || !last) {
+    event.preventDefault()
+    return
+  }
+
   const activeElement = document.activeElement
 
   if (event.shiftKey) {

@@ -19,6 +19,8 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+const { imageUrl: _imageUrl, ...mockAreaWithoutImage } = mockArea
+
 export const Default: Story = {
   args: { area: mockArea },
   render: (args) => (
@@ -29,7 +31,7 @@ export const Default: Story = {
 }
 
 export const NoImage: Story = {
-  args: { area: { ...mockArea, imageUrl: undefined } },
+  args: { area: mockAreaWithoutImage },
   render: (args) => (
     <div className="w-full max-w-[280px]">
       <AreaCard {...args} />

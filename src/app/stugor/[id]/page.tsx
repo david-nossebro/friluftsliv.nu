@@ -43,11 +43,11 @@ export default async function CabinDetailRoute({
         cabin={cabin}
         facilityItems={facilityItems}
         suitableForItems={suitableForItems}
-        relatedCabins={
-          related.length > 0 ? (
-            <CabinCardGrid title="Liknande stugor" cabins={related} />
-          ) : undefined
-        }
+        {...(related.length > 0
+          ? {
+              relatedCabins: <CabinCardGrid title="Liknande stugor" cabins={related} />,
+            }
+          : {})}
       />
     </PageLayout>
   )

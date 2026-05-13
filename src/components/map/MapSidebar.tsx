@@ -2,7 +2,8 @@
 
 import * as React from 'react'
 import { SlidersHorizontal, X } from 'lucide-react'
-import { focusFirstElement, trapFocus } from '@/lib/a11y'
+import { trapFocus } from '@/lib/a11y'
+import { useFocusManagedOverlay } from '@/lib/overlay'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import { FilterChip } from '@/components/ui/filter-chip'
@@ -62,35 +63,11 @@ export function MapSidebar({
     }
   }, [externalFilters])
 
-  React.useEffect(() => {
-    if (!isOpen || !asideRef.current) {
-      return
-    }
-
-    const sidebarElement = asideRef.current
-    const previousActiveElement = document.activeElement instanceof HTMLElement
-      ? document.activeElement
-      : null
-    const previousOverflow = document.body.style.overflow
-
-    document.body.style.overflow = 'hidden'
-    focusFirstElement(sidebarElement)
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        onClose?.()
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      document.body.style.overflow = previousOverflow
-      document.removeEventListener('keydown', handleKeyDown)
-      previousActiveElement?.focus()
-    }
-  }, [isOpen, onClose])
+  useFocusManagedOverlay({
+    isOpen,
+    containerRef: asideRef,
+    onDismiss: () => onClose?.(),
+  })
 
   function update(partial: Partial<MapSidebarFilters>) {
     const next = { ...filters, ...partial }

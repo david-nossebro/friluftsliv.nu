@@ -50,8 +50,10 @@ function createBrandMarker(color = '#2C4A3E', pinSize = 36, hitSize = 48): L.Div
 }
 
 // Pre-built icons for common brand colors — avoids re-creating on each render
+const DEFAULT_MARKER_ICON = createBrandMarker('#2C4A3E')
+
 const MARKER_ICONS: Record<string, L.DivIcon> = {
-  '#2C4A3E': createBrandMarker('#2C4A3E'), // pine
+  '#2C4A3E': DEFAULT_MARKER_ICON, // pine
   '#4A7C59': createBrandMarker('#4A7C59'), // moss
   '#D97B4F': createBrandMarker('#D97B4F'), // ember
   '#A8C4D4': createBrandMarker('#A8C4D4'), // sky
@@ -59,11 +61,13 @@ const MARKER_ICONS: Record<string, L.DivIcon> = {
 }
 
 function getMarkerIcon(color?: string): L.DivIcon {
-  if (!color) return MARKER_ICONS['#2C4A3E']
-  const cached = MARKER_ICONS[color.toLowerCase()]
+  if (!color) return DEFAULT_MARKER_ICON
+
+  const colorKey = color.toLowerCase()
+  const cached = MARKER_ICONS[colorKey]
   if (cached) return cached
   const icon = createBrandMarker(color)
-  MARKER_ICONS[color.toLowerCase()] = icon
+  MARKER_ICONS[colorKey] = icon
   return icon
 }
 
@@ -225,7 +229,7 @@ export default function LeafletMapInner({
       scrollWheelZoom={false}
     >
       <MapSync center={center} zoom={zoom} />
-      <FitToTracks tracks={tracks} />
+      <FitToTracks {...(tracks ? { tracks } : {})} />
 
       <TileLayer
         key={activeLayer.id} // remount on layer change to avoid tile bleeding

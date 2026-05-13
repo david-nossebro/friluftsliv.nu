@@ -27,8 +27,7 @@ export function parseGpx(xml: string): MapPosition[] {
   const points: MapPosition[] = []
   const trackPoints = doc.querySelectorAll('trkpt')
 
-  for (let i = 0; i < trackPoints.length; i++) {
-    const pt = trackPoints[i]
+  for (const pt of trackPoints) {
     const lat = parseFloat(pt.getAttribute('lat') ?? '')
     const lng = parseFloat(pt.getAttribute('lon') ?? '')
 

@@ -39,7 +39,6 @@ export function RouteDetailPage({ route, relatedRoutes, onBack, className }: Rou
       <ImageGallery
         src={route.imageUrl ?? ''}
         alt={route.title}
-        images={route.images}
         overlay={
           <div className="flex flex-col gap-2">
             {onBack && (
@@ -66,6 +65,7 @@ export function RouteDetailPage({ route, relatedRoutes, onBack, className }: Rou
             </p>
           </div>
         }
+        {...(route.images ? { images: route.images } : {})}
       />
 
       {/* ── Stat bar ─────────────────────────────── */}
@@ -108,8 +108,8 @@ export function RouteDetailPage({ route, relatedRoutes, onBack, className }: Rou
 
             {/* Access */}
             <RouteDetailAccessSection
-              accessByCar={route.accessByCar}
-              accessByTransport={route.accessByTransport}
+              {...(route.accessByCar ? { accessByCar: route.accessByCar } : {})}
+              {...(route.accessByTransport ? { accessByTransport: route.accessByTransport } : {})}
             />
           </div>
 

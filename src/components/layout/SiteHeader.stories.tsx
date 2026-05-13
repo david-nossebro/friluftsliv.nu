@@ -52,7 +52,7 @@ export const MobileMenu: Story = {
     await expect(canvas.getByRole('dialog')).toBeInTheDocument()
     await expect(canvas.getByRole('heading', { name: /meny/i })).toBeInTheDocument()
 
-    await userEvent.click(canvas.getAllByRole('button', { name: /stäng meny/i })[0])
+    await userEvent.click(canvas.getAllByRole('button', { name: /stäng meny/i })[0]!)
     await expect(canvas.queryByRole('dialog')).not.toBeInTheDocument()
   },
 }

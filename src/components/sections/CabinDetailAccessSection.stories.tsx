@@ -3,6 +3,13 @@ import { expect, within } from '@storybook/test'
 import { CabinDetailAccessSection } from './CabinDetailAccessSection'
 import { cabins } from '@/data/cabins'
 
+const summerAndWinterCabin = cabins.find((c) => c.accessSummer && c.accessWinter)
+const summerOnlyCabin = cabins.find((c) => c.accessSummer && !c.accessWinter)
+
+if (!summerAndWinterCabin?.accessSummer || !summerAndWinterCabin.accessWinter || !summerOnlyCabin?.accessSummer) {
+  throw new Error('Expected seeded cabin fixtures for CabinDetailAccessSection stories.')
+}
+
 const meta = {
   title: 'Sections/CabinDetailAccessSection',
   component: CabinDetailAccessSection,
@@ -15,8 +22,8 @@ type Story = StoryObj<typeof meta>
 
 export const SummerAndWinter: Story = {
   args: {
-    accessSummer: cabins[0].accessSummer,
-    accessWinter: cabins[0].accessWinter,
+    accessSummer: summerAndWinterCabin.accessSummer,
+    accessWinter: summerAndWinterCabin.accessWinter,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -27,6 +34,6 @@ export const SummerAndWinter: Story = {
 
 export const SummerOnly: Story = {
   args: {
-    accessSummer: cabins[5].accessSummer,
+    accessSummer: summerOnlyCabin.accessSummer,
   },
 }

@@ -123,7 +123,7 @@ export const SingleLayer: Story = {
   args: {
     center: { lat: 59.33, lng: 18.07 },
     zoom: 11,
-    layers: [DEFAULT_MAP_LAYERS[0]],
+    layers: [DEFAULT_MAP_LAYERS[0]!],
     height: '400px',
   },
   decorators: [(Story) => <div className="w-full"><Story /></div>],

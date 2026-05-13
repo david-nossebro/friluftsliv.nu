@@ -3,6 +3,13 @@ import { expect, within } from '@storybook/test'
 import { CabinDetailMobileBar } from './CabinDetailMobileBar'
 import { cabins } from '@/data/cabins'
 
+const firstCabin = cabins[0]
+const fourthCabin = cabins[3]
+
+if (!firstCabin || !fourthCabin) {
+  throw new Error('Expected seeded cabin fixtures for CabinDetailMobileBar stories.')
+}
+
 const meta = {
   title: 'Sections/CabinDetailMobileBar',
   component: CabinDetailMobileBar,
@@ -18,23 +25,26 @@ type Story = StoryObj<typeof meta>
 
 export const Available: Story = {
   args: {
-    title: cabins[0].title,
-    beds: cabins[0].beds,
-    pricePerNight: cabins[0].pricePerNight,
-    openPeriod: cabins[0].openPeriod,
-    bookingUrl: cabins[0].bookingUrl,
+    title: firstCabin.title,
+    beds: firstCabin.beds,
+    ...(firstCabin.pricePerNight != null ? { pricePerNight: firstCabin.pricePerNight } : {}),
+    ...(firstCabin.openPeriod ? { openPeriod: firstCabin.openPeriod } : {}),
+    ...(firstCabin.bookingUrl ? { bookingUrl: firstCabin.bookingUrl } : {}),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await expect(canvas.getByText(cabins[0].title)).toBeInTheDocument()
-    await expect(canvas.getByRole('link', { name: /boka nu/i })).toHaveAttribute('href', cabins[0].bookingUrl)
+    await expect(canvas.getByText(firstCabin.title)).toBeInTheDocument()
+    await expect(canvas.getByRole('link', { name: /boka nu/i })).toHaveAttribute(
+      'href',
+      firstCabin.bookingUrl,
+    )
   },
 }
 
 export const Closed: Story = {
   args: {
-    title: cabins[3].title,
-    beds: cabins[3].beds,
-    openPeriod: cabins[3].openPeriod,
+    title: fourthCabin.title,
+    beds: fourthCabin.beds,
+    ...(fourthCabin.openPeriod ? { openPeriod: fourthCabin.openPeriod } : {}),
   },
 }

@@ -38,11 +38,11 @@ export default async function RouteDetailRoute({
     <PageLayout currentPath="/utforska">
       <RouteDetailPage
         route={route}
-        relatedRoutes={
-          related.length > 0 ? (
-            <RouteCardGrid title="Liknande rutter" routes={related} />
-          ) : undefined
-        }
+        {...(related.length > 0
+          ? {
+              relatedRoutes: <RouteCardGrid title="Liknande rutter" routes={related} />,
+            }
+          : {})}
       />
     </PageLayout>
   )

@@ -67,7 +67,7 @@ export const WithSuggestions: Story = {
 
     await userEvent.keyboard('{ArrowDown}{Enter}')
 
-    await expect(args.onSuggestionSelect).toHaveBeenCalledWith(mockSuggestions[0])
+    await expect(args.onSuggestionSelect).toHaveBeenCalledWith(mockSuggestions[0]!)
     await expect(canvas.getByDisplayValue('Kungsleden')).toBeInTheDocument()
   },
 }

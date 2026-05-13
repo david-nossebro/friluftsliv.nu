@@ -7,6 +7,12 @@ interface DynamicOptions {
   loading?: React.ComponentType
 }
 
+function hasDefaultExport<P extends object>(
+  mod: { default: React.ComponentType<P> } | React.ComponentType<P>
+): mod is { default: React.ComponentType<P> } {
+  return typeof mod === 'object' && mod !== null && 'default' in mod
+}
+
 /**
  * Storybook mock for next/dynamic.
  * Uses React.lazy so dynamic imports work in the Vite-based Storybook environment.
@@ -17,13 +23,7 @@ export default function dynamic<P extends object>(
 ): React.ComponentType<P> {
   const LazyComponent = React.lazy(async () => {
     const mod = await loader()
-    // Handle both ESM default exports and direct component returns
-    if (typeof mod === 'function' || (typeof mod === 'object' && 'default' in mod)) {
-      return 'default' in mod
-        ? (mod as { default: React.ComponentType<P> })
-        : { default: mod as React.ComponentType<P> }
-    }
-    return { default: mod as unknown as React.ComponentType<P> }
+    return hasDefaultExport(mod) ? mod : { default: mod }
   })
 
   const Loading = options?.loading

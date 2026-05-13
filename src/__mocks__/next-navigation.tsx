@@ -30,20 +30,8 @@ export function usePathname() {
   return '/'
 }
 
-class MockSearchParams {
-  get(_key: string): string | null { return null }
-  getAll(_key: string): string[] { return [] }
-  has(_key: string): boolean { return false }
-  entries(): IterableIterator<[string, string]> { return [][Symbol.iterator]() }
-  keys(): IterableIterator<string> { return [][Symbol.iterator]() }
-  values(): IterableIterator<string> { return [][Symbol.iterator]() }
-  forEach(_cb: (value: string, key: string) => void) {}
-  toString() { return '' }
-  [Symbol.iterator](): IterableIterator<[string, string]> { return [][Symbol.iterator]() }
-}
-
 export function useSearchParams() {
-  return new MockSearchParams() as unknown as URLSearchParams
+  return new URLSearchParams()
 }
 
 export function useParams<T extends Record<string, string | string[]> = Record<string, string>>(): T {

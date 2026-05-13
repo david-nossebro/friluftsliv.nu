@@ -66,8 +66,8 @@ export function HeroSearch({
             size="lg"
             placeholder="Var vill du ge dig ut?"
             suggestions={suggestions}
-            onSubmit={onSubmit}
-            onSuggestionSelect={onSuggestionSelect}
+            {...(onSubmit ? { onSubmit } : {})}
+            {...(onSuggestionSelect ? { onSuggestionSelect } : {})}
           />
         </div>
       </div>

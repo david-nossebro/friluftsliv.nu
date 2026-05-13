@@ -3,6 +3,14 @@ import { expect, within } from '@storybook/test'
 import { CabinDetailInfoBar } from './CabinDetailInfoBar'
 import { cabins } from '@/data/cabins'
 
+const firstCabin = cabins[0]
+
+if (!firstCabin) {
+  throw new Error('Expected at least one cabin fixture for CabinDetailInfoBar stories.')
+}
+
+const { pricePerNight: _pricePerNight, ...firstCabinWithoutPrice } = firstCabin
+
 const meta = {
   title: 'Sections/CabinDetailInfoBar',
   component: CabinDetailInfoBar,
@@ -15,7 +23,7 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    cabin: cabins[0],
+    cabin: firstCabin,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -28,8 +36,7 @@ export const Default: Story = {
 export const UnlockedWithoutPrice: Story = {
   args: {
     cabin: {
-      ...cabins[0],
-      pricePerNight: undefined,
+      ...firstCabinWithoutPrice,
       isLocked: false,
     },
   },

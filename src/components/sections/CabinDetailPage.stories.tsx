@@ -7,8 +7,20 @@ import { toFacilityItems, toSuitableForItems } from '@/lib/facilityIcons'
 import type { Cabin } from '@/types'
 
 const mockCabin = cabins[0]
+const staffedCabin = cabins.find((c) => c.serviceType === 'betjänad') ?? cabins[1]
+const unavailableCabin = cabins.find((c) => !c.available) ?? cabins[3]
+
+if (!mockCabin || !staffedCabin || !unavailableCabin) {
+  throw new Error('Expected seeded cabin fixtures for CabinDetailPage stories.')
+}
+
 const facilityItems = toFacilityItems(mockCabin.facilities)
 const suitableForItems = mockCabin.suitableFor ? toSuitableForItems(mockCabin.suitableFor) : []
+const {
+  imageUrl: _imageUrl,
+  images: _images,
+  ...mockCabinWithoutImages
+} = mockCabin
 
 const relatedCabins: Cabin[] = cabins
   .filter((c) => c.id !== mockCabin.id)
@@ -18,9 +30,9 @@ const relatedCabins: Cabin[] = cabins
     title,
     region,
     amenities,
-    pricePerNight,
     available,
-    imageUrl,
+    ...(pricePerNight != null ? { pricePerNight } : {}),
+    ...(imageUrl ? { imageUrl } : {}),
   }))
 
 const meta = {
@@ -63,11 +75,7 @@ export const WithRelatedCabins: Story = {
 
 export const NoImage: Story = {
   args: {
-    cabin: {
-      ...mockCabin,
-      imageUrl: undefined,
-      images: undefined,
-    },
+    cabin: mockCabinWithoutImages,
     facilityItems,
     suitableForItems,
   },
@@ -75,18 +83,14 @@ export const NoImage: Story = {
 
 export const StaffedCabin: Story = {
   args: {
-    cabin: cabins.find((c) => c.serviceType === 'betjänad') ?? cabins[1],
-    facilityItems: toFacilityItems(
-      (cabins.find((c) => c.serviceType === 'betjänad') ?? cabins[1]).facilities,
-    ),
+    cabin: staffedCabin,
+    facilityItems: toFacilityItems(staffedCabin.facilities),
   },
 }
 
 export const Unavailable: Story = {
   args: {
-    cabin: cabins.find((c) => !c.available) ?? cabins[3],
-    facilityItems: toFacilityItems(
-      (cabins.find((c) => !c.available) ?? cabins[3]).facilities,
-    ),
+    cabin: unavailableCabin,
+    facilityItems: toFacilityItems(unavailableCabin.facilities),
   },
 }

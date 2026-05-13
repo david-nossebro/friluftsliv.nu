@@ -3,7 +3,8 @@
 import * as React from 'react'
 import Link from 'next/link'
 import { Menu, X, User } from 'lucide-react'
-import { focusFirstElement, trapFocus } from '@/lib/a11y'
+import { trapFocus } from '@/lib/a11y'
+import { useFocusManagedOverlay } from '@/lib/overlay'
 import { cn } from '@/lib/utils'
 import { Logo } from '@/components/brand/Logo'
 import { Button } from '@/components/ui/button'
@@ -43,34 +44,11 @@ export function SiteHeader({
   const menuRef = React.useRef<HTMLDivElement>(null)
   const [menuOpen, setMenuOpen] = React.useState(false)
 
-  React.useEffect(() => {
-    if (!menuOpen || !menuRef.current) {
-      return
-    }
-
-    const previousActiveElement = document.activeElement instanceof HTMLElement
-      ? document.activeElement
-      : null
-    const previousOverflow = document.body.style.overflow
-
-    document.body.style.overflow = 'hidden'
-    focusFirstElement(menuRef.current)
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        setMenuOpen(false)
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      document.body.style.overflow = previousOverflow
-      document.removeEventListener('keydown', handleKeyDown)
-      previousActiveElement?.focus()
-    }
-  }, [menuOpen])
+  useFocusManagedOverlay({
+    isOpen: menuOpen,
+    containerRef: menuRef,
+    onDismiss: () => setMenuOpen(false),
+  })
 
   function handleSuggestionSelect(suggestion: SearchSuggestion) {
     setMenuOpen(false)
@@ -120,13 +98,13 @@ export function SiteHeader({
 
           {/* Desktop search */}
           <div className="hidden md:flex flex-1 max-w-sm">
-            <SearchBar
+           <SearchBar
               label="Sök i sidhuvudet"
               size="md"
               placeholder="Sök rutter och stugor..."
-              suggestions={suggestions}
               onSubmit={handleSubmit}
               onSuggestionSelect={handleSuggestionSelect}
+              {...(suggestions ? { suggestions } : {})}
             />
           </div>
 
@@ -181,9 +159,9 @@ export function SiteHeader({
             <SearchBar
               label="Sök i mobilmenyn"
               placeholder="Sök rutter och stugor..."
-              suggestions={suggestions}
               onSubmit={handleSubmit}
               onSuggestionSelect={handleSuggestionSelect}
+              {...(suggestions ? { suggestions } : {})}
             />
             <nav aria-label="Mobilnavigation" className="flex flex-col gap-1">
               {nav.map((item) => (

@@ -22,6 +22,9 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+const { imageUrl: _imageUrl, ...mockCabinWithoutImage } = mockCabin
+const { pricePerNight: _pricePerNight, ...mockCabinWithoutPrice } = mockCabin
+
 export const Available: Story = {
   args: { cabin: mockCabin },
 }
@@ -31,11 +34,11 @@ export const Booked: Story = {
 }
 
 export const NoImage: Story = {
-  args: { cabin: { ...mockCabin, imageUrl: undefined } },
+  args: { cabin: mockCabinWithoutImage },
 }
 
 export const NoPrice: Story = {
-  args: { cabin: { ...mockCabin, pricePerNight: undefined } },
+  args: { cabin: mockCabinWithoutPrice },
 }
 
 export const CardGrid: Story = {

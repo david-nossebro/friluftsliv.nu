@@ -3,7 +3,12 @@ import { expect, within } from '@storybook/test'
 import { RouteDetailAccessSection } from './RouteDetailAccessSection'
 import { routes } from '@/data/routes'
 
-const route = routes[0]
+const routeWithBothAccessOptions = routes.find((route) => route.accessByCar && route.accessByTransport)
+const routeWithCarAccess = routes.find((route) => route.accessByCar)
+
+if (!routeWithBothAccessOptions?.accessByCar || !routeWithBothAccessOptions.accessByTransport || !routeWithCarAccess?.accessByCar) {
+  throw new Error('Expected at least one route fixture for RouteDetailAccessSection stories.')
+}
 
 const meta = {
   title: 'Sections/RouteDetailAccessSection',
@@ -17,8 +22,8 @@ type Story = StoryObj<typeof meta>
 
 export const WithBothOptions: Story = {
   args: {
-    accessByCar: route.accessByCar,
-    accessByTransport: route.accessByTransport,
+    accessByCar: routeWithBothAccessOptions.accessByCar,
+    accessByTransport: routeWithBothAccessOptions.accessByTransport,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -30,6 +35,6 @@ export const WithBothOptions: Story = {
 
 export const CarOnly: Story = {
   args: {
-    accessByCar: route.accessByCar,
+    accessByCar: routeWithCarAccess.accessByCar,
   },
 }

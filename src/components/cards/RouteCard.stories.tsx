@@ -23,12 +23,16 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+const routeWithoutImage: Route = {
+  ...mockRoute,
+}
+
 export const Default: Story = {
   args: { route: mockRoute },
 }
 
 export const NoImage: Story = {
-  args: { route: { ...mockRoute, imageUrl: undefined } },
+  args: { route: routeWithoutImage },
 }
 
 export const Easy: Story = {
@@ -60,18 +64,24 @@ export const CardGrid: Story = {
   args: { route: mockRoute },
   render: () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
-      {(['vandring', 'skidtur', 'cykeltur'] as const).map((type, i) => (
+      {([
+        { activityType: 'vandring', difficulty: 'easy', title: 'Sörmlandsleden' },
+        { activityType: 'skidtur', difficulty: 'medium', title: 'Kebnekaise vintertour' },
+        { activityType: 'cykeltur', difficulty: 'hard', title: 'Gotlandsleden' },
+      ] satisfies Pick<Route, 'activityType' | 'difficulty' | 'title'>[]).map(
+        ({ activityType, difficulty, title }, i) => (
         <RouteCard
-          key={type}
+          key={activityType}
           route={{
             ...mockRoute,
             id: String(i),
-            activityType: type,
-            difficulty: (['easy', 'medium', 'hard'] as const)[i],
-            title: ['Sörmlandsleden', 'Kebnekaise vintertour', 'Gotlandsleden'][i],
+            activityType,
+            difficulty,
+            title,
           }}
         />
-      ))}
+        ),
+      )}
     </div>
   ),
 }

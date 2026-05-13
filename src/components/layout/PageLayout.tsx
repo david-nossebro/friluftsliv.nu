@@ -11,7 +11,7 @@ export interface PageLayoutProps {
 export function PageLayout({ children, currentPath, className }: PageLayoutProps) {
   return (
     <div className={cn('min-h-screen flex flex-col', className)}>
-      <HeaderSearchAdapter currentPath={currentPath} />
+      <HeaderSearchAdapter {...(currentPath ? { currentPath } : {})} />
       <main className="flex-1">{children}</main>
       <SiteFooter />
     </div>

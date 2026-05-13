@@ -49,8 +49,8 @@ const suitableIconMap: Record<string, LucideIcon> = {
 
 function findIcon(text: string, map: Record<string, LucideIcon>): LucideIcon {
   const lower = text.toLowerCase()
-  for (const key of Object.keys(map)) {
-    if (lower.includes(key)) return map[key]
+  for (const [key, icon] of Object.entries(map)) {
+    if (lower.includes(key)) return icon
   }
   return Home
 }

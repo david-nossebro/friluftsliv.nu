@@ -85,12 +85,12 @@ export function MapFeatureFilterBar({
           <FilterPill
             key={f.type}
             label={f.label}
-            icon={f.icon}
-            count={f.count}
             isActive={isExplicitlySelected}
             isDimmed={activeTypes.length > 0 && !isExplicitlySelected}
             onClick={() => toggleType(f.type)}
             className="shrink-0"
+            {...(f.icon ? { icon: f.icon } : {})}
+            {...(f.count != null ? { count: f.count } : {})}
           />
         )
       })}

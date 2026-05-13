@@ -1,7 +1,9 @@
 # TECHSTACK.md — AI-Maintained Web Application
 
 ## PURPOSE OF THIS DOCUMENT
-Machine-readable specification of the complete technology stack for an AI-developed and AI-maintained web application. Each entry states what the tool is, what role it plays, why it was chosen, and what it connects to. This document is the authoritative reference for all architectural decisions.
+Machine-readable specification of the complete technology stack for an AI-developed and AI-maintained web application. Each entry states what the tool is, what role it plays, why it was chosen, and what it connects to. This document is the authoritative reference for architectural decisions.
+
+For this repository, treat entries for layers that are **not yet implemented in the codebase** as the default choice to use when that layer is added. They are architectural defaults, not proof that the wiring already exists today.
 
 ---
 
@@ -32,35 +34,35 @@ Machine-readable specification of the complete technology stack for an AI-develo
 
 ## LAYER 2 — FRAMEWORK
 
-### Next.js 14+ (App Router)
+### Next.js 15+ (App Router)
 - **Role**: Full-stack framework. Handles routing, server-side rendering, API routes, server actions, static generation, and deployment packaging.
 - **Why**: Single framework for both frontend and backend eliminates cross-repo coordination. App Router conventions are explicit and file-based — the AI always knows where to put things. Largest training data coverage of any React framework.
 - **Key conventions**:
-  - `app/` — all routes and pages
-  - `app/api/` — REST-style route handlers
-  - `actions/` — server actions for mutations
-  - `components/` — UI components
-  - `lib/` — shared utilities, DB clients, schemas
+  - `src/app/` — all routes and pages
+  - `src/app/api/` — REST-style route handlers when the app adds an API layer
+  - `src/actions/` — server actions for mutations when introduced
+  - `src/components/` — UI components
+  - `src/lib/` — shared utilities, DB clients, schemas
 - **Connects to**: Every other layer. Acts as the integration point for the full stack.
 
 ---
 
 ## LAYER 3 — FRONTEND UI
 
-### React 18+ (via Next.js)
+### React 19+ (via Next.js)
 - **Role**: UI component model. All UI is built as composable, typed React components.
 - **Why**: Default in Next.js. Massive training data coverage. Component isolation means the AI can modify one component without side effects elsewhere.
 - **Pattern**: Server Components by default. Client Components (`"use client"`) only when browser APIs or interactivity is required.
 
 ### Tailwind CSS (v4)
 - **Role**: Utility-first CSS framework. All styling is written as className utilities directly in the component.
-- **Why**: Eliminates stylesheet context-switching. The AI sees complete styling information inline with the component. No cascade debugging. No specificity conflicts. Consistent design token system via `tailwind.config.ts`.
-- **Config**: Extended in `tailwind.config.ts` with custom colors, fonts, and spacing tokens for the project.
+- **Why**: Eliminates stylesheet context-switching. The AI sees complete styling information inline with the component. No cascade debugging. No specificity conflicts. Consistent design tokens live alongside the app in a CSS-first setup.
+- **Config**: Tailwind v4 tokens are defined in `src/app/globals.css` via `@theme {}`. There is no `tailwind.config.ts` in this repository.
 - **Connects to**: shadcn/ui (uses Tailwind internally), all React components.
 
 ### shadcn/ui
 - **Role**: Component library. Provides accessible, composable base components (Button, Dialog, Form, Table, etc.).
-- **Why**: Components are copied into the repo at `components/ui/` — the AI can read and modify the actual source. No black-box npm dependency. Built on Radix UI primitives (accessibility) and Tailwind (styling).
+- **Why**: Components are copied into the repo at `src/components/ui/` — the AI can read and modify the actual source. No black-box npm dependency. Built on Radix UI primitives (accessibility) and Tailwind (styling).
 - **Installation**: `npx shadcn@latest add [component]` — components are copied into the repo, not installed as an npm dependency. shadcn itself does not appear in `package.json`.
 - **Actual npm deps added**: `@radix-ui/*`, `class-variance-authority`, `tailwind-merge`, `clsx`
 - **Connects to**: Tailwind CSS, Radix UI (peer dependency), all feature components.
@@ -266,20 +268,20 @@ Machine-readable specification of the complete technology stack for an AI-develo
 
 ## LAYER 16 — PROJECT CONVENTIONS (CLAUDE.md)
 
-A `CLAUDE.md` file at the project root is read by AI coding agents before every session. It contains:
+A `CLAUDE.md` file at the project root is read by AI coding agents before every session. In this repository it is symlinked to `AGENTS.md`. It contains:
 
 ```
 ## Commands
-- `npm run dev` — start development server
-- `npm run build` — production build
-- `npm run type-check` — TypeScript compiler check (no emit)
-- `npm run lint` — ESLint with auto-fix
-- `npm run test` — Vitest unit tests
-- `npm run test:e2e` — Playwright E2E tests
+- `pnpm dev` — start development server
+- `pnpm build` — production build and type validation
+- `pnpm lint` — ESLint
+- `pnpm test` — Vitest in watch mode
+- `pnpm test:run` — single-run tests plus Lighthouse pipeline
+- `pnpm storybook` — Storybook on `@storybook/react-vite`
 
 ## After every change
-Run: `npm run type-check && npm run lint`
-If tests exist for the modified module, run: `npm run test`
+Run: `pnpm build && pnpm lint`
+If tests exist for the modified module, run: `pnpm test` or `pnpm test:run` when Lighthouse is relevant
 
 ## Architecture rules
 - Validate all external input with Zod before any processing
@@ -334,7 +336,7 @@ Observability
 
 CI/CD
   └── GitHub → GitHub Actions → Vercel
-        └── Pipeline: type-check → lint → test → build → deploy
+        └── Pipeline: build → lint → test → deploy
 ```
 
 ---
