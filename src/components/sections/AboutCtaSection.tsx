@@ -24,7 +24,7 @@ export function AboutCtaSection({
   return (
     <section className={cn('bg-pine py-14 text-snow md:py-20', className)}>
       <div className="mx-auto flex max-w-[600px] flex-col items-center gap-6 px-6 text-center">
-        <h2 className="font-display text-2xl md:text-3xl font-light leading-tight whitespace-pre-line">
+        <h2 className="font-display text-2xl font-light leading-tight whitespace-pre-line text-snow md:text-3xl">
           {title}
         </h2>
         <p className="font-body text-base font-light text-snow/80 leading-relaxed">

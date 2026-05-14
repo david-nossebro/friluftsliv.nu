@@ -26,7 +26,7 @@ export function SiteFooter() {
           {/* Brand */}
           <div className="flex flex-col gap-4">
             <Logo variant="reversed" size="sm" />
-            <p className="text-xs leading-relaxed text-snow/60 max-w-[200px] font-body font-light">
+            <p className="max-w-[200px] text-xs leading-relaxed text-snow/80 font-body font-light">
               Naturen väntar. Vi visar vägen.
             </p>
           </div>

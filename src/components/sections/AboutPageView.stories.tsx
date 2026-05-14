@@ -5,7 +5,10 @@ import { AboutPageView } from './AboutPageView'
 const meta = {
   title: 'Sections/AboutPageView',
   component: AboutPageView,
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    a11y: { test: 'error' },
+  },
   tags: ['autodocs'],
 } satisfies Meta<typeof AboutPageView>
 

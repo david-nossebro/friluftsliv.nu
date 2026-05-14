@@ -5,7 +5,10 @@ import { AboutCtaSection } from './AboutCtaSection'
 const meta = {
   title: 'Sections/AboutCtaSection',
   component: AboutCtaSection,
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    a11y: { test: 'error' },
+  },
   tags: ['autodocs'],
 } satisfies Meta<typeof AboutCtaSection>
 

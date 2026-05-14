@@ -5,7 +5,10 @@ import { AboutHeroSection } from './AboutHeroSection'
 const meta = {
   title: 'Sections/AboutHeroSection',
   component: AboutHeroSection,
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    a11y: { test: 'error' },
+  },
   tags: ['autodocs'],
 } satisfies Meta<typeof AboutHeroSection>
 

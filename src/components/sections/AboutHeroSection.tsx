@@ -29,7 +29,7 @@ export function AboutHeroSection({
         <div className="absolute inset-0 bg-pine/60" />
       </div>
       <div className="relative max-w-[860px] mx-auto px-6 py-16 md:py-24 text-center">
-        <h1 className="font-display text-3xl md:text-4xl font-light leading-tight mb-4">
+        <h1 className="mb-4 font-display text-3xl font-light leading-tight text-snow md:text-4xl">
           {title}
         </h1>
         <p className="font-body text-base md:text-lg font-light text-snow/85 max-w-[640px] mx-auto leading-relaxed">

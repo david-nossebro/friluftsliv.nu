@@ -1,14 +1,24 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { expect, within } from '@storybook/test'
 import { SiteFooter } from './SiteFooter'
 
 const meta = {
   title: 'Layout/SiteFooter',
   component: SiteFooter,
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    a11y: { test: 'error' },
+  },
   tags: ['autodocs'],
 } satisfies Meta<typeof SiteFooter>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {}
+export const Default: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByText(/naturen väntar\. vi visar vägen\./i)).toBeInTheDocument()
+    await expect(canvas.getByRole('heading', { name: /innehåll/i })).toBeInTheDocument()
+  },
+}
