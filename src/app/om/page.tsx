@@ -4,7 +4,7 @@ import { AboutPageView } from '@/components/sections/AboutPageView'
 export const metadata: Metadata = {
   title: 'Om oss',
   description:
-    'friluftsliv.nu hjälper dig hitta vägen ut. Lär känna människorna och tanken bakom Sveriges hem för friluftsliv.',
+    'Vi öppnar dörren till den svenska naturen — för alla som vill ut, oavsett erfarenhet. Tanken bakom friluftsliv.nu.',
 }
 
 export default function AboutPage() {

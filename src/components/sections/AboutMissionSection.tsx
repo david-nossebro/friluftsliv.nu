@@ -3,8 +3,8 @@ import { ContentBlock } from '@/components/sections/ContentBlock'
 import { cn } from '@/lib/utils'
 
 const defaultParagraphs = [
-  'För många stannar drömmen om en tur ute i naturen vid just en dröm. Inte för att viljan saknas — utan för att det är svårt att veta var man ska börja. Vilken rutt passar för en nybörjare? Vart kan man ta vägen om det regnar? Behöver man boka stugan i förväg?',
-  'Vi tror att svaret ska vara enkelt att hitta. Här samlar vi det du behöver för att planera din nästa tur — utan reklamprat, utan komplicerade menyer.',
+  'Drömmen om en tur i naturen stannar ofta vid en dröm — inte för att viljan saknas, utan för att det är svårt att veta var man ska börja. Vilken rutt passar för en nybörjare? Vart kan man ta vägen om det regnar? Behöver stugan bokas i förväg?',
+  'Vi tror att svaret ska vara lätt att hitta. Här samlar vi rutter, stugor och områden från hela Sverige — på ett ställe, utan omvägar.',
 ]
 
 export interface AboutMissionSectionProps {
@@ -16,7 +16,7 @@ export interface AboutMissionSectionProps {
 }
 
 export function AboutMissionSection({
-  heading = 'Varför vi finns',
+  heading = 'Tanken bakom',
   paragraphs = defaultParagraphs,
   imageUrl = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&q=70&auto=format',
   imageAlt = 'En vandrare ser ut över en svensk fjälldal',

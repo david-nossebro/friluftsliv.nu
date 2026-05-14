@@ -14,7 +14,7 @@ export interface HeroSearchProps {
 }
 
 export function HeroSearch({
-  headline = 'Hitta din tur bland tusentals förslag och stugor i hela Sverige',
+  headline = 'Välkommen till den svenska naturen.',
   subheadline,
   imageUrl,
   suggestions = [],

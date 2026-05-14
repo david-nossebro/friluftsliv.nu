@@ -13,7 +13,7 @@ export interface ActivityShortcutsProps {
 }
 
 export function ActivityShortcuts({
-  title = 'Hitta din nästa äventyr',
+  title = 'Välj en aktivitet',
   onSelect,
   className,
 }: ActivityShortcutsProps) {

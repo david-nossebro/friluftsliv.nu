@@ -13,7 +13,7 @@ export interface AboutCtaSectionProps {
 }
 
 export function AboutCtaSection({
-  title = 'Naturen väntar.\nVi visar vägen.',
+  title = 'Naturen väntar.\nVi öppnar dörren.',
   description = 'Börja med att utforska — eller hitta en stuga för helgen.',
   primaryLabel = 'Utforska turer',
   primaryHref = '/utforska',

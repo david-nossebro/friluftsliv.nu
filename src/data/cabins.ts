@@ -41,7 +41,7 @@ export const cabins: CabinDetail[] = [
       'https://images.unsplash.com/photo-1455156218388-5e61b526818b?w=800&q=70&auto=format',
     ],
     description:
-      'Sylarna fjällstation ligger inbäddad i en av Jämtlands mest karakteristiska bergskedjor. Här erbjuds både helpension med restaurang och självhushållsstugor. Bastun vid bäcken är en härlig avslutning på en lång dag i fjällen.',
+      'Sylarna fjällstation ligger inbäddad i en av Jämtlands karakteristiska bergskedjor. Du kan välja mellan helpension med restaurang eller självhushållsstuga. Bastun vid bäcken är en härlig avslutning på en lång dag i fjällen.',
     beds: 80,
     openPeriod: 'Mitten av februari till slutet av april, och midsommar till mitten av september',
     serviceType: 'betjänad',
@@ -68,7 +68,7 @@ export const cabins: CabinDetail[] = [
       'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=70&auto=format',
     ],
     description:
-      'Vid foten av Sveriges högsta fjäll ligger Kebnekaise fjällstation — utgångspunkten för toppbestigningar och vidare vandringar i Kungsleden. Här finns restaurang, bastu och guidade turer. Ett ideellt basläger för fjällvandring i världsklass.',
+      'Vid foten av Sveriges högsta fjäll ligger Kebnekaise fjällstation — utgångspunkten för toppbestigningar och vidare vandringar på Kungsleden. Här finns restaurang, bastu och guidade turer. Ett naturligt basläger för dagar i fjället.',
     beds: 220,
     openPeriod: 'Slutet av februari till slutet av september',
     serviceType: 'betjänad',
@@ -94,7 +94,7 @@ export const cabins: CabinDetail[] = [
       'https://images.unsplash.com/photo-1503614472-8c93d56e92ce?w=800&q=70&auto=format',
     ],
     description:
-      'Helags fjällstation ligger vid foten av Sveriges sydligaste glaciär och har en av landets vackraste utsikter direkt från frukostbordet. Du kan vandra hit från Ljungdalen eller från Sylarna. På sommaren erbjuds guidade glaciärvandringar.',
+      'Helags fjällstation ligger vid foten av Sveriges sydligaste glaciär. Frukosten serveras med utsikt rakt över fjället. Du kan vandra hit från Ljungdalen eller från Sylarna, och på sommaren går guidade glaciärvandringar härifrån.',
     beds: 76,
     openPeriod: 'Mitten av februari till slutet av april, midsommar till slutet av september',
     serviceType: 'betjänad',
@@ -117,7 +117,7 @@ export const cabins: CabinDetail[] = [
     pricePerNight: 395,
     imageUrl: 'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=1200&q=70&auto=format',
     description:
-      'Sälka är den högst belägna stugan på Kungsleden och ligger strax söder om Tjäktjapasset. Stugan är liten och enkel men med en magisk plats vid Tjäktjajaure. Här samlas vandrare för att utbyta tips inför pasagen norrut eller söderut.',
+      'Sälka är den högst belägna stugan på Kungsleden — strax söder om Tjäktjapasset. Stugan är liten och enkel, men platsen vid Tjäktjajaure är minnesvärd. Här samlas vandrare för att byta tips inför passagen norrut eller söderut.',
     beds: 36,
     openPeriod: 'Mitten av februari till slutet av april, midsommar till mitten av september',
     serviceType: 'självhushåll',
@@ -140,7 +140,7 @@ export const cabins: CabinDetail[] = [
     pricePerNight: 425,
     imageUrl: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=70&auto=format',
     description:
-      'Ett gammalt skogvaktarhus omvandlat till mysig vandrarstuga vid kanten av Söderåsens nationalpark. Här kan du börja och avsluta dina vandringar i bokskogen utan att behöva köra. Servering av enkel frukost ingår.',
+      'Ett gammalt skogvaktarhus, idag vandrarstuga vid kanten av Söderåsens nationalpark. Härifrån når du bokskogens leder utan att sätta dig i bilen. Enkel frukost ingår.',
     beds: 18,
     openPeriod: 'Hela året',
     serviceType: 'självhushåll',

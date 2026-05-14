@@ -101,7 +101,7 @@ export function LogoLoader({
   const gap = gapMap[size]
   const textDuration = duration * 1.5
 
-  const ariaLabel = label ?? caption ?? 'Loading…'
+  const ariaLabel = label ?? caption ?? 'Laddar…'
 
   const cssVars = {
     '--ll-back': config.back,

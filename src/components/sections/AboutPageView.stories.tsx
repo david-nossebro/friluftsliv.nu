@@ -19,7 +19,7 @@ export const Default: Story = {}
 export const DefaultTested: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    await expect(canvas.getByRole('heading', { name: /vi hjälper dig hitta vägen ut/i })).toBeInTheDocument()
+    await expect(canvas.getByRole('heading', { name: /vi öppnar dörren ut/i })).toBeInTheDocument()
     await expect(canvas.getByRole('heading', { name: /det här tror vi på/i })).toBeInTheDocument()
   },
 }

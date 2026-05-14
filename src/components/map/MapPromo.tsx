@@ -11,8 +11,8 @@ export interface MapPromoProps {
 }
 
 export function MapPromo({
-  title = 'Utforska hela Sverige på kartan',
-  description = 'Se rutter, stugor, naturreservat och höjdkurvor i ett interaktivt kartläge. Planera turen direkt.',
+  title = 'Hela Sverige på en karta',
+  description = 'Rutter, stugor, naturreservat och höjdkurvor — på samma plats. Zooma in där du bor, eller där du vill åka.',
   href = '/karta',
   className,
 }: MapPromoProps) {

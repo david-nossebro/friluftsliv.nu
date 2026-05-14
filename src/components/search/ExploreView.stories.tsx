@@ -29,7 +29,7 @@ export const Default: Story = {
 
     await userEvent.click(canvas.getByRole('button', { name: 'Rutter' }))
     await userEvent.type(
-      canvas.getByRole('searchbox', { name: /sök bland innehållet/i }),
+      canvas.getByRole('searchbox', { name: /sök rutter, stugor och områden/i }),
       'Kungsleden',
     )
 

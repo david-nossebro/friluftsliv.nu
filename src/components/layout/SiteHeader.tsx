@@ -101,7 +101,7 @@ export function SiteHeader({
            <SearchBar
               label="Sök i sidhuvudet"
               size="md"
-              placeholder="Sök rutter och stugor..."
+              placeholder="Sök rutt, stuga eller område…"
               onSubmit={handleSubmit}
               onSuggestionSelect={handleSuggestionSelect}
               {...(suggestions ? { suggestions } : {})}
@@ -158,7 +158,7 @@ export function SiteHeader({
             </div>
             <SearchBar
               label="Sök i mobilmenyn"
-              placeholder="Sök rutter och stugor..."
+              placeholder="Sök rutt, stuga eller område…"
               onSubmit={handleSubmit}
               onSuggestionSelect={handleSuggestionSelect}
               {...(suggestions ? { suggestions } : {})}

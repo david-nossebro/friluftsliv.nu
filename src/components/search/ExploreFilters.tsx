@@ -43,13 +43,13 @@ export function ExploreFilters({
         {/* Search — mobile only, stacked above tabs */}
         <div className="md:hidden py-2.5 border-b border-mist-dark">
           <label htmlFor={mobileSearchId} className="sr-only">
-            Sök bland innehållet
+            Sök rutter, stugor och områden
           </label>
           <Input
             id={mobileSearchId}
             variant="search"
             inputSize="sm"
-            placeholder="Sök bland innehållet..."
+            placeholder="Sök rutt, stuga eller område…"
             value={query}
             onChange={handleSearch}
             onClear={() => { setQuery(''); onSearchChange?.('') }}
@@ -83,13 +83,13 @@ export function ExploreFilters({
           {/* Search — desktop only, inline */}
           <div className="hidden md:block ml-auto pb-2 w-64">
             <label htmlFor={desktopSearchId} className="sr-only">
-              Sök bland innehållet
+              Sök rutter, stugor och områden
             </label>
             <Input
               id={desktopSearchId}
               variant="search"
               inputSize="sm"
-              placeholder="Sök bland innehållet..."
+              placeholder="Sök rutt, stuga eller område…"
               value={query}
               onChange={handleSearch}
               onClear={() => { setQuery(''); onSearchChange?.('') }}

@@ -20,7 +20,7 @@ export interface SearchBarProps {
 
 export function SearchBar({
   label = 'Sök',
-  placeholder = 'Sök rutter, stugor eller platser...',
+  placeholder = 'Sök rutt, stuga eller område…',
   suggestions = [],
   onQueryChange,
   onSubmit,

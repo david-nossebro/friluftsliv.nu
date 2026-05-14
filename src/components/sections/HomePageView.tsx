@@ -18,7 +18,7 @@ export function HomePageView({
   suggestions,
   featuredRoutes,
   featuredCabins,
-  heroHeadline = 'Hitta din tur — från Skåne till Lappland',
+  heroHeadline = 'Välkommen till den svenska naturen.',
   heroImageUrl = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600&q=70&auto=format',
 }: HomePageViewProps) {
   return (
@@ -35,7 +35,7 @@ export function HomePageView({
         showMoreHref="/utforska?tab=rutter"
       />
       <CabinCardGrid
-        title="Stugor att upptäcka"
+        title="Stugor och fjällstationer"
         cabins={featuredCabins}
         showMoreHref="/utforska?tab=stugor"
       />

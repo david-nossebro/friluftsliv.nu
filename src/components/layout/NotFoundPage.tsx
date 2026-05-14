@@ -13,8 +13,8 @@ export function NotFoundPage() {
         Stigen tar slut här
       </h1>
       <p className="mt-4 max-w-[420px] font-body text-base leading-relaxed text-ink-soft">
-        Sidan du letade efter finns inte längre, eller har aldrig funnits.
-        Inga problem — det finns andra vägar att gå.
+        Sidan finns inte — eller har aldrig funnits.
+        Men det finns andra vägar att gå.
       </p>
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Button asChild variant="primary" size="lg">

@@ -27,7 +27,7 @@ export function SiteFooter() {
           <div className="flex flex-col gap-4">
             <Logo variant="reversed" size="sm" />
             <p className="max-w-[200px] text-xs leading-relaxed text-snow/80 font-body font-light">
-              Naturen väntar. Vi visar vägen.
+              Naturen väntar. Vi öppnar dörren.
             </p>
           </div>
 
@@ -72,10 +72,10 @@ export function SiteFooter() {
           {/* Tagline */}
           <div className="flex flex-col gap-3">
             <h2 className="text-xs font-body font-medium uppercase tracking-widest text-snow/70 mb-1">
-              Friluftsliv för alla
+              Sveriges hem
             </h2>
             <p className="text-sm text-snow/60 leading-relaxed font-body font-light">
-              Sveriges hem för friluftsliv — hitta rutter, stugor och naturupplevelser nära dig.
+              Hitta rutter, stugor och naturområden — från Skåne till Lappland.
             </p>
           </div>
         </div>
@@ -86,7 +86,7 @@ export function SiteFooter() {
             © {new Date().getFullYear()} friluftsliv.nu — Upphovsrätt, där inget annat anges
           </p>
           <p className="text-xs text-snow/60 font-body font-light">
-            Byggd med kärlek till svenska naturen
+            Gjord för dig som vill ut.
           </p>
         </div>
       </div>

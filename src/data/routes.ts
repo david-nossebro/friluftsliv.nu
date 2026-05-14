@@ -31,7 +31,7 @@ export const routes: RouteDetail[] = [
       'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=70&auto=format',
     ],
     description:
-      'Den klassiska sträckan av Kungsleden tar dig genom den svenska fjällvärldens mest varierade landskap. Du går genom björkskog vid Abisko, passerar Tjäktja-passet — den högsta punkten på leden — och avslutar vid Kebnekaise fjällstation. Längs vägen ligger STF-stugor med ungefär en dagsetapp emellan.',
+      'Den klassiska sträckan av Kungsleden. Du går från björkskog vid Abisko, över Tjäktja-passet — ledens högsta punkt — och ner till Kebnekaise fjällstation. Längs vägen ligger STF-stugor med ungefär en dagsetapp emellan.',
     startPoint: 'STF Abisko Turiststation. Tåg från Stockholm eller Kiruna stannar direkt vid stationen.',
     season: 'Mitten av juni till slutet av september. Snön ligger ofta kvar på högre partier in i juli.',
     tips: [
@@ -63,7 +63,7 @@ export const routes: RouteDetail[] = [
       'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=70&auto=format',
     ],
     description:
-      'En lättgången etapp av Sörmlandsleden som börjar vid tunnelbanans slutstation och tar dig direkt ut i tystnad. Du följer markerade leder genom Nackareservatet, passerar Söderbysjön och fortsätter ned mot Erstavik. Perfekt som dagsetapp året om — och du tar dig hem med kollektivtrafik.',
+      'En lättgången etapp som börjar vid tunnelbanans slutstation och tar dig rakt ut i tystnaden. Du följer markerade leder genom Nackareservatet, passerar Söderbysjön och går vidare mot Erstavik. Funkar bra som dagstur året om — och du tar dig hem med kollektivtrafik.',
     startPoint: 'Björkhagens tunnelbanestation. Följ orange-vita markeringar västerut från utgången.',
     season: 'Hela året. Vintertid kan delar vara isbelagda — använd broddar.',
     tips: [
@@ -89,7 +89,7 @@ export const routes: RouteDetail[] = [
     isRoundTrip: true,
     imageUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=70&auto=format',
     description:
-      'En rundslinga genom Söderåsens dramatiska sprickdal med uråldriga bokskogar och utsikt över Skäralid. Leden är välmarkerad och passar både familjer och vana vandrare. På toppen vid Kopparhatten breder utsikten ut sig över det skånska landskapet.',
+      'En rundslinga genom Söderåsens sprickdal, med gamla bokskogar och utsikt över Skäralid. Leden är välmarkerad och funkar för både familjer och vana vandrare. På Kopparhatten breder det skånska landskapet ut sig under dig.',
     startPoint: 'Naturum vid Söderåsens nationalpark, Skäralid. Parkering på plats.',
     season: 'Hela året. Höstens färgspel i bokskogen är särskilt vackert i oktober.',
     tips: [
@@ -118,7 +118,7 @@ export const routes: RouteDetail[] = [
       'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=800&q=70&auto=format',
     ],
     description:
-      'Skuleberget reser sig 295 meter rakt upp ur Bottenhavet och bjuder på en av Sveriges mest dramatiska utsikter. Leden går genom mossig granskog innan den klättrar branta passager med stegar och rep. På toppen ligger en grottformation och utsiktsplats över Höga Kustens unika landhöjningskust.',
+      'Skuleberget reser sig 295 meter rakt upp ur Bottenhavet. Leden går genom mossig granskog och klättrar sedan branta partier med stegar och rep. På toppen finns en grottformation och utsikt över Höga Kustens landhöjningskust.',
     startPoint: 'Naturum Höga Kusten vid Skuleberget. Tydlig skyltning från E4.',
     season: 'Maj till oktober. Stegarna kan vara hala vid våta förhållanden.',
     tips: [
@@ -144,7 +144,7 @@ export const routes: RouteDetail[] = [
     isRoundTrip: false,
     imageUrl: 'https://images.unsplash.com/photo-1455156218388-5e61b526818b?w=1200&q=70&auto=format',
     description:
-      'Padjelantaleden går genom Padjelanta nationalpark — Sveriges största — och bjuder på vidsträckta hedar, glaciärälvar och samiska kulturlandskap. Leden är T-markerad och har stugor från Stiftelsen för Padjelanta med ungefär en dagsetapp emellan. Passar dig som söker tystnad och har erfarenhet av flera dagar i fjällen.',
+      'Padjelantaleden går genom Padjelanta nationalpark — Sveriges största — över vidsträckta hedar, glaciärälvar och samisk mark. Leden är T-markerad och har stugor från Stiftelsen för Padjelanta med ungefär en dagsetapp emellan. Passar dig som söker tystnad och har vandrat flera dagar i fjäll förut.',
     startPoint: 'Vaisaluokta — nås med båt från Ritsem. Båten går flera turer dagligen sommartid.',
     season: 'Slutet av juni till september. Vissa älvpassager är endast farbara på sensommaren.',
     tips: [
@@ -175,7 +175,7 @@ export const routes: RouteDetail[] = [
       'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=70&auto=format',
     ],
     description:
-      'Bestigning av Kebnekaise sydtopp via västra leden från Kebnekaise fjällstation. Leden är välmarkerad men kräver god kondition och lämpliga kläder för fjällklimat. Räkna med 10–14 timmar tur och retur. På toppen får du utsikt över hela Sareks och Kebnekaises massiv.',
+      'Sydtoppen via västra leden, från Kebnekaise fjällstation. Leden är välmarkerad men kräver god kondition och kläder för fjällklimat. Räkna med 10–14 timmar tur och retur. På toppen breder Sareks och Kebnekaises massiv ut sig.',
     startPoint: 'STF Kebnekaise fjällstation. Du tar dig dit via Nikkaluokta och båt över Ladtjojaure.',
     season: 'Juli till mitten av september. Snöfält kan ligga kvar hela sommaren.',
     tips: [
@@ -201,7 +201,7 @@ export const routes: RouteDetail[] = [
     isRoundTrip: true,
     imageUrl: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1200&q=70&auto=format',
     description:
-      'Tyresta nationalpark är ett av södra Sveriges äldsta urskogsområden och en lugn andningspaus från storstaden. Rundslingan tar dig förbi tjärnar, gamla tallar och bärrika myrar. Du startar och slutar vid Tyresta by där det finns naturum, café och övernattningsstugor.',
+      'Tyresta nationalpark är ett av södra Sveriges äldsta urskogsområden — en lugn andningspaus från storstaden. Rundslingan tar dig förbi tjärnar, gamla tallar och bärrika myrar. Du startar och slutar vid Tyresta by, där det finns naturum, café och övernattningsstugor.',
     startPoint: 'Tyresta by, naturum. Parkeringen är avgiftsfri.',
     season: 'Hela året. Spår är ofta välpreparerade även vintertid.',
     tips: [
@@ -226,7 +226,7 @@ export const routes: RouteDetail[] = [
     isRoundTrip: false,
     imageUrl: 'https://images.unsplash.com/photo-1551524559-8af4e6624178?w=1200&q=70&auto=format',
     description:
-      'Den klassiska Vasaloppssträckan på dina egna villkor — utan tävlingsstart. Spåren prepareras hela vintern och du kan välja att gå hela sträckan på flera dagar eller bryta vid någon av kontrollerna. Boende finns vid checkpoints längs vägen.',
+      'Den klassiska Vasaloppssträckan i ditt eget tempo — utan tävlingsstart. Spåren prepareras hela vintern, och du kan åka hela sträckan på flera dagar eller bryta vid någon av kontrollerna. Boende finns längs vägen.',
     startPoint: 'Berga by, Sälen. Mårbackavägen leder fram till start.',
     season: 'Mitten av december till slutet av mars, beroende på snöförhållanden.',
     tips: [
@@ -251,7 +251,7 @@ export const routes: RouteDetail[] = [
     isRoundTrip: false,
     imageUrl: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1200&q=70&auto=format',
     description:
-      'Vandring upp till STF Helags fjällstation, vid foten av Sveriges sydligaste glaciär. Leden går från Ljungdalen genom björkskog och vidare upp på kalfjället. Vid framkomsten väntar varm bastu, mat och möjlighet att fortsätta upp på Helagsfjället.',
+      'Vandring upp till STF Helags fjällstation, vid foten av Sveriges sydligaste glaciär. Leden går från Ljungdalen genom björkskog och vidare upp på kalfjället. Väl framme väntar varm bastu, mat och möjligheten att gå vidare upp på Helagsfjället.',
     startPoint: 'Kläppen, Ljungdalen. Bilväg går nästan ända fram.',
     season: 'Slutet av juni till september. Snöförhållanden kan göra leden krävande tidigt på säsongen.',
     tips: [
@@ -276,7 +276,7 @@ export const routes: RouteDetail[] = [
     isRoundTrip: false,
     imageUrl: 'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=1200&q=70&auto=format',
     description:
-      'En vacker etapp av Bohusleden som tar dig genom granskogar, över hällmarker och förbi små skogssjöar. Leden är välmarkerad med orange ringar och har flera vindskydd där du kan rasta eller övernatta. Lagom utmaning för en helgs vandring.',
+      'En etapp av Bohusleden genom granskogar, över hällmarker och förbi små skogssjöar. Leden är välmarkerad med orange ringar och har flera vindskydd där du kan rasta eller övernatta. En lagom dos vandring för en helg.',
     startPoint: 'Bottnafjorden, parkering vid ledens början.',
     season: 'April till november. Vindskydden står alltid öppna.',
     tips: [

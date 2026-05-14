@@ -4,7 +4,7 @@ import { getMapFeatureLayers } from '@/data'
 
 export const metadata: Metadata = {
   title: 'Karta',
-  description: 'Utforska Sveriges rutter och stugor på en interaktiv karta.',
+  description: 'Rutter, stugor och naturreservat på en karta över hela Sverige.',
 }
 
 export default function MapPage() {

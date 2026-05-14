@@ -44,7 +44,7 @@ export const Interactive: Story = {
     await expect(canvas.getByText(/visar: rutter/i)).toBeInTheDocument()
 
     await userEvent.type(
-      canvas.getByRole('searchbox', { name: /sök bland innehållet/i }),
+      canvas.getByRole('searchbox', { name: /sök rutter, stugor och områden/i }),
       'Abisko',
     )
     await expect(canvas.getByText(/söker: Abisko/i)).toBeInTheDocument()

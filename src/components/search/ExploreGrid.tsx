@@ -19,7 +19,9 @@ export function ExploreGrid({ items, className }: ExploreGridProps) {
   if (items.length === 0) {
     return (
       <div className={cn('py-20 text-center', className)}>
-        <p className="font-body text-stone text-sm">Inga resultat hittades.</p>
+        <p className="font-body text-stone text-sm">
+          Inget matchade din sökning. Försök med ett kortare ord eller välj en annan flik.
+        </p>
       </div>
     )
   }

@@ -3,11 +3,11 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'friluftsliv.nu — Hitta din nästa tur',
+    default: 'friluftsliv.nu — Välkommen till den svenska naturen',
     template: '%s — friluftsliv.nu',
   },
   description:
-    'Sveriges hem för friluftsliv. Utforska rutter, stugor och naturområden från Skåne till Lappland.',
+    'Hitta rutter, stugor och naturområden från Skåne till Lappland. Sveriges hem för friluftsliv.',
 }
 
 export const viewport: Viewport = {
