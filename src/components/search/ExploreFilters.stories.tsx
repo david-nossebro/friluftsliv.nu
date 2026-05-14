@@ -3,7 +3,8 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, userEvent, within } from '@storybook/test'
 import { useState } from 'react'
-import { ExploreFilters, type ExploreTab } from './ExploreFilters'
+import { ExploreFilters } from './ExploreFilters'
+import type { ExploreTab } from '@/types'
 
 const meta = {
   title: 'Search/ExploreFilters',
@@ -40,11 +41,11 @@ export const Interactive: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Rutter' }))
-    await expect(canvas.getByText(/visar: rutter/i)).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: 'Fjällvandring' }))
+    await expect(canvas.getByText(/visar: fjallvandring/i)).toBeInTheDocument()
 
     await userEvent.type(
-      canvas.getByRole('searchbox', { name: /sök rutter, stugor och områden/i }),
+      canvas.getByRole('searchbox', { name: /sök stuga, tur eller område/i }),
       'Abisko',
     )
     await expect(canvas.getByText(/söker: Abisko/i)).toBeInTheDocument()

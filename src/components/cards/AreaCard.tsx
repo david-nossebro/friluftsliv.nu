@@ -1,17 +1,32 @@
 import Image from 'next/image'
-import { Route } from 'lucide-react'
+import { Home, Route } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
 import type { Area } from '@/types'
 
 export interface AreaCardProps {
   area: Area
+  routeCount?: number
+  cabinCount?: number
   className?: string
   onClick?: () => void
   /** Mark as LCP candidate — disables lazy loading on the image. */
   priority?: boolean
 }
 
-export function AreaCard({ area, className, onClick, priority = false }: AreaCardProps) {
+const areaKindLabels: Record<Area['kind'], string> = {
+  nationalpark: 'Nationalpark',
+  naturreservat: 'Naturreservat',
+}
+
+export function AreaCard({
+  area,
+  routeCount = 0,
+  cabinCount = 0,
+  className,
+  onClick,
+  priority = false,
+}: AreaCardProps) {
   const content = (
     <>
       {area.imageUrl ? (
@@ -30,11 +45,21 @@ export function AreaCard({ area, className, onClick, priority = false }: AreaCar
       <div className="absolute inset-0 bg-gradient-to-t from-pine/80 via-pine/20 to-transparent" />
 
       <div className="absolute inset-x-0 bottom-0 p-4">
+        <Badge variant="mist" size="sm" className="mb-2">
+          {areaKindLabels[area.kind]}
+        </Badge>
         <h3 className="font-display text-xl font-light text-snow leading-tight">{area.title}</h3>
-        <p className="flex items-center gap-1 mt-1 text-xs text-birch font-body">
-          <Route size={11} strokeWidth={1.5} aria-hidden="true" />
-          {area.routeCount} rutter
-        </p>
+        <p className="mt-1 text-xs text-snow/75 font-body font-light line-clamp-2">{area.summary}</p>
+        <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-birch font-body">
+          <span className="flex items-center gap-1">
+            <Route size={11} strokeWidth={1.5} aria-hidden="true" />
+            {routeCount} rutter
+          </span>
+          <span className="flex items-center gap-1">
+            <Home size={11} strokeWidth={1.5} aria-hidden="true" />
+            {cabinCount} stugor
+          </span>
+        </div>
       </div>
     </>
   )

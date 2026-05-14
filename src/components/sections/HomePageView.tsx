@@ -32,7 +32,7 @@ export function HomePageView({
       <RouteCardGrid
         title="Populära rutter"
         routes={featuredRoutes}
-        showMoreHref="/utforska?tab=rutter"
+        showMoreHref="/utforska"
       />
       <CabinCardGrid
         title="Stugor och fjällstationer"

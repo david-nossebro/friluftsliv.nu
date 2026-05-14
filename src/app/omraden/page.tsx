@@ -1,26 +1,17 @@
 import type { Metadata } from 'next'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { ExploreView } from '@/components/search/ExploreView'
-import type { ExploreTab } from '@/types'
 import { cabins, getAreaListItems, routes } from '@/data'
+import type { ExploreTab } from '@/types'
 
 export const metadata: Metadata = {
-  title: 'Utforska',
-  description: 'Bläddra bland rutter, stugor och naturområden i hela Sverige.',
+  title: 'Naturområden',
+  description: 'Hitta nationalparker och naturreservat med relaterade turer och stugor.',
 }
 
-const validTabs: ExploreTab[] = [
-  'alla',
-  'stugor',
-  'vandring',
-  'fjallvandring',
-  'kanotleder',
-  'skidturer',
-  'nationalparker',
-  'naturreservat',
-]
+const validTabs: ExploreTab[] = ['alla', 'nationalparker', 'naturreservat']
 
-export default async function ExplorePage({
+export default async function AreasPage({
   searchParams,
 }: {
   searchParams: Promise<{ q?: string; tab?: string }>

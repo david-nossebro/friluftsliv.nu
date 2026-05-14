@@ -4,11 +4,31 @@ export type Difficulty = 'easy' | 'medium' | 'hard'
 
 export type CabinServiceType = 'obetjänad' | 'betjänad' | 'självhushåll'
 
+export type ExploreTab =
+  | 'alla'
+  | 'stugor'
+  | 'vandring'
+  | 'fjallvandring'
+  | 'kanotleder'
+  | 'skidturer'
+  | 'nationalparker'
+  | 'naturreservat'
+
+export type RouteExploreCategory =
+  | 'vandring'
+  | 'fjallvandring'
+  | 'kanotleder'
+  | 'skidturer'
+
+export type ProtectedAreaKind = 'nationalpark' | 'naturreservat'
+
 export interface Route {
   id: string
   title: string
   region: string
   activityType: ActivityType
+  exploreCategory?: RouteExploreCategory
+  areaIds?: string[]
   distance: number
   elevation: number
   duration: number
@@ -35,6 +55,7 @@ export interface Cabin {
   id: string
   title: string
   region: string
+  areaIds?: string[]
   amenities: string[]
   pricePerNight?: number
   available: boolean
@@ -60,8 +81,18 @@ export interface CabinDetail extends Cabin {
 export interface Area {
   id: string
   title: string
-  routeCount: number
+  kind: ProtectedAreaKind
+  region: string
+  summary: string
+  description: string
   imageUrl?: string
+  images?: string[]
+}
+
+export interface AreaListItem {
+  area: Area
+  routeCount: number
+  cabinCount: number
 }
 
 export interface SearchSuggestion {

@@ -1,12 +1,15 @@
 import type {
   Route,
   RouteDetail,
+  RouteExploreCategory,
   Cabin,
   CabinDetail,
   Area,
+  AreaListItem,
   MapFeatureLayer,
   MapMarker,
   MapPosition,
+  ProtectedAreaKind,
 } from '@/types'
 import type { ExploreItem } from '@/components/search/ExploreGrid'
 import { routes } from './routes'
@@ -44,6 +47,8 @@ function toRouteExploreItem(data: Route): ExploreItem {
       title: data.title,
       region: data.region,
       activityType: data.activityType,
+      ...(data.exploreCategory ? { exploreCategory: data.exploreCategory } : {}),
+      ...(data.areaIds ? { areaIds: data.areaIds } : {}),
       distance: data.distance,
       elevation: data.elevation,
       duration: data.duration,
@@ -60,6 +65,7 @@ function toCabinExploreItem(data: Cabin): ExploreItem {
       id: data.id,
       title: data.title,
       region: data.region,
+      ...(data.areaIds ? { areaIds: data.areaIds } : {}),
       amenities: data.amenities,
       available: data.available,
       ...(data.pricePerNight != null ? { pricePerNight: data.pricePerNight } : {}),
@@ -99,6 +105,49 @@ export function getAreaById(id: string): Area | undefined {
   return areas.find((a) => a.id === id)
 }
 
+export function getRoutesByExploreCategory(category: RouteExploreCategory): Route[] {
+  return routes.filter((route) => route.exploreCategory === category)
+}
+
+export function getRoutesForAreaId(areaId: string): Route[] {
+  return routes.filter((route) => route.areaIds?.includes(areaId))
+}
+
+export function getCabinsForAreaId(areaId: string): Cabin[] {
+  return cabins.filter((cabin) => cabin.areaIds?.includes(areaId))
+}
+
+function toAreaListItem(area: Area): AreaListItem {
+  return {
+    area,
+    routeCount: getRoutesForAreaId(area.id).length,
+    cabinCount: getCabinsForAreaId(area.id).length,
+  }
+}
+
+function toAreaExploreItem(area: Area): ExploreItem {
+  const listItem = toAreaListItem(area)
+
+  return {
+    kind: 'area',
+    data: listItem.area,
+    routeCount: listItem.routeCount,
+    cabinCount: listItem.cabinCount,
+  }
+}
+
+export function getAreaListItems(): AreaListItem[] {
+  return areas.map(toAreaListItem)
+}
+
+export function getAreaListItemsByKind(kind: ProtectedAreaKind): AreaListItem[] {
+  return areas.filter((area) => area.kind === kind).map(toAreaListItem)
+}
+
+export function getAreaRoutesByCategory(areaId: string, category: RouteExploreCategory): Route[] {
+  return getRoutesForAreaId(areaId).filter((route) => route.exploreCategory === category)
+}
+
 export function getFeaturedRoutes(n = 6): Route[] {
   return routes.slice(0, n)
 }
@@ -131,7 +180,7 @@ export function getRelatedCabins(cabin: CabinDetail, n = 3): Cabin[] {
 
 export function getAllExploreItems(): ExploreItem[] {
   return [
-    ...areas.map<ExploreItem>((data) => ({ kind: 'area', data })),
+    ...areas.map(toAreaExploreItem),
     ...routes.map(toRouteExploreItem),
     ...cabins.map(toCabinExploreItem),
   ]

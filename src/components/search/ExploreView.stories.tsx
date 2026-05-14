@@ -1,16 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, userEvent, within } from '@storybook/test'
 import { ExploreView } from './ExploreView'
-import type { ExploreItem } from './ExploreGrid'
-
-const mockItems: ExploreItem[] = [
-  { kind: 'area', data: { id: 'sarek', title: 'Sarek nationalpark', routeCount: 48, imageUrl: 'https://images.unsplash.com/photo-1521336575822-6da63fb45455?w=560&q=70&auto=format' } },
-  { kind: 'area', data: { id: 'abisko', title: 'Abisko nationalpark', routeCount: 34, imageUrl: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=560&q=70&auto=format' } },
-  { kind: 'route', data: { id: 'kungsleden', title: 'Kungsleden — Abisko till Nikkaluokta', region: 'Lappland', activityType: 'vandring', distance: 105, elevation: 2400, duration: 6900, difficulty: 'hard', imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=520&q=70&auto=format' } },
-  { kind: 'route', data: { id: 'tyresta', title: 'Tyresta runt', region: 'Stockholms län', activityType: 'vandring', distance: 11.2, elevation: 140, duration: 240, difficulty: 'easy', imageUrl: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=520&q=70&auto=format' } },
-  { kind: 'cabin', data: { id: 'sylarna', title: 'Sylarna fjällstation', region: 'Jämtland', amenities: ['Restaurang', 'Bastu'], pricePerNight: 695, available: true, imageUrl: 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=560&q=70&auto=format' } },
-  { kind: 'cabin', data: { id: 'abiskojaure', title: 'Abiskojaure fjällstuga', region: 'Lappland', amenities: ['Vedspis'], pricePerNight: 395, available: true, imageUrl: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=560&q=70&auto=format' } },
-]
+import { cabins, getAreaListItems, routes } from '@/data'
 
 const meta = {
   title: 'Search/ExploreView',
@@ -23,29 +14,64 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
-  args: { items: mockItems },
+  args: {
+    areas: getAreaListItems(),
+    routes,
+    cabins,
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
+    const expectedOrder = [
+      'Vandring',
+      'Fjällvandring',
+      'Kanotleder',
+      'Skidturer',
+      'Stugor',
+      'Nationalparker',
+      'Naturreservat',
+    ]
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Rutter' }))
+    const sectionHeadings = canvas
+      .getAllByRole('heading', { level: 2 })
+      .map((heading) => heading.textContent?.trim())
+      .filter((heading): heading is string => expectedOrder.includes(heading ?? ''))
+
+    await expect(sectionHeadings).toEqual(expectedOrder)
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Fjällvandring' }))
     await userEvent.type(
-      canvas.getByRole('searchbox', { name: /sök rutter, stugor och områden/i }),
-      'Kungsleden',
+      canvas.getByRole('searchbox', { name: /sök stuga, tur eller område/i }),
+      'Abisko',
     )
 
     await expect(canvas.getByText('Kungsleden — Abisko till Nikkaluokta')).toBeInTheDocument()
-    await expect(canvas.queryByText('Sylarna fjällstation')).not.toBeInTheDocument()
+    await expect(canvas.queryByText('Söderåsen vandrarhem')).not.toBeInTheDocument()
   },
 }
 
-export const PreFilteredRoutes: Story = {
-  args: { items: mockItems, initialTab: 'rutter' },
+export const PreFilteredMountainHikes: Story = {
+  args: {
+    areas: getAreaListItems(),
+    routes,
+    cabins,
+    initialTab: 'fjallvandring',
+  },
 }
 
-export const PreFilteredQuery: Story = {
-  args: { items: mockItems, initialQuery: 'kungsleden' },
+export const ProtectedAreasOnly: Story = {
+  args: {
+    areas: getAreaListItems(),
+    routes,
+    cabins,
+    initialTab: 'nationalparker',
+  },
 }
 
 export const NoResults: Story = {
-  args: { items: mockItems, initialQuery: 'finns inte' },
+  args: {
+    areas: getAreaListItems(),
+    routes,
+    cabins,
+    initialQuery: 'finns inte',
+  },
 }

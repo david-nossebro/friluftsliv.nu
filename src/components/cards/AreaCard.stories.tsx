@@ -5,7 +5,10 @@ import type { Area } from '@/types'
 const mockArea: Area = {
   id: '1',
   title: 'Sarek nationalpark',
-  routeCount: 48,
+  kind: 'nationalpark',
+  region: 'Norrbotten, Lappland',
+  summary: 'Vidsträckta fjäll och långa turer långt från vägar.',
+  description: 'Sarek är ett fjällområde för dig som vill bära allt du behöver och röra dig i ett stort, orört landskap.',
   imageUrl: 'https://images.unsplash.com/photo-1521336575822-6da63fb45455?w=560&q=70&auto=format',
 }
 
@@ -22,7 +25,7 @@ type Story = StoryObj<typeof meta>
 const { imageUrl: _imageUrl, ...mockAreaWithoutImage } = mockArea
 
 export const Default: Story = {
-  args: { area: mockArea },
+  args: { area: mockArea, routeCount: 48, cabinCount: 3 },
   render: (args) => (
     <div className="w-full max-w-[280px]">
       <AreaCard {...args} />
@@ -31,7 +34,7 @@ export const Default: Story = {
 }
 
 export const NoImage: Story = {
-  args: { area: mockAreaWithoutImage },
+  args: { area: mockAreaWithoutImage, routeCount: 48, cabinCount: 3 },
   render: (args) => (
     <div className="w-full max-w-[280px]">
       <AreaCard {...args} />
@@ -43,12 +46,48 @@ export const AreaGrid: Story = {
   args: { area: mockArea },
   render: () => (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
-      {[
-        { id: '1', title: 'Sarek nationalpark', routeCount: 48, imageUrl: 'https://images.unsplash.com/photo-1521336575822-6da63fb45455?w=560&q=70&auto=format' },
-        { id: '2', title: 'Kebnekaise fjällmassiv', routeCount: 34, imageUrl: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=560&q=70&auto=format' },
-        { id: '3', title: 'Gotska Sandön', routeCount: 12, imageUrl: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=560&q=70&auto=format' },
-      ].map((area) => (
-        <AreaCard key={area.id} area={area} />
+      {([
+        {
+          area: {
+            id: '1',
+            title: 'Sarek nationalpark',
+            kind: 'nationalpark',
+            region: 'Norrbotten, Lappland',
+            summary: 'Stora fjällvidder för långa turer.',
+            description: 'Ett vildmarksområde i norr.',
+            imageUrl: 'https://images.unsplash.com/photo-1521336575822-6da63fb45455?w=560&q=70&auto=format',
+          },
+          routeCount: 48,
+          cabinCount: 3,
+        },
+        {
+          area: {
+            id: '2',
+            title: 'Nackareservatet',
+            kind: 'naturreservat',
+            region: 'Stockholms län',
+            summary: 'Skog och sjöar nära stan.',
+            description: 'Ett lättillgängligt reservat för dagsvandring.',
+            imageUrl: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=560&q=70&auto=format',
+          },
+          routeCount: 6,
+          cabinCount: 0,
+        },
+        {
+          area: {
+            id: '3',
+            title: 'Söderåsens nationalpark',
+            kind: 'nationalpark',
+            region: 'Skåne län',
+            summary: 'Bokskog och sprickdalar i söder.',
+            description: 'Ett omtyckt område för lugna turer.',
+            imageUrl: 'https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=560&q=70&auto=format',
+          },
+          routeCount: 12,
+          cabinCount: 1,
+        },
+      ] satisfies { area: Area; routeCount: number; cabinCount: number }[]).map(({ area, routeCount, cabinCount }) => (
+        <AreaCard key={area.id} area={area} routeCount={routeCount} cabinCount={cabinCount} />
       ))}
     </div>
   ),

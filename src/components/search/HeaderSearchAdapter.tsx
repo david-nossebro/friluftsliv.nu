@@ -32,6 +32,8 @@ export function HeaderSearchAdapter({
         router.push(`/stugor/${id}`)
         return
       case 'area':
+        router.push(`/omraden/${id}`)
+        return
       case 'region':
       default:
         router.push(`/utforska?q=${encodeURIComponent(suggestion.name)}`)

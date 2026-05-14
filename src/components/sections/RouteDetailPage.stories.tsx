@@ -55,7 +55,7 @@ export const WithRelatedRoutes: Story = {
       <RouteCardGrid
         title="Liknande rutter i området"
         routes={relatedRoutes}
-        showMoreHref="/utforska?tab=rutter"
+        showMoreHref="/utforska"
       />
     ),
   },

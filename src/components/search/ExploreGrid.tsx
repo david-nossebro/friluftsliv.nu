@@ -6,7 +6,7 @@ import { CabinCard } from '@/components/cards/CabinCard'
 import type { Area, Route, Cabin } from '@/types'
 
 export type ExploreItem =
-  | { kind: 'area'; data: Area }
+  | { kind: 'area'; data: Area; routeCount: number; cabinCount: number }
   | { kind: 'route'; data: Route }
   | { kind: 'cabin'; data: Cabin }
 
@@ -42,11 +42,17 @@ export function ExploreGrid({ items, className }: ExploreGridProps) {
               return (
                 <Link
                   key={item.data.id}
-                  href={`/utforska?q=${encodeURIComponent(item.data.title)}`}
-                  aria-label={`Filtrera på ${item.data.title}`}
+                  href={`/omraden/${item.data.id}`}
+                  aria-label={`Visa ${item.data.title}`}
                   className={linkBase}
                 >
-                  <AreaCard area={item.data} className={cardHover} priority={isLcp} />
+                  <AreaCard
+                    area={item.data}
+                    routeCount={item.routeCount}
+                    cabinCount={item.cabinCount}
+                    className={cardHover}
+                    priority={isLcp}
+                  />
                 </Link>
               )
             }

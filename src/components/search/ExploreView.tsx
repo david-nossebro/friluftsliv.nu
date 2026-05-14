@@ -1,38 +1,62 @@
 'use client'
 
 import * as React from 'react'
-import { ExploreFilters, type ExploreTab } from './ExploreFilters'
-import { ExploreGrid, type ExploreItem } from './ExploreGrid'
+import { ExploreFilters } from './ExploreFilters'
+import { allExploreSections } from './exploreTabs'
+import { AreaCardGrid } from '@/components/cards/AreaCardGrid'
+import { CabinCardGrid } from '@/components/cards/CabinCardGrid'
+import { RouteCardGrid } from '@/components/cards/RouteCardGrid'
+import type { Area, AreaListItem, Cabin, ExploreTab, Route } from '@/types'
 
 export interface ExploreViewProps {
-  items: ExploreItem[]
+  areas: AreaListItem[]
+  routes: Route[]
+  cabins: Cabin[]
   initialQuery?: string
   initialTab?: ExploreTab
   className?: string
 }
 
-function matchesTab(item: ExploreItem, tab: ExploreTab): boolean {
-  if (tab === 'alla') return true
-  if (tab === 'rutter') return item.kind === 'route'
-  if (tab === 'stugor') return item.kind === 'cabin'
-  if (tab === 'omraden') return item.kind === 'area'
-  return true
+const routeSectionTitles: Record<Exclude<ExploreTab, 'alla' | 'stugor' | 'nationalparker' | 'naturreservat'>, string> = {
+  vandring: 'Vandring',
+  fjallvandring: 'Fjällvandring',
+  kanotleder: 'Kanotleder',
+  skidturer: 'Skidturer',
 }
 
-function matchesQuery(item: ExploreItem, query: string): boolean {
+function matchesAreaQuery(area: Area, query: string) {
   if (!query) return true
+
   const q = query.toLowerCase()
-  const title = item.data.title.toLowerCase()
-  if (title.includes(q)) return true
-  if (item.kind !== 'area') {
-    const region = item.data.region.toLowerCase()
-    if (region.includes(q)) return true
-  }
-  return false
+  return [area.title, area.region, area.summary].some((value) => value.toLowerCase().includes(q))
+}
+
+function matchesRouteQuery(route: Route, query: string) {
+  if (!query) return true
+
+  const q = query.toLowerCase()
+  return [route.title, route.region].some((value) => value.toLowerCase().includes(q))
+}
+
+function matchesCabinQuery(cabin: Cabin, query: string) {
+  if (!query) return true
+
+  const q = query.toLowerCase()
+  return [cabin.title, cabin.region].some((value) => value.toLowerCase().includes(q))
+}
+
+function EmptyState({ message }: { message: string }) {
+  return (
+    <div className="py-20 px-6 text-center">
+      <p className="font-body text-sm text-stone">{message}</p>
+    </div>
+  )
 }
 
 export function ExploreView({
-  items,
+  areas,
+  routes,
+  cabins,
   initialQuery = '',
   initialTab = 'alla',
   className,
@@ -40,10 +64,110 @@ export function ExploreView({
   const [tab, setTab] = React.useState<ExploreTab>(initialTab)
   const [query, setQuery] = React.useState(initialQuery)
 
-  const filtered = React.useMemo(
-    () => items.filter((item) => matchesTab(item, tab) && matchesQuery(item, query)),
-    [items, tab, query],
+  React.useEffect(() => {
+    setTab(initialTab)
+  }, [initialTab])
+
+  React.useEffect(() => {
+    setQuery(initialQuery)
+  }, [initialQuery])
+
+  const filteredAreas = React.useMemo(
+    () => areas.filter(({ area }) => matchesAreaQuery(area, query)),
+    [areas, query],
   )
+  const filteredRoutes = React.useMemo(
+    () => routes.filter((route) => matchesRouteQuery(route, query)),
+    [routes, query],
+  )
+  const filteredCabins = React.useMemo(
+    () => cabins.filter((cabin) => matchesCabinQuery(cabin, query)),
+    [cabins, query],
+  )
+
+  const allCount = filteredAreas.length + filteredRoutes.length + filteredCabins.length
+
+  let content: React.ReactNode
+
+  if (tab === 'alla') {
+    const allSections = allExploreSections.flatMap((section) => {
+      if (section.value === 'stugor') {
+        return filteredCabins.length > 0
+          ? [
+              <CabinCardGrid
+                key={section.value}
+                title={section.label}
+                cabins={filteredCabins}
+                className="py-10 bg-mist"
+              />,
+            ]
+          : []
+      }
+
+      if (section.value === 'nationalparker' || section.value === 'naturreservat') {
+        const areaKind = section.value === 'nationalparker' ? 'nationalpark' : 'naturreservat'
+        const areaResults = filteredAreas.filter(({ area }) => area.kind === areaKind)
+
+        return areaResults.length > 0
+          ? [
+              <AreaCardGrid
+                key={section.value}
+                title={section.label}
+                areas={areaResults}
+                className="py-10"
+              />,
+            ]
+          : []
+      }
+
+      const routeResults = filteredRoutes.filter((route) => route.exploreCategory === section.value)
+
+      return routeResults.length > 0
+        ? [
+            <RouteCardGrid
+              key={section.value}
+              title={section.label}
+              routes={routeResults}
+              className="py-10 bg-snow"
+            />,
+          ]
+        : []
+    })
+
+    content =
+      allCount === 0 ? (
+        <EmptyState message="Inget matchade din sökning. Försök med ett annat område eller ett kortare ord." />
+      ) : (
+        <>{allSections}</>
+      )
+  } else if (tab === 'stugor') {
+    content =
+      filteredCabins.length === 0 ? (
+        <EmptyState message="Inga stugor matchade din sökning just nu." />
+      ) : (
+        <CabinCardGrid title="Stugor" cabins={filteredCabins} className="py-10 bg-mist" />
+      )
+  } else if (tab === 'nationalparker' || tab === 'naturreservat') {
+    const kind = tab === 'nationalparker' ? 'nationalpark' : 'naturreservat'
+    const areaTitle = tab === 'nationalparker' ? 'Nationalparker' : 'Naturreservat'
+    const areaResults = filteredAreas.filter(({ area }) => area.kind === kind)
+
+    content =
+      areaResults.length === 0 ? (
+        <EmptyState message={`Inga ${areaTitle.toLowerCase()} matchade din sökning just nu.`} />
+      ) : (
+        <AreaCardGrid title={areaTitle} areas={areaResults} className="py-10" />
+      )
+  } else {
+    const routeResults = filteredRoutes.filter((route) => route.exploreCategory === tab)
+
+    content =
+      routeResults.length === 0 ? (
+        <EmptyState message={`Inga turer matchade kategorin ${routeSectionTitles[tab].toLowerCase()} just nu.`} />
+      ) : (
+        <RouteCardGrid title={routeSectionTitles[tab]} routes={routeResults} className="py-10 bg-snow" />
+      )
+  }
 
   return (
     <div className={className}>
@@ -53,7 +177,7 @@ export function ExploreView({
         searchQuery={query}
         onSearchChange={setQuery}
       />
-      <ExploreGrid items={filtered} />
+      {content}
     </div>
   )
 }
