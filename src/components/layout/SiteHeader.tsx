@@ -73,7 +73,7 @@ export function SiteHeader({
         <div className="max-w-[1200px] mx-auto px-6 flex items-center gap-6 h-[60px]">
           {/* Logo */}
           <Link href="/" aria-label="Hem — friluftsliv.nu" className="flex items-center self-stretch">
-            <Logo size="sm" />
+            <Logo size="md" />
           </Link>
 
           {/* Desktop nav */}
