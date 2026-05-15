@@ -20,18 +20,10 @@ export const Default: Story = {}
 
 const InteractiveDemo = () => {
   const [tab, setTab] = useState<ExploreTab>('alla')
-  const [query, setQuery] = useState('')
   return (
     <div>
-      <ExploreFilters
-        activeTab={tab}
-        onTabChange={setTab}
-        searchQuery={query}
-        onSearchChange={setQuery}
-      />
-      <div className="p-6 text-stone font-body text-sm">
-        Visar: {tab} · Söker: {query || '—'}
-      </div>
+      <ExploreFilters activeTab={tab} onTabChange={setTab} />
+      <div className="p-6 font-body text-sm text-stone">Visar: {tab}</div>
     </div>
   )
 }
@@ -41,13 +33,8 @@ export const Interactive: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Fjällvandring' }))
-    await expect(canvas.getByText(/visar: fjallvandring/i)).toBeInTheDocument()
-
-    await userEvent.type(
-      canvas.getByRole('searchbox', { name: /sök stuga, tur eller område/i }),
-      'Abisko',
-    )
-    await expect(canvas.getByText(/söker: Abisko/i)).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: 'Långvandring' }))
+    await expect(canvas.getByText(/visar: langvandring/i)).toBeInTheDocument()
+    await expect(canvas.queryByRole('searchbox')).not.toBeInTheDocument()
   },
 }

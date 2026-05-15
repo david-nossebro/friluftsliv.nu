@@ -9,6 +9,7 @@ export type ExploreTab =
   | 'stugor'
   | 'vandring'
   | 'fjallvandring'
+  | 'langvandring'
   | 'kanotleder'
   | 'skidturer'
   | 'nationalparker'
@@ -49,6 +50,58 @@ export interface RouteDetail extends Route {
   /** Pre-parsed GPX track coordinates for map rendering */
   gpxTrack?: MapPosition[]
   coordinates?: { lat: number; lng: number }
+}
+
+export interface Stage extends Route {
+  longHikeId: string
+  stageNumber: number
+  summary: string
+  startLocation: string
+  endLocation: string
+}
+
+export interface StageDetail extends Stage {
+  description: string
+  startPoint?: string
+  season?: string
+  tips?: string[]
+  images?: string[]
+  isRoundTrip?: boolean
+  accessByCar?: string
+  accessByTransport?: string
+  gpxUrl?: string
+  gpxTrack?: MapPosition[]
+  coordinates?: { lat: number; lng: number }
+  endCoordinates?: { lat: number; lng: number }
+}
+
+export interface LongHike {
+  id: string
+  title: string
+  region: string
+  summary: string
+  description: string
+  distance: number
+  elevation: number
+  duration: number
+  estimatedDays: number
+  difficulty: Difficulty
+  stageIds: string[]
+  imageUrl?: string
+  images?: string[]
+  season?: string
+  tips?: string[]
+  terrain?: string
+  waymarking?: string
+  overnight?: string
+  startPoint?: string
+  endPoint?: string
+  accessByCar?: string
+  accessByTransport?: string
+  gpxUrl?: string
+  gpxTrack?: MapPosition[]
+  coordinates?: { lat: number; lng: number }
+  endCoordinates?: { lat: number; lng: number }
 }
 
 export interface Cabin {

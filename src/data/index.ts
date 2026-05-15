@@ -2,6 +2,9 @@ import type {
   Route,
   RouteDetail,
   RouteExploreCategory,
+  LongHike,
+  Stage,
+  StageDetail,
   Cabin,
   CabinDetail,
   Area,
@@ -13,11 +16,13 @@ import type {
 } from '@/types'
 import type { ExploreItem } from '@/components/search/ExploreGrid'
 import { routes } from './routes'
+import { longHikes } from './longHikes'
+import { stages } from './stages'
 import { cabins } from './cabins'
 import { areas } from './areas'
 import { defaultSuggestions } from './suggestions'
 
-export { routes, cabins, areas, defaultSuggestions }
+export { routes, longHikes, stages, cabins, areas, defaultSuggestions }
 
 type WithRegion = {
   id: string
@@ -97,6 +102,14 @@ export function getRouteById(id: string): RouteDetail | undefined {
   return routes.find((r) => r.id === id)
 }
 
+export function getLongHikeById(id: string): LongHike | undefined {
+  return longHikes.find((trail) => trail.id === id)
+}
+
+export function getStageById(id: string): StageDetail | undefined {
+  return stages.find((stage) => stage.id === id)
+}
+
 export function getCabinById(id: string): CabinDetail | undefined {
   return cabins.find((c) => c.id === id)
 }
@@ -107,6 +120,36 @@ export function getAreaById(id: string): Area | undefined {
 
 export function getRoutesByExploreCategory(category: RouteExploreCategory): Route[] {
   return routes.filter((route) => route.exploreCategory === category)
+}
+
+export function getStagesForLongHike(longHikeId: string): Stage[] {
+  return stages
+    .filter((stage) => stage.longHikeId === longHikeId)
+    .sort((a, b) => a.stageNumber - b.stageNumber)
+}
+
+export function getLongHikeForStage(stageId: string): LongHike | undefined {
+  const stage = getStageById(stageId)
+  if (!stage) return undefined
+  return getLongHikeById(stage.longHikeId)
+}
+
+export function getAdjacentStages(stageId: string): {
+  previousStage?: Stage
+  nextStage?: Stage
+} {
+  const stage = getStageById(stageId)
+  if (!stage) return {}
+
+  const orderedStages = getStagesForLongHike(stage.longHikeId)
+  const stageIndex = orderedStages.findIndex((candidate) => candidate.id === stageId)
+
+  return {
+    ...(stageIndex > 0 ? { previousStage: orderedStages[stageIndex - 1] } : {}),
+    ...(stageIndex >= 0 && stageIndex < orderedStages.length - 1
+      ? { nextStage: orderedStages[stageIndex + 1] }
+      : {}),
+  }
 }
 
 export function getRoutesForAreaId(areaId: string): Route[] {

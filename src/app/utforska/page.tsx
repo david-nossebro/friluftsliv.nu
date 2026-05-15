@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { ExploreView } from '@/components/search/ExploreView'
 import type { ExploreTab } from '@/types'
-import { cabins, getAreaListItems, routes } from '@/data'
+import { cabins, getAreaListItems, longHikes, routes } from '@/data'
 
 export const metadata: Metadata = {
   title: 'Utforska',
@@ -14,6 +14,7 @@ const validTabs: ExploreTab[] = [
   'stugor',
   'vandring',
   'fjallvandring',
+  'langvandring',
   'kanotleder',
   'skidturer',
   'nationalparker',
@@ -36,6 +37,7 @@ export default async function ExplorePage({
       <ExploreView
         areas={getAreaListItems()}
         routes={routes}
+        longHikes={longHikes}
         cabins={cabins}
         initialQuery={initialQuery}
         initialTab={initialTab}
