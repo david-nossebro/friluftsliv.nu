@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Home, MapPin, Route as RouteIcon, Trees, Waves } from 'lucide-react'
+import { MapPin } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { FilterChip } from '@/components/ui/filter-chip'
@@ -151,9 +151,9 @@ export function AreaDetailPage({
       </div>
 
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12 flex flex-col gap-8">
-        <ContentBlock heading="Om området" icon={Trees} body={area.description} />
+        <ContentBlock heading="Om området" body={area.description} />
 
-        <ContentBlock heading="Utforska i området" icon={activeTab === 'kanotleder' ? Waves : activeTab === 'stugor' ? Home : RouteIcon}>
+        <ContentBlock heading="Utforska i området">
           <div className="flex flex-wrap gap-2 mb-6">
             {contentTabs.map((tab) => (
               <FilterChip

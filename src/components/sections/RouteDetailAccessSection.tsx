@@ -17,7 +17,7 @@ export function RouteDetailAccessSection({
     <section aria-labelledby="access-heading">
       <h2
         id="access-heading"
-        className="font-body font-medium text-xs text-stone uppercase tracking-wide mb-4"
+        className="font-display text-2xl font-light text-pine leading-snug mb-4"
       >
         Hur du tar dig dit
       </h2>

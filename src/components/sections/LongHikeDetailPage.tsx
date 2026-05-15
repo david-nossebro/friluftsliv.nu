@@ -1,18 +1,15 @@
-import { Lightbulb, MapPin, Route as RouteIcon, Trees } from 'lucide-react'
-import { formatSeason } from '@/lib/season'
+import { MapPin } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { DifficultyBadge } from '@/components/common/DifficultyBadge'
 import { ImageGallery } from '@/components/sections/ImageGallery'
 import { ContentBlock } from '@/components/sections/ContentBlock'
 import { LongHikeStageList } from '@/components/sections/LongHikeStageList'
+import { RouteStatGrid } from '@/components/sections/RouteStatGrid'
 import { RouteDetailAccessSection } from '@/components/sections/RouteDetailAccessSection'
 import { RouteMapSection } from '@/components/sections/RouteMapSection'
+import { DetailPageAnchors } from '@/components/sections/DetailPageAnchors'
+import { buildLongHikeStats } from '@/lib/routeStats'
 import type { LongHike, Stage } from '@/types'
-
-function formatWalkingTime(minutes: number) {
-  const hours = Math.floor(minutes / 60)
-  return `${hours} h`
-}
 
 export interface LongHikeDetailPageProps {
   longHike: LongHike
@@ -60,6 +57,16 @@ export function LongHikeDetailPage({
       ]
     : undefined
 
+  const anchors = [
+    { id: 'om-leden', label: 'Om leden' },
+    { id: 'karta', label: 'Karta' },
+    { id: 'etapper', label: 'Etapper' },
+    { id: 'tillgang', label: 'Hur du tar dig dit' },
+    ...(longHike.tips && longHike.tips.length > 0
+      ? [{ id: 'bra-att-veta', label: 'Bra att veta' }]
+      : []),
+  ]
+
   return (
     <article className="bg-snow min-h-screen">
       <ImageGallery
@@ -79,83 +86,73 @@ export function LongHikeDetailPage({
             <h1 className="font-display text-2xl md:text-3xl font-light text-snow leading-tight">
               {longHike.title}
             </h1>
-            <p className="font-body text-sm text-snow/80 flex items-center gap-1">
+            <p className="font-body text-sm text-snow/85 flex items-center gap-1">
               <MapPin size={12} strokeWidth={1.5} aria-hidden="true" />
               {longHike.region}
             </p>
-            <p className="font-body text-sm text-snow/75 max-w-2xl">{longHike.summary}</p>
+            <p className="font-body text-sm text-snow/80 max-w-2xl">{longHike.summary}</p>
           </div>
         }
         {...(longHike.images ? { images: longHike.images } : {})}
       />
 
-      <div className="border-b border-mist-dark bg-white">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="rounded-lg border border-mist-dark bg-snow p-4">
-            <p className="font-body text-xs uppercase tracking-wide text-stone">Distans</p>
-            <p className="mt-1 font-display text-lg text-pine">{longHike.distance} km</p>
-          </div>
-          <div className="rounded-lg border border-mist-dark bg-snow p-4">
-            <p className="font-body text-xs uppercase tracking-wide text-stone">Tid</p>
-            <p className="mt-1 font-display text-lg text-pine">{longHike.estimatedDays} dagar</p>
-            <p className="font-body text-xs text-stone mt-1">{formatWalkingTime(longHike.duration)} gångtid</p>
-          </div>
-          <div className="rounded-lg border border-mist-dark bg-snow p-4">
-            <p className="font-body text-xs uppercase tracking-wide text-stone">Etapper</p>
-            <p className="mt-1 font-display text-lg text-pine">{stages.length}</p>
-          </div>
-          <div className="rounded-lg border border-mist-dark bg-snow p-4">
-            <p className="font-body text-xs uppercase tracking-wide text-stone">Säsong</p>
-            <p className="mt-1 font-display text-lg text-pine">{longHike.season ? formatSeason(longHike.season) : 'Se info'}</p>
-          </div>
-        </div>
-      </div>
+      <RouteStatGrid
+        stats={buildLongHikeStats(longHike, stages.length)}
+        ariaLabel={`Översikt för ${longHike.title}`}
+      />
+
+      <DetailPageAnchors anchors={anchors} />
 
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12 flex flex-col gap-10">
-        <ContentBlock heading="Om leden" body={longHike.description} />
+        <section id="om-leden" className="scroll-mt-24 flex flex-col gap-10">
+          <ContentBlock heading="Om leden" body={longHike.description} />
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {longHike.terrain && (
-            <ContentBlock heading="Det här möter dig" icon={Trees} body={longHike.terrain} />
-          )}
-          {longHike.overnight && (
-            <ContentBlock heading="Bo och dela upp turen" icon={RouteIcon} body={longHike.overnight} />
-          )}
-          {longHike.waymarking && (
-            <ContentBlock heading="Markering och planering" icon={MapPin} body={longHike.waymarking} />
-          )}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {longHike.terrain && (
+              <ContentBlock heading="Det här möter dig" body={longHike.terrain} />
+            )}
+            {longHike.overnight && (
+              <ContentBlock heading="Bo och dela upp turen" body={longHike.overnight} />
+            )}
+            {longHike.waymarking && (
+              <ContentBlock heading="Markering och planering" body={longHike.waymarking} />
+            )}
+          </div>
+        </section>
+
+        <div id="karta" className="scroll-mt-24">
+          <RouteMapSection
+            title="Översikt på karta"
+            description="Se hela sträckan först. Det gör det lättare att förstå hur etapperna hänger ihop."
+            ariaLabel={`Karta för ${longHike.title}`}
+            activityType="vandring"
+            {...(longHike.coordinates ? { center: longHike.coordinates, zoom: 8 } : {})}
+            {...(featureLayers ? { featureLayers } : {})}
+            {...(longHike.gpxTrack ? { tracks: [longHike.gpxTrack] } : {})}
+          />
         </div>
 
-        <RouteMapSection
-          title="Översikt på karta"
-          description="Se hela sträckan först. Det gör det lättare att förstå hur etapperna hänger ihop."
-          ariaLabel={`Karta för ${longHike.title}`}
-          activityType="vandring"
-          {...(longHike.coordinates ? { center: longHike.coordinates, zoom: 8 } : {})}
-          {...(featureLayers ? { featureLayers } : {})}
-          {...(longHike.gpxTrack ? { tracks: [longHike.gpxTrack] } : {})}
-        />
+        <div id="etapper" className="scroll-mt-24">
+          <LongHikeStageList stages={stages} />
+        </div>
 
-        <LongHikeStageList stages={stages} />
-
-        <RouteDetailAccessSection
-          {...(longHike.accessByCar ? { accessByCar: longHike.accessByCar } : {})}
-          {...(longHike.accessByTransport ? { accessByTransport: longHike.accessByTransport } : {})}
-        />
+        <div id="tillgang" className="scroll-mt-24">
+          <RouteDetailAccessSection
+            {...(longHike.accessByCar ? { accessByCar: longHike.accessByCar } : {})}
+            {...(longHike.accessByTransport ? { accessByTransport: longHike.accessByTransport } : {})}
+          />
+        </div>
 
         {longHike.tips && longHike.tips.length > 0 && (
-          <ContentBlock heading="Bra att veta innan du går" icon={Lightbulb}>
-            <ul className="flex flex-col gap-2">
-              {longHike.tips.map((tip) => (
-                <li key={tip} className="flex gap-2.5 font-body text-sm text-ink leading-relaxed">
-                  <span className="text-moss mt-0.5 shrink-0 font-medium" aria-hidden="true">
-                    ·
-                  </span>
-                  {tip}
-                </li>
-              ))}
-            </ul>
-          </ContentBlock>
+          <div id="bra-att-veta" className="scroll-mt-24">
+            <ContentBlock heading="Bra att veta innan du går">
+              <ul className="list-disc marker:text-moss pl-5 flex flex-col gap-2 font-body text-sm text-ink leading-relaxed">
+                {longHike.tips.map((tip) => (
+                  <li key={tip}>{tip}</li>
+                ))}
+              </ul>
+            </ContentBlock>
+          </div>
         )}
       </div>
     </article>

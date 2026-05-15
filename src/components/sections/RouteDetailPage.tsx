@@ -1,12 +1,5 @@
 import type { ReactNode } from 'react'
-import {
-  ArrowRight,
-  Download,
-  MapPin,
-  Lightbulb,
-  Share2,
-  Sun,
-} from 'lucide-react'
+import { Download, MapPin, Share2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { formatSeason } from '@/lib/season'
 import { Badge } from '@/components/ui/badge'
@@ -14,10 +7,11 @@ import { Button } from '@/components/ui/button'
 import { DifficultyBadge } from '@/components/common/DifficultyBadge'
 import { ImageGallery } from '@/components/sections/ImageGallery'
 import { ContentBlock } from '@/components/sections/ContentBlock'
-import { RouteDetailStatsBar } from './RouteDetailStatsBar'
+import { RouteStatGrid } from '@/components/sections/RouteStatGrid'
 import { RouteDetailAccessSection } from './RouteDetailAccessSection'
 import { RouteMapSection } from './RouteMapSection'
 import { RouteDetailMobileBar } from './RouteDetailMobileBar'
+import { buildRouteStats } from '@/lib/routeStats'
 import type { MapFeatureLayer, RouteDetail } from '@/types'
 
 const activityLabels: Record<RouteDetail['activityType'], string> = {
@@ -32,11 +26,10 @@ const activityLabels: Record<RouteDetail['activityType'], string> = {
 export interface RouteDetailPageProps {
   route: RouteDetail
   relatedRoutes?: ReactNode
-  onBack?: () => void
   className?: string
 }
 
-export function RouteDetailPage({ route, relatedRoutes, onBack, className }: RouteDetailPageProps) {
+export function RouteDetailPage({ route, relatedRoutes, className }: RouteDetailPageProps) {
   const featureLayers: MapFeatureLayer[] | undefined = route.coordinates
     ? [
         {
@@ -57,32 +50,22 @@ export function RouteDetailPage({ route, relatedRoutes, onBack, className }: Rou
     : undefined
 
   return (
-    <article className={cn('bg-snow min-h-screen', className)}>
-      {/* ── Hero ─────────────────────────────────── */}
+    <article className={cn('bg-snow min-h-screen pb-24 md:pb-0', className)}>
       <ImageGallery
         src={route.imageUrl ?? ''}
         alt={route.title}
         overlay={
           <div className="flex flex-col gap-2">
-            {onBack && (
-              <button
-                type="button"
-                onClick={onBack}
-                className="self-start flex items-center gap-1.5 mb-1 font-body text-xs text-snow/80 hover:text-snow transition-colors"
-                aria-label="Tillbaka"
-              >
-                <ArrowRight size={12} className="rotate-180" aria-hidden="true" />
-                Tillbaka
-              </button>
-            )}
             <div className="flex items-center gap-2 flex-wrap">
-              <Badge variant="pine" size="sm">{activityLabels[route.activityType]}</Badge>
+              <Badge variant="pine" size="sm">
+                {activityLabels[route.activityType]}
+              </Badge>
               <DifficultyBadge difficulty={route.difficulty} />
             </div>
             <h1 className="font-display text-2xl md:text-3xl font-light text-snow leading-tight">
               {route.title}
             </h1>
-            <p className="font-body text-sm text-snow/75 flex items-center gap-1">
+            <p className="font-body text-sm text-snow/80 flex items-center gap-1">
               <MapPin size={12} strokeWidth={1.5} aria-hidden="true" />
               {route.region}
             </p>
@@ -91,10 +74,8 @@ export function RouteDetailPage({ route, relatedRoutes, onBack, className }: Rou
         {...(route.images ? { images: route.images } : {})}
       />
 
-      {/* ── Stat bar ─────────────────────────────── */}
-      <RouteDetailStatsBar route={route} />
+      <RouteStatGrid stats={buildRouteStats(route)} />
 
-      {/* ── Main content ─────────────────────────── */}
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12 flex flex-col gap-10">
         <ContentBlock heading="Om turen" body={route.description} />
 
@@ -125,23 +106,20 @@ export function RouteDetailPage({ route, relatedRoutes, onBack, className }: Rou
         />
 
         {route.startPoint && (
-          <ContentBlock heading="Startpunkt & parkering" icon={MapPin} body={route.startPoint} />
+          <ContentBlock heading="Startpunkt & parkering" body={route.startPoint} />
         )}
 
         {route.season && (
-          <ContentBlock heading="Säsong" icon={Sun}>
+          <ContentBlock heading="Säsong">
             <p className="font-body text-sm text-ink leading-relaxed">{formatSeason(route.season)}</p>
           </ContentBlock>
         )}
 
         {route.tips && route.tips.length > 0 && (
-          <ContentBlock heading="Tips för turen" icon={Lightbulb}>
-            <ul className="flex flex-col gap-2">
+          <ContentBlock heading="Tips för turen">
+            <ul className="list-disc marker:text-moss pl-5 flex flex-col gap-2 font-body text-sm text-ink leading-relaxed">
               {route.tips.map((tip) => (
-                <li key={tip} className="flex gap-2.5 font-body text-sm text-ink leading-relaxed">
-                  <span className="text-moss mt-0.5 shrink-0 font-medium" aria-hidden="true">·</span>
-                  {tip}
-                </li>
+                <li key={tip}>{tip}</li>
               ))}
             </ul>
           </ContentBlock>
@@ -153,16 +131,13 @@ export function RouteDetailPage({ route, relatedRoutes, onBack, className }: Rou
         />
       </div>
 
-      {/* ── Related routes ────────────────────────── */}
       {relatedRoutes && (
         <div className="border-t border-mist-dark">{relatedRoutes}</div>
       )}
 
-      {/* ── Mobile sticky CTA ─────────────────────── */}
       <RouteDetailMobileBar
         title={route.title}
-        distance={route.distance}
-        duration={route.duration}
+        {...(route.gpxUrl ? { gpxUrl: route.gpxUrl } : {})}
       />
     </article>
   )

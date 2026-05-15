@@ -26,6 +26,15 @@ export interface ElevationProfileProps {
   onScrub?: (distanceKm: number | null) => void
 }
 
+const ACTIVITY_LABELS: Record<ActivityType, string> = {
+  vandring: 'Vandring',
+  topptur: 'Topptur',
+  skidtur: 'Skidtur',
+  cykeltur: 'Cykeltur',
+  paddeltur: 'Paddeltur',
+  stugtur: 'Stugtur',
+}
+
 function formatKm(km: number): string {
   if (km < 10) return km.toFixed(1)
   return Math.round(km).toString()
@@ -301,8 +310,19 @@ export function ElevationProfile({
           </div>
         )}
       </div>
-      <figcaption id={captionId} className="font-body text-xs text-stone">
-        {caption}
+      <figcaption id={captionId} className="flex items-center gap-2 font-body text-xs text-stone">
+        {activityType && (
+          <span className="inline-flex items-center gap-1.5">
+            <span
+              aria-hidden="true"
+              className="inline-block w-2.5 h-2.5 rounded-full"
+              style={{ backgroundColor: color }}
+            />
+            <span className="text-pine font-medium">{ACTIVITY_LABELS[activityType]}</span>
+            <span aria-hidden="true">·</span>
+          </span>
+        )}
+        <span>{caption}</span>
       </figcaption>
     </figure>
   )

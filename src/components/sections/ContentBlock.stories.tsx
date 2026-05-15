@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { MapPin, Sun, Lightbulb } from 'lucide-react'
 import { ContentBlock } from './ContentBlock'
 
 const meta = {
@@ -14,45 +13,33 @@ type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
   args: {
-    heading: 'Beskrivning',
-    body: 'Turen startar på skogsveg och etter ca 200 m svingar den til venstre inn på sti gjennom granskog. Stien stig jamnt med fleire flotte utsiktspunkt til du kjem til ei sherpatrapp, «Hardangertrappa», som snor seg opp ei bratt fjellside.',
+    heading: 'Om turen',
+    body: 'Turen startar på skogsväg och efter ca 200 m svänger den till vänster in på en stig genom granskog. Stigen stiger jämnt med flera fina utsiktspunkter innan du kommer till en sherpatrappa, "Hardangertrappan", som slingrar sig upp i en brant fjällsida.',
   },
 }
 
-export const WithIcon: Story = {
+export const WithEyebrow: Story = {
   args: {
-    heading: 'Startpunkt',
-    icon: MapPin,
-    body: 'Frå Herand båtkai ca 3,6 km nordover på fylkesveg 550. Sving inn til venstre ved skiltet «Hardanger kulturgalleri».',
+    eyebrow: 'Säsong',
+    heading: 'Maj till oktober',
+    body: 'Försök inte gå rutten om det ligger snö, is eller frost på berget.',
   },
 }
 
-export const WithSeasonIcon: Story = {
-  args: {
-    heading: 'Säsong',
-    icon: Sun,
-    body: 'Maj – oktober/november. Försök inte göra denna vandring om det är snö, is eller frost.',
-  },
-}
-
-export const WithTipsList: Story = {
+export const WithBulletList: Story = {
   args: {
     heading: 'Tips för turen',
-    icon: Lightbulb,
   },
   render: (args) => (
     <ContentBlock {...args}>
-      <ul className="flex flex-col gap-2">
+      <ul className="list-disc marker:text-moss pl-5 flex flex-col gap-2 font-body text-sm text-ink leading-relaxed">
         {[
           'Ta med mat, dricka och vindtäta kläder.',
-          'Vandringsboots rekommenderas. Vid torrt väder kan träningsskor användas.',
+          'Vandringskängor rekommenderas. Vid torrt väder duger träningsskor.',
           'Bra mobilsignal längs större delen av rutten.',
           'Karta och kompass rekommenderas.',
         ].map((tip) => (
-          <li key={tip} className="flex gap-2 font-body text-sm text-ink leading-relaxed">
-            <span className="text-moss mt-0.5 shrink-0" aria-hidden="true">·</span>
-            {tip}
-          </li>
+          <li key={tip}>{tip}</li>
         ))}
       </ul>
     </ContentBlock>

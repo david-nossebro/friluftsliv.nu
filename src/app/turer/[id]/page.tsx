@@ -40,7 +40,14 @@ export default async function RouteDetailRoute({
         route={route}
         {...(related.length > 0
           ? {
-              relatedRoutes: <RouteCardGrid title="Liknande rutter" routes={related} />,
+              relatedRoutes: (
+                <RouteCardGrid
+                  title="Liknande rutter"
+                  description="Om du tyckte om den här turen — några andra med liknande karaktär."
+                  routes={related}
+                  mobileLayout="scroll"
+                />
+              ),
             }
           : {})}
       />

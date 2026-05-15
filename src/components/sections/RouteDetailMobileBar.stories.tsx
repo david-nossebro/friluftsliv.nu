@@ -17,6 +17,16 @@ const meta = {
     viewport: { defaultViewport: 'mobile1' },
   },
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      // Push the bar into view in Storybook — the real component hides until
+      // the user has scrolled past the hero, but inside a story we want it
+      // visible immediately for inspection.
+      <div style={{ minHeight: '120vh' }}>
+        <Story />
+      </div>
+    ),
+  ],
 } satisfies Meta<typeof RouteDetailMobileBar>
 
 export default meta
@@ -25,12 +35,20 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
     title: firstRoute.title,
-    distance: firstRoute.distance,
-    duration: firstRoute.duration,
+    gpxUrl: '#',
   },
   play: async ({ canvasElement }) => {
+    // The bar starts hidden (slides in once the user scrolls past the hero),
+    // so assert rendered DOM text rather than role-based queries that read the
+    // accessibility tree.
     const canvas = within(canvasElement)
     await expect(canvas.getByText(firstRoute.title)).toBeInTheDocument()
-    await expect(canvas.getByRole('button', { name: /dela/i })).toBeInTheDocument()
+    await expect(canvas.getByLabelText(/dela/i)).toBeInTheDocument()
+  },
+}
+
+export const WithoutGpx: Story = {
+  args: {
+    title: firstRoute.title,
   },
 }

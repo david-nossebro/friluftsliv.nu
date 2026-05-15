@@ -1,9 +1,5 @@
 import type { ReactNode } from 'react'
-import {
-  Trees,
-  MapPin,
-  ArrowRight,
-} from 'lucide-react'
+import { MapPin, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { ImageGallery } from '@/components/sections/ImageGallery'
@@ -122,7 +118,7 @@ export function CabinDetailPage({
 
             {/* Activities */}
             {cabin.activities && (
-              <ContentBlock heading="Aktiviteter i området" icon={Trees} body={cabin.activities} />
+              <ContentBlock heading="Aktiviteter i området" body={cabin.activities} />
             )}
 
             {/* Access */}
