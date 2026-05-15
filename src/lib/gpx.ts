@@ -32,7 +32,9 @@ export function parseGpx(xml: string): MapPosition[] {
     const lng = parseFloat(pt.getAttribute('lon') ?? '')
 
     if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
-      points.push({ lat, lng })
+      const eleText = pt.querySelector('ele')?.textContent ?? ''
+      const ele = parseFloat(eleText)
+      points.push(Number.isNaN(ele) ? { lat, lng } : { lat, lng, ele })
     }
   }
 

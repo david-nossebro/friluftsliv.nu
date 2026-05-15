@@ -108,6 +108,7 @@ export function StageDetailPage({
           title="Etappen på karta"
           description={`Sträckan från ${stage.startLocation} till ${stage.endLocation}.`}
           ariaLabel={`Karta för ${stage.title}`}
+          activityType={stage.activityType}
           {...(stage.coordinates ? { center: stage.coordinates, zoom: 11 } : {})}
           {...(featureLayers ? { featureLayers } : {})}
           {...(stage.gpxTrack ? { tracks: [stage.gpxTrack] } : {})}

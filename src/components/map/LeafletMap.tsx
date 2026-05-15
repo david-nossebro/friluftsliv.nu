@@ -58,6 +58,10 @@ export interface LeafletMapProps {
   activeFeatureTypes?: string[]
   /** Track polylines to render on the map. Each entry is one continuous track. */
   tracks?: MapPosition[][]
+  /** Stroke color for rendered track polylines. Defaults to brand pine. */
+  trackColor?: string
+  /** Optional position rendered as a small overlay marker — used to sync with a chart cursor. */
+  cursorPosition?: MapPosition
   /** Height of the map container. Defaults to '400px'. Accepts any CSS value. */
   height?: string
   /** Show the fullscreen expand/collapse button. Defaults to true. */
@@ -93,6 +97,8 @@ export function LeafletMap({
   featureLayers,
   activeFeatureTypes,
   tracks,
+  trackColor,
+  cursorPosition,
   height = '400px',
   showFullscreenToggle = true,
   className,
@@ -156,6 +162,8 @@ export function LeafletMap({
         {...(featureLayers ? { featureLayers } : {})}
         {...(activeFeatureTypes ? { activeFeatureTypes } : {})}
         {...(tracks ? { tracks } : {})}
+        {...(trackColor ? { trackColor } : {})}
+        {...(cursorPosition ? { cursorPosition } : {})}
       />
 
       {/* Fullscreen toggle — top-left, symmetric to layer toggle at top-right */}

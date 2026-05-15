@@ -160,6 +160,8 @@ export interface SearchSuggestion {
 export interface MapPosition {
   lat: number
   lng: number
+  /** Optional altitude in metres above sea level (matches GPX `<ele>`). */
+  ele?: number
 }
 
 /** A tile layer configuration for the map */

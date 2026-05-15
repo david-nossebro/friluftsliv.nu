@@ -101,6 +101,7 @@ export function RouteDetailPage({ route, relatedRoutes, onBack, className }: Rou
           title="Rutten på karta"
           description="Se var rutten går innan du packar — det gör det lättare att planera dagen."
           ariaLabel={`Karta för ${route.title}`}
+          activityType={route.activityType}
           {...(route.coordinates ? { center: route.coordinates, zoom: 12 } : {})}
           {...(featureLayers ? { featureLayers } : {})}
           {...(route.gpxTrack ? { tracks: [route.gpxTrack] } : {})}

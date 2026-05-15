@@ -6,9 +6,11 @@ import { RouteMapSection } from './RouteMapSection'
 import { routes } from '@/data/routes'
 
 const kungsleden = routes.find((r) => r.id === 'kungsleden-abisko-nikkaluokta')
+const vasaloppet = routes.find((r) => r.id === 'vasaloppsleden-vinter')
+const dalsland = routes.find((r) => r.id === 'dalslands-kanal-bengtsfors-baldersnas')
 
-if (!kungsleden) {
-  throw new Error('Expected kungsleden fixture for RouteMapSection stories.')
+if (!kungsleden || !vasaloppet || !dalsland) {
+  throw new Error('Expected seed fixtures for RouteMapSection stories.')
 }
 
 const featureLayers = kungsleden.coordinates
@@ -84,5 +86,51 @@ export const WithoutDescription: Story = {
   args: {
     title: 'Översikt på karta',
     ariaLabel: 'Karta',
+  },
+}
+
+export const WithElevation: Story = {
+  args: {
+    ...Default.args,
+    activityType: 'vandring',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole('heading', { name: 'Rutten på karta' })).toBeInTheDocument()
+    await expect(canvas.getByRole('slider', { name: /höjdprofil/i })).toBeInTheDocument()
+    await expect(canvas.getByText(/höjdmeter/i)).toBeInTheDocument()
+  },
+}
+
+export const WithoutElevation: Story = {
+  args: {
+    title: 'Rutten på karta',
+    description: 'Paddling i flacka vatten — ingen höjdprofil att visa.',
+    ariaLabel: `Karta för ${dalsland.title}`,
+    activityType: 'paddeltur',
+    ...(dalsland.coordinates ? { center: dalsland.coordinates, zoom: 10 } : {}),
+    ...(dalsland.gpxTrack ? { tracks: [dalsland.gpxTrack] } : {}),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole('heading', { name: 'Rutten på karta' })).toBeInTheDocument()
+    await expect(canvas.queryByRole('slider', { name: /höjdprofil/i })).toBeNull()
+  },
+}
+
+export const SkiActivity: Story = {
+  args: {
+    title: 'Rutten på karta',
+    description: 'Skidled i Dalarna — linjen följer Vasaloppssträckan.',
+    ariaLabel: `Karta för ${vasaloppet.title}`,
+    activityType: 'skidtur',
+    ...(vasaloppet.coordinates ? { center: vasaloppet.coordinates, zoom: 8 } : {}),
+    ...(vasaloppet.gpxTrack ? { tracks: [vasaloppet.gpxTrack] } : {}),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole('heading', { name: 'Rutten på karta' })).toBeInTheDocument()
+    const figure = canvasElement.querySelector('figure[data-activity="skidtur"]')
+    await expect(figure).not.toBeNull()
   },
 }

@@ -1,16 +1,16 @@
 import type { LongHike, MapPosition } from '@/types'
 
 const KUNGSLEDEN_TRACK: MapPosition[] = [
-  { lat: 68.3530, lng: 18.8200 },
-  { lat: 68.2400, lng: 18.7700 },
-  { lat: 68.0900, lng: 18.7100 },
-  { lat: 67.9500, lng: 18.5200 },
-  { lat: 67.8500, lng: 18.5500 },
-  { lat: 67.7900, lng: 18.5300 },
-  { lat: 67.7300, lng: 18.6100 },
-  { lat: 67.6800, lng: 18.7600 },
-  { lat: 67.7050, lng: 18.9100 },
-  { lat: 67.8500, lng: 19.0500 },
+  { lat: 68.3530, lng: 18.8200, ele: 380 },
+  { lat: 68.2400, lng: 18.7700, ele: 470 },
+  { lat: 68.0900, lng: 18.7100, ele: 720 },
+  { lat: 67.9500, lng: 18.5200, ele: 1140 },
+  { lat: 67.8500, lng: 18.5500, ele: 850 },
+  { lat: 67.7900, lng: 18.5300, ele: 720 },
+  { lat: 67.7300, lng: 18.6100, ele: 650 },
+  { lat: 67.6800, lng: 18.7600, ele: 700 },
+  { lat: 67.7050, lng: 18.9100, ele: 530 },
+  { lat: 67.8500, lng: 19.0500, ele: 460 },
 ]
 
 export const longHikes: LongHike[] = [

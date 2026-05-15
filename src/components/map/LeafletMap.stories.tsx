@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import { expect, within } from '@storybook/test'
 import { LeafletMap } from './LeafletMap'
 import { DEFAULT_MAP_LAYERS } from '@/types'
 import { parseGpx } from '@/lib/gpx'
@@ -263,6 +264,39 @@ export const TrackBoundsFallback: Story = {
         story: 'The map should fit to the track bounds, ignoring the explicit center (Stockholm) and zoom (5).',
       },
     },
+  },
+}
+
+export const WithCursor: Story = {
+  name: 'With Cursor (chart sync demo)',
+  args: {
+    activeLayerId: 'topo',
+    height: '400px',
+    tracks: [DEMO_TRACK],
+    cursorPosition: { lat: 67.905, lng: 18.51 },
+    trackColor: '#4A7C59',
+    'aria-label': 'Karta med markör som synkar mot ett höjddiagram',
+  },
+  decorators: [(Story) => <div className="w-full"><Story /></div>],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole('region', { name: /markör/i })).toBeInTheDocument()
+  },
+}
+
+export const WithActivityColor: Story = {
+  name: 'With Activity Color (ski)',
+  args: {
+    activeLayerId: 'topo',
+    height: '400px',
+    tracks: [DEMO_TRACK],
+    trackColor: '#B5C9A1',
+    'aria-label': 'Karta med skidled i björkfärg',
+  },
+  decorators: [(Story) => <div className="w-full"><Story /></div>],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    await expect(canvas.getByRole('region')).toBeInTheDocument()
   },
 }
 

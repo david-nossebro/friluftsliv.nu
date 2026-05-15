@@ -129,6 +129,7 @@ export function LongHikeDetailPage({
           title="Översikt på karta"
           description="Se hela sträckan först. Det gör det lättare att förstå hur etapperna hänger ihop."
           ariaLabel={`Karta för ${longHike.title}`}
+          activityType="vandring"
           {...(longHike.coordinates ? { center: longHike.coordinates, zoom: 8 } : {})}
           {...(featureLayers ? { featureLayers } : {})}
           {...(longHike.gpxTrack ? { tracks: [longHike.gpxTrack] } : {})}

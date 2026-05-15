@@ -11,6 +11,7 @@ import {
   useMap,
   ZoomControl,
   Polyline,
+  CircleMarker,
 } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -194,15 +195,23 @@ export interface LeafletMapInnerProps {
   activeFeatureTypes?: string[]
   /** Track polylines to render on the map. Each entry is one continuous track. */
   tracks?: MapPosition[][]
+  /** Stroke color for track polylines. Defaults to brand pine. */
+  trackColor?: string
+  /** Optional overlay marker position — used to sync the map with a chart cursor. */
+  cursorPosition?: MapPosition
 }
 
+const PINE = '#2C4A3E'
+
 /** Brand styling for track polylines */
-const TRACK_PATH_OPTIONS: L.PolylineOptions = {
-  color: '#2C4A3E',
-  weight: 3,
-  opacity: 0.85,
-  lineCap: 'round',
-  lineJoin: 'round',
+function trackPathOptions(color: string): L.PolylineOptions {
+  return {
+    color,
+    weight: 3,
+    opacity: 0.85,
+    lineCap: 'round',
+    lineJoin: 'round',
+  }
 }
 
 export default function LeafletMapInner({
@@ -212,6 +221,8 @@ export default function LeafletMapInner({
   featureLayers,
   activeFeatureTypes,
   tracks,
+  trackColor,
+  cursorPosition,
 }: LeafletMapInnerProps) {
   const visibleLayers = React.useMemo(() => {
     if (!featureLayers) return []
@@ -246,9 +257,25 @@ export default function LeafletMapInner({
         <Polyline
           key={`track-${index}`}
           positions={track.map((pt) => [pt.lat, pt.lng])}
-          pathOptions={TRACK_PATH_OPTIONS}
+          pathOptions={trackPathOptions(trackColor ?? PINE)}
         />
       ))}
+
+      {/* Optional cursor marker for chart ↔ map sync. interactive=false so it
+          never captures clicks meant for the underlying map. */}
+      {cursorPosition && (
+        <CircleMarker
+          center={[cursorPosition.lat, cursorPosition.lng]}
+          radius={7}
+          pathOptions={{
+            color: '#F8FAF7',
+            weight: 2,
+            fillColor: trackColor ?? PINE,
+            fillOpacity: 1,
+          }}
+          interactive={false}
+        />
+      )}
 
       {/* Feature markers — clustered to keep tap targets WCAG-compliant when
           markers cluster geographically. */}
