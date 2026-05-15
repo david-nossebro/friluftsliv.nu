@@ -1,4 +1,5 @@
 import { Route, TrendingUp, Clock, Calendar, RefreshCw } from 'lucide-react'
+import { formatSeason } from '@/lib/season'
 import type { RouteDetail } from '@/types'
 
 function formatDuration(minutes: number): string {
@@ -23,7 +24,7 @@ export function RouteDetailStatsBar({ route }: RouteDetailStatsBarProps) {
         { icon: TrendingUp, value: `${route.elevation} m`, label: 'Höjdmeter' },
         { icon: Clock, value: formatDuration(route.duration), label: 'Tid' },
         ...(route.season
-          ? [{ icon: Calendar, value: route.season, label: 'Säsong' }]
+          ? [{ icon: Calendar, value: formatSeason(route.season), label: 'Säsong' }]
           : []),
         ...(route.isRoundTrip !== undefined
           ? [{ icon: RefreshCw, value: route.isRoundTrip ? 'Tur/retur' : 'Enkel väg', label: 'Typ' }]

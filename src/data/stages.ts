@@ -62,8 +62,7 @@ export const stages: StageDetail[] = [
       'Första etappen från Abisko Turiststation är lätt att följa och ger dig en trygg övergång från vardag till fjäll. Du går genom gles björkskog, över spänger och förbi jokkar innan landskapet öppnar sig mot Abiskojaure. Det här är en bra dag att hitta tempo, justera packningen och landa i leden.',
     startPoint:
       'Starta vid STF Abisko Turiststation. Följ Kungsledens tydliga markeringar söderut från stationen.',
-    season:
-      'Mitten av juni till slutet av september. Tidigt på säsongen kan partier vara blöta efter snösmältning.',
+    season: { from: 'juni', to: 'september' },
     tips: [
       'Lämna gärna Abisko tidigt så får du en lugn första dag.',
       'Fyll på vatten längs vägen, men ha alltid med en egen flaska i lätt åtkomlig ficka.',
@@ -94,8 +93,7 @@ export const stages: StageDetail[] = [
     description:
       'Mellan Abiskojaure och Alesjaure blir Kungsleden luftigare. Fjällbjörken glesnar och du får mer himmel, mer vind och längre siktlinjer. Det är en dag som ofta känns längre än siffrorna säger, så ta pauser och håll ett jämnt tempo.',
     startPoint: 'Utgå från STF Abiskojaure och följ leden söderut längs dalgången.',
-    season:
-      'Mitten av juni till september. Vind och regn märks tydligare här än på första etappen.',
+    season: { from: 'juni', to: 'september' },
     tips: [
       'Räkna med en längre dag och fyll på snacks där du lätt kommer åt dem.',
       'Ta vindjackan nära till hands även om morgonen känns stilla.',
@@ -124,8 +122,7 @@ export const stages: StageDetail[] = [
     description:
       'Den här etappen är kortare men mer samlad i sin ansträngning. Du vinner höjd och rör dig genom ett öppnare, stenigare landskap där väder och vind får större betydelse. Tjäktja är en bra plats att samla kraft inför passagen över Tjäktjapasset nästa dag.',
     startPoint: 'Börja från STF Alesjaure och följ leden söderut upp genom dalen.',
-    season:
-      'Juni till september. Kyligare temperaturer och hårdare vindar är vanliga även mitt i sommaren.',
+    season: { from: 'juni', to: 'september' },
     tips: [
       'Ha torra förstärkningsplagg överst i packningen.',
       'Den kortare distansen gör etappen bra för återhämtning om gårdagen var tung.',
@@ -154,8 +151,7 @@ export const stages: StageDetail[] = [
     description:
       'Dagens höjdpunkt är bokstavlig: du går över Tjäktjapasset och får en av de klassiska utsikterna längs norra Kungsleden. Efter passet känns leden mer utför och mjukare, men underlaget kräver fortfarande uppmärksamhet. Sälka blir en tydlig vilopunkt efter en dag som många minns länge.',
     startPoint: 'Gå ut från Tjäktja tidigt om prognosen visar hård vind över passet.',
-    season:
-      'Juni till september. Tidigt på säsongen kan snöfält ligga kvar i anslutning till passet.',
+    season: { from: 'juni', to: 'september' },
     tips: [
       'Håll koll på vind och sikt innan du lämnar Tjäktja.',
       'Ta det lugnt i steniga partier även när leden går utför.',
@@ -184,8 +180,7 @@ export const stages: StageDetail[] = [
     description:
       'Från Sälka går du först mot Singi och viker sedan av mot Kebnekaise fjällstation. Det här är en dag där distansen märks. Samtidigt känns den ofta social, eftersom fler möts och leden närmar sig en av fjällvärldens mest välkända knutpunkter.',
     startPoint: 'Starta från STF Sälka och följ leden mot Singi innan du tar av mot Kebnekaise.',
-    season:
-      'Juli till september är oftast enklast. Tidigare på sommaren kan vattendrag och blöta partier göra dagen lång.',
+    season: { from: 'juli', to: 'september' },
     tips: [
       'Dela upp dagen i tydliga delmål så känns den längre sträckan mer hanterbar.',
       'Fyll på vatten innan du lämnar stugan och igen när du får bra tillfälle.',
@@ -214,8 +209,7 @@ export const stages: StageDetail[] = [
     description:
       'Avslutningen mot Nikkaluokta är tydlig, välgången och emotionell på sitt eget sätt. Många går snabbare än de tänkt, men det är värt att stanna upp en sista gång och se tillbaka mot fjällen. Här går Kungsleden över i hemresa och vila.',
     startPoint: 'Lämna Kebnekaise fjällstation mot Nikkaluokta. Följ leden och skyltningen österut.',
-    season:
-      'Juni till september. Vid högsäsong kan båtalternativet över Ladtjojaure korta dagen något.',
+    season: { from: 'juni', to: 'september' },
     tips: [
       'Spara lite energi till slutet, även om etappen känns enklare på papperet.',
       'Om båten går kan du välja ett kortare avslut från Ladtjojaure.',

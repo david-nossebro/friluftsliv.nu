@@ -23,6 +23,12 @@ export type RouteExploreCategory =
 
 export type ProtectedAreaKind = 'nationalpark' | 'naturreservat'
 
+export type Month =
+  | 'januari' | 'februari' | 'mars' | 'april' | 'maj' | 'juni'
+  | 'juli' | 'augusti' | 'september' | 'oktober' | 'november' | 'december'
+
+export type Season = { from: Month; to: Month } | 'year-round'
+
 export interface Route {
   id: string
   title: string
@@ -40,7 +46,7 @@ export interface Route {
 export interface RouteDetail extends Route {
   description: string
   startPoint?: string
-  season?: string
+  season?: Season
   tips?: string[]
   images?: string[]
   isRoundTrip?: boolean
@@ -63,7 +69,7 @@ export interface Stage extends Route {
 export interface StageDetail extends Stage {
   description: string
   startPoint?: string
-  season?: string
+  season?: Season
   tips?: string[]
   images?: string[]
   isRoundTrip?: boolean
@@ -89,7 +95,7 @@ export interface LongHike {
   stageIds: string[]
   imageUrl?: string
   images?: string[]
-  season?: string
+  season?: Season
   tips?: string[]
   terrain?: string
   waymarking?: string

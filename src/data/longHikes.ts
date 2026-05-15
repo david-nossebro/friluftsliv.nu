@@ -41,8 +41,7 @@ export const longHikes: LongHike[] = [
       'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=70&auto=format',
       'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=70&auto=format',
     ],
-    season:
-      'Mitten av juni till slutet av september. Snöfält kan ligga kvar tidigt på säsongen och vädret skiftar snabbt.',
+    season: { from: 'juni', to: 'september' },
     tips: [
       'Planera dagarna utifrån hur du vill bo och hur långt du vill bära mat.',
       'Lägg in lite marginal om du vill kunna vänta ut hårt väder vid pass eller längre etapper.',

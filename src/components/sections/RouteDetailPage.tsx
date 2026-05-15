@@ -8,6 +8,7 @@ import {
   Sun,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { formatSeason } from '@/lib/season'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DifficultyBadge } from '@/components/common/DifficultyBadge'
@@ -129,7 +130,7 @@ export function RouteDetailPage({ route, relatedRoutes, onBack, className }: Rou
 
         {route.season && (
           <ContentBlock heading="Säsong" icon={Sun}>
-            <p className="font-body text-sm text-ink leading-relaxed">{route.season}</p>
+            <p className="font-body text-sm text-ink leading-relaxed">{formatSeason(route.season)}</p>
           </ContentBlock>
         )}
 

@@ -1,4 +1,5 @@
 import { Lightbulb, MapPin, Route as RouteIcon, Trees } from 'lucide-react'
+import { formatSeason } from '@/lib/season'
 import { Badge } from '@/components/ui/badge'
 import { DifficultyBadge } from '@/components/common/DifficultyBadge'
 import { ImageGallery } from '@/components/sections/ImageGallery'
@@ -105,7 +106,7 @@ export function LongHikeDetailPage({
           </div>
           <div className="rounded-lg border border-mist-dark bg-snow p-4">
             <p className="font-body text-xs uppercase tracking-wide text-stone">Säsong</p>
-            <p className="mt-1 font-display text-lg text-pine">{longHike.season ? 'Sommar' : 'Se info'}</p>
+            <p className="mt-1 font-display text-lg text-pine">{longHike.season ? formatSeason(longHike.season) : 'Se info'}</p>
           </div>
         </div>
       </div>

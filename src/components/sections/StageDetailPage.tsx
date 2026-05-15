@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Download, Lightbulb, MapPin, Share2, Sun } from 'lucide-react'
+import { formatSeason } from '@/lib/season'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { DifficultyBadge } from '@/components/common/DifficultyBadge'
@@ -136,7 +137,7 @@ export function StageDetailPage({
 
         {stage.season && (
           <ContentBlock heading="Säsong" icon={Sun}>
-            <p className="font-body text-sm text-ink leading-relaxed">{stage.season}</p>
+            <p className="font-body text-sm text-ink leading-relaxed">{formatSeason(stage.season)}</p>
           </ContentBlock>
         )}
 
