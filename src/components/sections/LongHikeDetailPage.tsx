@@ -5,7 +5,7 @@ import { ImageGallery } from '@/components/sections/ImageGallery'
 import { ContentBlock } from '@/components/sections/ContentBlock'
 import { LongHikeStageList } from '@/components/sections/LongHikeStageList'
 import { RouteDetailAccessSection } from '@/components/sections/RouteDetailAccessSection'
-import { LeafletMap, SWEDEN_CENTER } from '@/components/map/LeafletMap'
+import { RouteMapSection } from '@/components/sections/RouteMapSection'
 import type { LongHike, Stage } from '@/types'
 
 function formatWalkingTime(minutes: number) {
@@ -125,24 +125,14 @@ export function LongHikeDetailPage({
           )}
         </div>
 
-        <section aria-labelledby="longhike-map-heading" className="flex flex-col gap-4">
-          <div>
-            <h2 id="longhike-map-heading" className="font-display text-2xl font-light text-pine">
-              Översikt på karta
-            </h2>
-            <p className="mt-2 font-body text-sm text-stone max-w-2xl">
-              Se hela sträckan först. Det gör det lättare att förstå hur etapperna hänger ihop.
-            </p>
-          </div>
-          <LeafletMap
-            center={longHike.coordinates ?? SWEDEN_CENTER}
-            zoom={longHike.coordinates ? 8 : 5}
-            height="420px"
-            aria-label={`Karta för ${longHike.title}`}
-            {...(featureLayers ? { featureLayers } : {})}
-            {...(longHike.gpxTrack ? { tracks: [longHike.gpxTrack] } : {})}
-          />
-        </section>
+        <RouteMapSection
+          title="Översikt på karta"
+          description="Se hela sträckan först. Det gör det lättare att förstå hur etapperna hänger ihop."
+          ariaLabel={`Karta för ${longHike.title}`}
+          {...(longHike.coordinates ? { center: longHike.coordinates, zoom: 8 } : {})}
+          {...(featureLayers ? { featureLayers } : {})}
+          {...(longHike.gpxTrack ? { tracks: [longHike.gpxTrack] } : {})}
+        />
 
         <LongHikeStageList stages={stages} />
 

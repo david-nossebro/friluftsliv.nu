@@ -1,20 +1,23 @@
 import type { ReactNode } from 'react'
 import {
   ArrowRight,
+  Download,
   MapPin,
   Lightbulb,
+  Share2,
   Sun,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { DifficultyBadge } from '@/components/common/DifficultyBadge'
 import { ImageGallery } from '@/components/sections/ImageGallery'
 import { ContentBlock } from '@/components/sections/ContentBlock'
 import { RouteDetailStatsBar } from './RouteDetailStatsBar'
 import { RouteDetailAccessSection } from './RouteDetailAccessSection'
-import { RouteDetailSidebar } from './RouteDetailSidebar'
+import { RouteMapSection } from './RouteMapSection'
 import { RouteDetailMobileBar } from './RouteDetailMobileBar'
-import type { RouteDetail } from '@/types'
+import type { MapFeatureLayer, RouteDetail } from '@/types'
 
 const activityLabels: Record<RouteDetail['activityType'], string> = {
   vandring:  'Vandring',
@@ -33,6 +36,25 @@ export interface RouteDetailPageProps {
 }
 
 export function RouteDetailPage({ route, relatedRoutes, onBack, className }: RouteDetailPageProps) {
+  const featureLayers: MapFeatureLayer[] | undefined = route.coordinates
+    ? [
+        {
+          type: 'start',
+          label: route.region,
+          color: '#2C4A3E',
+          markers: [
+            {
+              id: route.id,
+              position: route.coordinates,
+              type: 'start',
+              label: route.title,
+              description: route.region,
+            },
+          ],
+        },
+      ]
+    : undefined
+
   return (
     <article className={cn('bg-snow min-h-screen', className)}>
       {/* ── Hero ─────────────────────────────────── */}
@@ -72,50 +94,61 @@ export function RouteDetailPage({ route, relatedRoutes, onBack, className }: Rou
       <RouteDetailStatsBar route={route} />
 
       {/* ── Main content ─────────────────────────── */}
-      <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 lg:gap-12 items-start">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12 flex flex-col gap-10">
+        <ContentBlock heading="Om turen" body={route.description} />
 
-          {/* Left — content */}
-          <div className="flex flex-col gap-8">
-            {/* Description */}
-            <ContentBlock heading="Om turen" body={route.description} />
+        <RouteMapSection
+          title="Rutten på karta"
+          description="Se var rutten går innan du packar — det gör det lättare att planera dagen."
+          ariaLabel={`Karta för ${route.title}`}
+          {...(route.coordinates ? { center: route.coordinates, zoom: 12 } : {})}
+          {...(featureLayers ? { featureLayers } : {})}
+          {...(route.gpxTrack ? { tracks: [route.gpxTrack] } : {})}
+          actions={
+            <>
+              {route.gpxUrl && (
+                <Button asChild variant="secondary" size="md">
+                  <a href={route.gpxUrl} download>
+                    <Download size={15} />
+                    Ladda ned GPX
+                  </a>
+                </Button>
+              )}
+              <Button variant="ghost" size="md">
+                <Share2 size={15} />
+                Dela rutten
+              </Button>
+            </>
+          }
+        />
 
-            {/* Start point */}
-            {route.startPoint && (
-              <ContentBlock heading="Startpunkt & parkering" icon={MapPin} body={route.startPoint} />
-            )}
+        {route.startPoint && (
+          <ContentBlock heading="Startpunkt & parkering" icon={MapPin} body={route.startPoint} />
+        )}
 
-            {/* Season */}
-            {route.season && (
-              <ContentBlock heading="Säsong" icon={Sun}>
-                <p className="font-body text-sm text-ink leading-relaxed">{route.season}</p>
-              </ContentBlock>
-            )}
+        {route.season && (
+          <ContentBlock heading="Säsong" icon={Sun}>
+            <p className="font-body text-sm text-ink leading-relaxed">{route.season}</p>
+          </ContentBlock>
+        )}
 
-            {/* Tips */}
-            {route.tips && route.tips.length > 0 && (
-              <ContentBlock heading="Tips för turen" icon={Lightbulb}>
-                <ul className="flex flex-col gap-2">
-                  {route.tips.map((tip) => (
-                    <li key={tip} className="flex gap-2.5 font-body text-sm text-ink leading-relaxed">
-                      <span className="text-moss mt-0.5 shrink-0 font-medium" aria-hidden="true">·</span>
-                      {tip}
-                    </li>
-                  ))}
-                </ul>
-              </ContentBlock>
-            )}
+        {route.tips && route.tips.length > 0 && (
+          <ContentBlock heading="Tips för turen" icon={Lightbulb}>
+            <ul className="flex flex-col gap-2">
+              {route.tips.map((tip) => (
+                <li key={tip} className="flex gap-2.5 font-body text-sm text-ink leading-relaxed">
+                  <span className="text-moss mt-0.5 shrink-0 font-medium" aria-hidden="true">·</span>
+                  {tip}
+                </li>
+              ))}
+            </ul>
+          </ContentBlock>
+        )}
 
-            {/* Access */}
-            <RouteDetailAccessSection
-              {...(route.accessByCar ? { accessByCar: route.accessByCar } : {})}
-              {...(route.accessByTransport ? { accessByTransport: route.accessByTransport } : {})}
-            />
-          </div>
-
-          {/* Right sidebar */}
-          <RouteDetailSidebar route={route} />
-        </div>
+        <RouteDetailAccessSection
+          {...(route.accessByCar ? { accessByCar: route.accessByCar } : {})}
+          {...(route.accessByTransport ? { accessByTransport: route.accessByTransport } : {})}
+        />
       </div>
 
       {/* ── Related routes ────────────────────────── */}
