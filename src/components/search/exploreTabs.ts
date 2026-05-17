@@ -2,6 +2,7 @@ import type { ExploreTab } from '@/types'
 
 export const exploreTabs: { value: ExploreTab; label: string }[] = [
   { value: 'alla', label: 'Alla' },
+  { value: 'utflykter', label: 'Utflykter' },
   { value: 'vandring', label: 'Vandring' },
   { value: 'kanot', label: 'Kanot' },
   { value: 'skidturer', label: 'Skidturer' },

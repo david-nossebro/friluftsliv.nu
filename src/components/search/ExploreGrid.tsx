@@ -3,10 +3,12 @@ import { cn } from '@/lib/utils'
 import { AreaCard } from '@/components/cards/AreaCard'
 import { RouteCard } from '@/components/cards/RouteCard'
 import { CabinCard } from '@/components/cards/CabinCard'
-import type { Area, Route, Cabin } from '@/types'
+import { UtflyktCard } from '@/components/cards/UtflyktCard'
+import type { Area, Route, Cabin, Utflykt } from '@/types'
 
 export type ExploreItem =
   | { kind: 'area'; data: Area; routeCount: number; cabinCount: number }
+  | { kind: 'utflykt'; data: Utflykt }
   | { kind: 'route'; data: Route }
   | { kind: 'cabin'; data: Cabin }
 
@@ -53,6 +55,18 @@ export function ExploreGrid({ items, className }: ExploreGridProps) {
                     className={cardHover}
                     priority={isLcp}
                   />
+                </Link>
+              )
+            }
+            if (item.kind === 'utflykt') {
+              return (
+                <Link
+                  key={item.data.id}
+                  href={`/utflykter/${item.data.id}`}
+                  aria-label={`Visa ${item.data.title}`}
+                  className={linkBase}
+                >
+                  <UtflyktCard utflykt={item.data} className={cardHover} priority={isLcp} />
                 </Link>
               )
             }

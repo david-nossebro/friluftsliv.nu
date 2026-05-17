@@ -15,6 +15,7 @@ const typeConfig = {
   route:  { label: 'Rutt',   icon: Route },
   cabin:  { label: 'Stuga',  icon: Home },
   area:   { label: 'Område', icon: Map },
+  utflykt: { label: 'Utflykt', icon: MapPin },
   region: { label: 'Region', icon: MapPin },
 }
 

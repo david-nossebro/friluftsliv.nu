@@ -6,6 +6,7 @@ export type CabinServiceType = 'obetjänad' | 'betjänad' | 'självhushåll'
 
 export type ExploreTab =
   | 'alla'
+  | 'utflykter'
   | 'stugor'
   | 'vandring'
   | 'kanot'
@@ -18,6 +19,30 @@ export type RouteExploreCategory =
   | 'fjallvandring'
   | 'kanot'
   | 'skidturer'
+
+export interface Utflykt {
+  id: string
+  title: string
+  region: string
+  summary: string
+  travelTime: string
+  visitDuration: string
+  highlights: string[]
+  imageUrl?: string
+}
+
+export interface UtflyktDetail extends Utflykt {
+  description: string
+  images?: string[]
+  season?: Season
+  suitableFor?: string[]
+  facilities?: string[]
+  tips?: string[]
+  accessByCar?: string
+  accessByTransport?: string
+  coordinates?: { lat: number; lng: number }
+  areaIds?: string[]
+}
 
 export type ProtectedAreaKind = 'nationalpark' | 'naturreservat'
 
@@ -155,7 +180,7 @@ export interface AreaListItem {
 export interface SearchSuggestion {
   id: string
   name: string
-  type: 'route' | 'cabin' | 'area' | 'region'
+  type: 'route' | 'cabin' | 'area' | 'utflykt' | 'region'
   distance?: number
 }
 

@@ -27,6 +27,7 @@ export const SuggestionList: Story = {
   args: { suggestion: { id: '1', name: 'Kungsleden', type: 'route' } },
   render: () => (
     <div className="w-80 bg-white rounded-lg shadow-lg overflow-hidden border border-mist-dark">
+      <SearchResultRow suggestion={{ id: '0', name: 'Skäralid och Kopparhatten', type: 'utflykt' }} />
       <SearchResultRow suggestion={{ id: '1', name: 'Kungsleden', type: 'route', distance: 4.2 }} />
       <SearchResultRow suggestion={{ id: '2', name: 'Abiskojaure fjällstuga', type: 'cabin', distance: 12.1 }} />
       <SearchResultRow suggestion={{ id: '3', name: 'Sarek nationalpark', type: 'area' }} />

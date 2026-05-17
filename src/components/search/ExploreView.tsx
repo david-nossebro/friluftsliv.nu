@@ -7,11 +7,13 @@ import { AreaCardGrid } from '@/components/cards/AreaCardGrid'
 import { CabinCardGrid } from '@/components/cards/CabinCardGrid'
 import { LongHikeCardGrid } from '@/components/cards/LongHikeCardGrid'
 import { RouteCardGrid } from '@/components/cards/RouteCardGrid'
+import { UtflyktCardGrid } from '@/components/cards/UtflyktCardGrid'
 import { SectionJumpNav } from '@/components/common/SectionJumpNav'
-import type { Area, AreaListItem, Cabin, ExploreTab, LongHike, Route } from '@/types'
+import type { Area, AreaListItem, Cabin, ExploreTab, LongHike, Route, Utflykt } from '@/types'
 
 export interface ExploreViewProps {
   areas: AreaListItem[]
+  utflykter: Utflykt[]
   routes: Route[]
   longHikes: LongHike[]
   cabins: Cabin[]
@@ -41,6 +43,15 @@ function matchesRouteQuery(route: Route, query: string) {
   return [route.title, route.region].some((value) => value.toLowerCase().includes(q))
 }
 
+function matchesUtflyktQuery(utflykt: Utflykt, query: string) {
+  if (!query) return true
+
+  const q = query.toLowerCase()
+  return [utflykt.title, utflykt.region, utflykt.summary].some((value) =>
+    value.toLowerCase().includes(q),
+  )
+}
+
 function matchesLongHikeQuery(longHike: LongHike, query: string) {
   if (!query) return true
 
@@ -67,6 +78,7 @@ function EmptyState({ message }: { message: string }) {
 
 export function ExploreView({
   areas,
+  utflykter,
   routes,
   longHikes,
   cabins,
@@ -107,6 +119,10 @@ export function ExploreView({
     () => areas.filter(({ area }) => matchesAreaQuery(area, query)),
     [areas, query],
   )
+  const filteredUtflykter = React.useMemo(
+    () => utflykter.filter((utflykt) => matchesUtflyktQuery(utflykt, query)),
+    [utflykter, query],
+  )
   const filteredRoutes = React.useMemo(
     () => routes.filter((route) => matchesRouteQuery(route, query)),
     [routes, query],
@@ -137,7 +153,11 @@ export function ExploreView({
   )
 
   const allCount =
-    filteredAreas.length + filteredRoutes.length + filteredLongHikes.length + filteredCabins.length
+    filteredAreas.length +
+    filteredUtflykter.length +
+    filteredRoutes.length +
+    filteredLongHikes.length +
+    filteredCabins.length
 
   let content: React.ReactNode
 
@@ -202,6 +222,14 @@ export function ExploreView({
         <EmptyState message="Inget matchade din sökning. Försök med ett annat område eller ett kortare ord." />
       ) : (
         <>
+          {filteredUtflykter.length > 0 && (
+            <UtflyktCardGrid
+              title="Utflykter"
+              description="Lugna dagsmål för dig som vill komma ut utan att göra en stor plan av det."
+              utflykter={filteredUtflykter}
+              className="py-10 bg-mist"
+            />
+          )}
           {hikingSections.map((section) => (
             <div key={section.id} id={section.id} className="scroll-mt-24">
               {section.content}
@@ -231,6 +259,18 @@ export function ExploreView({
             />
           )}
         </>
+      )
+  } else if (tab === 'utflykter') {
+    content =
+      filteredUtflykter.length === 0 ? (
+        <EmptyState message="Inga utflykter matchade din sökning just nu." />
+      ) : (
+        <UtflyktCardGrid
+          title="Utflykter"
+          description="Platser du kan välja för en halvdag eller heldag, med lättare planering och tydlig start."
+          utflykter={filteredUtflykter}
+          className="py-10 bg-mist"
+        />
       )
   } else if (tab === 'vandring') {
     content =

@@ -1,6 +1,6 @@
 import { formatSeason } from '@/lib/season'
 import type { RouteStat } from '@/components/sections/RouteStatGrid'
-import type { LongHike, Season } from '@/types'
+import type { LongHike, Season, Utflykt } from '@/types'
 
 interface RouteLike {
   distance: number
@@ -62,5 +62,28 @@ export function buildLongHikeStats(
   if (longHike.season) {
     stats.push({ label: 'Säsong', value: formatSeason(longHike.season) })
   }
+  return stats
+}
+
+export function buildUtflyktStats(
+  utflykt: Pick<Utflykt, 'travelTime' | 'visitDuration' | 'highlights'> & {
+    season?: Season
+    suitableFor?: string[]
+  },
+): RouteStat[] {
+  const stats: RouteStat[] = [
+    { label: 'Resa', value: utflykt.travelTime },
+    { label: 'Tid på plats', value: utflykt.visitDuration },
+  ]
+
+  if (utflykt.season) {
+    stats.push({ label: 'Säsong', value: formatSeason(utflykt.season) })
+  }
+
+  const fitLabel = utflykt.suitableFor?.[0] ?? utflykt.highlights[0]
+  if (fitLabel) {
+    stats.push({ label: 'Passar för', value: fitLabel })
+  }
+
   return stats
 }

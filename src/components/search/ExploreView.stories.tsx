@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, userEvent, within } from '@storybook/test'
 import { ExploreView } from './ExploreView'
-import { cabins, getAreaListItems, longHikes, routes } from '@/data'
+import { cabins, getAreaListItems, longHikes, routes, utflykter } from '@/data'
 
 const meta = {
   title: 'Search/ExploreView',
@@ -16,6 +16,7 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
   args: {
     areas: getAreaListItems(),
+    utflykter,
     routes,
     longHikes,
     cabins,
@@ -23,6 +24,7 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const expectedOrder = [
+      'Utflykter',
       'Vandring',
       'Fjällvandring',
       'Långvandring',
@@ -51,6 +53,7 @@ export const Default: Story = {
 export const PreFilteredHiking: Story = {
   args: {
     areas: getAreaListItems(),
+    utflykter,
     routes,
     longHikes,
     cabins,
@@ -73,6 +76,7 @@ export const MobileFilters: Story = {
   },
   args: {
     areas: getAreaListItems(),
+    utflykter,
     routes,
     longHikes,
     cabins,
@@ -92,6 +96,7 @@ export const MobileFilters: Story = {
 export const PreFilteredCanoe: Story = {
   args: {
     areas: getAreaListItems(),
+    utflykter,
     routes,
     longHikes,
     cabins,
@@ -99,9 +104,21 @@ export const PreFilteredCanoe: Story = {
   },
 }
 
+export const PreFilteredUtflykter: Story = {
+  args: {
+    areas: getAreaListItems(),
+    utflykter,
+    routes,
+    longHikes,
+    cabins,
+    initialTab: 'utflykter',
+  },
+}
+
 export const ProtectedAreasOnly: Story = {
   args: {
     areas: getAreaListItems(),
+    utflykter,
     routes,
     longHikes,
     cabins,
@@ -112,6 +129,7 @@ export const ProtectedAreasOnly: Story = {
 export const NoResults: Story = {
   args: {
     areas: getAreaListItems(),
+    utflykter,
     routes,
     longHikes,
     cabins,
@@ -122,6 +140,7 @@ export const NoResults: Story = {
 export const QueryFromHeaderSearch: Story = {
   args: {
     areas: getAreaListItems(),
+    utflykter,
     routes,
     longHikes,
     cabins,

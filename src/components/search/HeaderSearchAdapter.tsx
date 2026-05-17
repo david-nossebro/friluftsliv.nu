@@ -23,8 +23,11 @@ export function HeaderSearchAdapter({
   }
 
   function handleSuggestionSelect(suggestion: SearchSuggestion) {
-    const id = suggestion.id.replace(/^(route|cabin|area|region)-/, '')
+    const id = suggestion.id.replace(/^(route|cabin|area|utflykt|region)-/, '')
     switch (suggestion.type) {
+      case 'utflykt':
+        router.push(`/utflykter/${id}`)
+        return
       case 'route':
         router.push(`/turer/${id}`)
         return

@@ -2,6 +2,8 @@ import type {
   Route,
   RouteDetail,
   RouteExploreCategory,
+  Utflykt,
+  UtflyktDetail,
   LongHike,
   Stage,
   StageDetail,
@@ -20,9 +22,10 @@ import { longHikes } from './longHikes'
 import { stages } from './stages'
 import { cabins } from './cabins'
 import { areas } from './areas'
+import { utflykter } from './utflykter'
 import { defaultSuggestions } from './suggestions'
 
-export { routes, longHikes, stages, cabins, areas, defaultSuggestions }
+export { routes, longHikes, stages, cabins, areas, utflykter, defaultSuggestions }
 
 type WithRegion = {
   id: string
@@ -44,6 +47,11 @@ function isSamePrimaryRegion(item: WithRegion, region: string) {
   return getPrimaryRegion(item.region) === getPrimaryRegion(region)
 }
 
+function hasSharedAreaIds(left?: string[], right?: string[]) {
+  if (!left || !right) return false
+  return left.some((id) => right.includes(id))
+}
+
 function toRouteExploreItem(data: Route): ExploreItem {
   return {
     kind: 'route',
@@ -60,6 +68,13 @@ function toRouteExploreItem(data: Route): ExploreItem {
       difficulty: data.difficulty,
       ...(data.imageUrl ? { imageUrl: data.imageUrl } : {}),
     },
+  }
+}
+
+function toUtflyktExploreItem(data: Utflykt): ExploreItem {
+  return {
+    kind: 'utflykt',
+    data,
   }
 }
 
@@ -100,6 +115,10 @@ function toMapMarker(
 
 export function getRouteById(id: string): RouteDetail | undefined {
   return routes.find((r) => r.id === id)
+}
+
+export function getUtflyktById(id: string): UtflyktDetail | undefined {
+  return utflykter.find((utflykt) => utflykt.id === id)
 }
 
 export function getLongHikeById(id: string): LongHike | undefined {
@@ -156,6 +175,10 @@ export function getRoutesForAreaId(areaId: string): Route[] {
   return routes.filter((route) => route.areaIds?.includes(areaId))
 }
 
+export function getUtflykterForAreaId(areaId: string): Utflykt[] {
+  return utflykter.filter((utflykt) => utflykt.areaIds?.includes(areaId))
+}
+
 export function getCabinsForAreaId(areaId: string): Cabin[] {
   return cabins.filter((cabin) => cabin.areaIds?.includes(areaId))
 }
@@ -210,6 +233,32 @@ export function getRelatedRoutes(route: RouteDetail, n = 3): Route[] {
   return [...sameRegion, ...others].slice(0, n)
 }
 
+export function getRelatedUtflykter(utflykt: UtflyktDetail, n = 3): Utflykt[] {
+  const sharedArea = utflykter.filter((candidate) => {
+    return candidate.id !== utflykt.id && hasSharedAreaIds(candidate.areaIds, utflykt.areaIds)
+  })
+
+  if (sharedArea.length >= n) return sharedArea.slice(0, n)
+
+  const sameRegion = utflykter.filter((candidate) => {
+    return (
+      candidate.id !== utflykt.id &&
+      !sharedArea.includes(candidate) &&
+      isSamePrimaryRegion(candidate, utflykt.region)
+    )
+  })
+
+  if (sharedArea.length + sameRegion.length >= n) {
+    return [...sharedArea, ...sameRegion].slice(0, n)
+  }
+
+  const others = utflykter.filter(
+    (candidate) => candidate.id !== utflykt.id && !sharedArea.includes(candidate) && !sameRegion.includes(candidate),
+  )
+
+  return [...sharedArea, ...sameRegion, ...others].slice(0, n)
+}
+
 export function getRelatedCabins(cabin: CabinDetail, n = 3): Cabin[] {
   const sameRegion = cabins.filter((candidate) => {
     return candidate.id !== cabin.id && isSamePrimaryRegion(candidate, cabin.region)
@@ -223,6 +272,7 @@ export function getRelatedCabins(cabin: CabinDetail, n = 3): Cabin[] {
 
 export function getAllExploreItems(): ExploreItem[] {
   return [
+    ...utflykter.map(toUtflyktExploreItem),
     ...areas.map(toAreaExploreItem),
     ...routes.map(toRouteExploreItem),
     ...cabins.map(toCabinExploreItem),
@@ -230,6 +280,10 @@ export function getAllExploreItems(): ExploreItem[] {
 }
 
 export function getMapFeatureLayers(): MapFeatureLayer[] {
+  const utflyktMarkers = utflykter
+    .filter(hasCoordinates)
+    .map((utflykt) => toMapMarker(utflykt, 'utflykt'))
+
   const routeMarkers = routes
     .filter(hasCoordinates)
     .map((route) => toMapMarker(route, 'route'))
@@ -239,6 +293,13 @@ export function getMapFeatureLayers(): MapFeatureLayer[] {
     .map((cabin) => toMapMarker(cabin, 'cabin'))
 
   return [
+    {
+      type: 'utflykt',
+      label: 'Utflykter',
+      icon: '🌿',
+      color: '#4A7C59',
+      markers: utflyktMarkers,
+    },
     {
       type: 'route',
       label: 'Rutter',

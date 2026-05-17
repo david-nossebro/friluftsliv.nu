@@ -57,7 +57,7 @@ export function MapView({
           height="100%"
           showFullscreenToggle={false}
           className="h-full w-full rounded-none border-0"
-          aria-label="Sverige — rutter och stugor"
+          aria-label="Sverige — utflykter, rutter och stugor"
           zoom={initialZoom}
           featureLayers={filteredLayers}
           {...(initialCenter ? { center: initialCenter } : {})}

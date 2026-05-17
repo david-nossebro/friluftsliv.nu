@@ -1,4 +1,5 @@
 import type { SearchSuggestion } from '@/types'
+import { utflykter } from './utflykter'
 import { routes } from './routes'
 import { cabins } from './cabins'
 import { areas } from './areas'
@@ -11,6 +12,11 @@ const regions: SearchSuggestion[] = [
 ]
 
 export const defaultSuggestions: SearchSuggestion[] = [
+  ...utflykter.map<SearchSuggestion>((utflykt) => ({
+    id: `utflykt-${utflykt.id}`,
+    name: utflykt.title,
+    type: 'utflykt',
+  })),
   ...routes.map<SearchSuggestion>((r) => ({
     id: `route-${r.id}`,
     name: r.title,

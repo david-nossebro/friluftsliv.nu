@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { ExploreView } from '@/components/search/ExploreView'
-import { cabins, getAreaListItems, longHikes, routes } from '@/data'
+import { cabins, getAreaListItems, longHikes, routes, utflykter } from '@/data'
 import type { ExploreTab } from '@/types'
 
 export const metadata: Metadata = {
@@ -26,6 +26,7 @@ export default async function AreasPage({
     <PageLayout currentPath="/utforska">
       <ExploreView
         areas={getAreaListItems()}
+        utflykter={utflykter}
         routes={routes}
         longHikes={longHikes}
         cabins={cabins}
