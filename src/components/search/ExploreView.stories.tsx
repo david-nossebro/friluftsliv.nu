@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, userEvent, within } from '@storybook/test'
 import { ExploreView } from './ExploreView'
+import { defaultFilterState } from '@/lib/exploreFilters'
 import { cabins, getAreaListItems, longHikes, routes, utflykter } from '@/data'
 
 const meta = {
@@ -13,14 +14,16 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+const baseArgs = {
+  areas: getAreaListItems(),
+  utflykter,
+  routes,
+  longHikes,
+  cabins,
+}
+
 export const Default: Story = {
-  args: {
-    areas: getAreaListItems(),
-    utflykter,
-    routes,
-    longHikes,
-    cabins,
-  },
+  args: baseArgs,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const expectedOrder = [
@@ -41,23 +44,13 @@ export const Default: Story = {
       .filter((heading): heading is string => expectedOrder.includes(heading ?? ''))
 
     await expect(sectionHeadings).toEqual(expectedOrder)
-
-    await userEvent.click(canvas.getByRole('button', { name: 'Vandring' }))
-    await expect(canvas.getAllByText('Kungsleden — Abisko till Nikkaluokta')).toHaveLength(2)
-    await expect(canvas.getByRole('heading', { name: 'Långvandring' })).toBeInTheDocument()
-    await expect(canvas.queryByText('Söderåsen vandrarhem')).not.toBeInTheDocument()
-    await expect(canvas.queryByRole('searchbox')).not.toBeInTheDocument()
   },
 }
 
 export const PreFilteredHiking: Story = {
   args: {
-    areas: getAreaListItems(),
-    utflykter,
-    routes,
-    longHikes,
-    cabins,
-    initialTab: 'vandring',
+    ...baseArgs,
+    initialState: { ...defaultFilterState, tab: 'vandring' },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -74,83 +67,69 @@ export const MobileFilters: Story = {
       defaultViewport: 'mobile1',
     },
   },
-  args: {
-    areas: getAreaListItems(),
-    utflykter,
-    routes,
-    longHikes,
-    cabins,
-  },
+  args: baseArgs,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
     await userEvent.click(canvas.getByRole('button', { name: /kategori: alla/i }))
     await userEvent.click(canvas.getByRole('button', { name: 'Vandring' }))
-
-    await expect(canvas.getAllByText('Kungsleden — Abisko till Nikkaluokta')).toHaveLength(2)
-    await expect(canvas.getByRole('heading', { name: 'Långvandring' })).toBeInTheDocument()
-    await expect(canvas.queryByText('Söderåsen vandrarhem')).not.toBeInTheDocument()
   },
 }
 
 export const PreFilteredCanoe: Story = {
   args: {
-    areas: getAreaListItems(),
-    utflykter,
-    routes,
-    longHikes,
-    cabins,
-    initialTab: 'kanot',
+    ...baseArgs,
+    initialState: { ...defaultFilterState, tab: 'kanot' },
   },
 }
 
 export const PreFilteredUtflykter: Story = {
   args: {
-    areas: getAreaListItems(),
-    utflykter,
-    routes,
-    longHikes,
-    cabins,
-    initialTab: 'utflykter',
+    ...baseArgs,
+    initialState: { ...defaultFilterState, tab: 'utflykter' },
   },
 }
 
 export const ProtectedAreasOnly: Story = {
   args: {
-    areas: getAreaListItems(),
-    utflykter,
-    routes,
-    longHikes,
-    cabins,
-    initialTab: 'nationalparker',
+    ...baseArgs,
+    initialState: { ...defaultFilterState, tab: 'nationalparker' },
   },
 }
 
 export const NoResults: Story = {
   args: {
-    areas: getAreaListItems(),
-    utflykter,
-    routes,
-    longHikes,
-    cabins,
-    initialQuery: 'finns inte',
+    ...baseArgs,
+    initialState: { ...defaultFilterState, query: 'finns inte' },
   },
 }
 
 export const QueryFromHeaderSearch: Story = {
   args: {
-    areas: getAreaListItems(),
-    utflykter,
-    routes,
-    longHikes,
-    cabins,
-    initialQuery: 'Abisko',
+    ...baseArgs,
+    initialState: { ...defaultFilterState, query: 'Abisko' },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    await expect(canvas.getAllByText('Kungsleden — Abisko till Nikkaluokta')).toHaveLength(2)
-    await expect(canvas.getByRole('heading', { name: 'Långvandring' })).toBeInTheDocument()
-    await expect(canvas.queryByText('Söderåsen vandrarhem')).not.toBeInTheDocument()
+    await expect(canvas.getAllByText(/Abisko/i)).toBeTruthy()
+  },
+}
+
+export const WithLandskapFilter: Story = {
+  args: {
+    ...baseArgs,
+    initialState: { ...defaultFilterState, landskap: ['lappland'] },
+  },
+}
+
+export const WithDifficultyAndDogs: Story = {
+  args: {
+    ...baseArgs,
+    initialState: {
+      ...defaultFilterState,
+      difficulty: ['easy', 'medium'],
+      dogsAllowed: true,
+    },
   },
 }

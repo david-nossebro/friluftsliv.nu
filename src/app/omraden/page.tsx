@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { ExploreView } from '@/components/search/ExploreView'
+import { defaultFilterState } from '@/lib/exploreFilters'
 import { cabins, getAreaListItems, longHikes, routes, utflykter } from '@/data'
 import type { ExploreTab } from '@/types'
 
@@ -30,8 +31,7 @@ export default async function AreasPage({
         routes={routes}
         longHikes={longHikes}
         cabins={cabins}
-        initialQuery={initialQuery}
-        initialTab={initialTab}
+        initialState={{ ...defaultFilterState, query: initialQuery, tab: initialTab }}
       />
     </PageLayout>
   )

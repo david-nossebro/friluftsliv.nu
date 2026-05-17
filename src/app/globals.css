@@ -47,8 +47,26 @@
   --color-text-muted:     var(--color-stone);
   --color-primary:        var(--color-pine);
   --color-primary-hover:  var(--color-pine-dark);
+  --color-primary-foreground: var(--color-snow);
   --color-accent:         var(--color-ember);
   --color-accent-hover:   var(--color-ember-dark);
+  --color-accent-foreground: var(--color-snow);
+
+  /* shadcn-compatible aliases — brand-mapped so installed primitives
+     inherit the brand palette without rewrites. */
+  --color-secondary:           var(--color-mist);
+  --color-secondary-foreground: var(--color-ink);
+  --color-muted:               var(--color-mist);
+  --color-muted-foreground:    var(--color-stone);
+  --color-input:               var(--color-mist-dark);
+  --color-ring:                var(--color-moss);
+  --color-foreground:          var(--color-ink);
+  --color-card:                var(--color-surface);
+  --color-card-foreground:     var(--color-ink);
+  --color-popover:             var(--color-surface);
+  --color-popover-foreground:  var(--color-ink);
+  --color-destructive:         var(--color-ember-deep);
+  --color-destructive-foreground: var(--color-snow);
 
   /* ── FONTS ── */
   --font-display: var(--font-fraunces), Georgia, serif;

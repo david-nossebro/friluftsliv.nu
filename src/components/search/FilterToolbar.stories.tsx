@@ -1,0 +1,67 @@
+import type { Meta, StoryObj } from '@storybook/react'
+import * as React from 'react'
+import { FilterToolbar } from './FilterToolbar'
+import { defaultFilterState, type FilterState } from '@/lib/exploreFilters'
+
+function Wrapper({ initial, count }: { initial: FilterState; count: number }) {
+  const [state, setState] = React.useState(initial)
+  const [open, setOpen] = React.useState(false)
+  return (
+    <div className="p-6 bg-snow">
+      <FilterToolbar
+        state={state}
+        patch={(p) => setState((prev) => ({ ...prev, ...p }))}
+        count={count}
+        isOpen={open}
+        onToggle={() => setOpen((v) => !v)}
+        panelId="story-panel"
+        mobileTrigger={null}
+      />
+    </div>
+  )
+}
+
+const meta = {
+  title: 'Search/Filters/FilterToolbar',
+  component: Wrapper,
+  parameters: { layout: 'fullscreen' },
+  tags: ['autodocs'],
+} satisfies Meta<typeof Wrapper>
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+export const Default: Story = {
+  args: { initial: defaultFilterState, count: 42 },
+}
+
+export const WithActivePills: Story = {
+  args: {
+    initial: {
+      ...defaultFilterState,
+      difficulty: ['easy', 'medium'],
+      landskap: ['lappland'],
+      months: ['juni', 'juli'],
+      dogsAllowed: true,
+    },
+    count: 9,
+  },
+}
+
+export const ManyPills: Story = {
+  args: {
+    initial: {
+      ...defaultFilterState,
+      difficulty: ['easy', 'medium', 'hard'],
+      landskap: ['skane', 'lappland', 'jamtland', 'dalarna'],
+      months: ['juni', 'juli', 'augusti'],
+      dogsAllowed: true,
+      hasCabinsAlong: true,
+      routeShape: 'roundtrip',
+      publicTransport: 'reachable',
+      distanceMinKm: 5,
+      distanceMaxKm: 80,
+    },
+    count: 3,
+  },
+}

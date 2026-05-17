@@ -8,7 +8,6 @@ const mockCabin: Cabin = {
   region: 'Abisko, Norrbotten',
   amenities: ['Sovplatser', 'Kök', 'Torrtoalett', 'Vedspis'],
   pricePerNight: 350,
-  available: true,
   imageUrl: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=560&q=70&auto=format',
 }
 
@@ -25,12 +24,8 @@ type Story = StoryObj<typeof meta>
 const { imageUrl: _imageUrl, ...mockCabinWithoutImage } = mockCabin
 const { pricePerNight: _pricePerNight, ...mockCabinWithoutPrice } = mockCabin
 
-export const Available: Story = {
+export const Default: Story = {
   args: { cabin: mockCabin },
-}
-
-export const Booked: Story = {
-  args: { cabin: { ...mockCabin, available: false } },
 }
 
 export const NoImage: Story = {
@@ -46,7 +41,7 @@ export const CardGrid: Story = {
   render: () => (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
       <CabinCard cabin={mockCabin} />
-      <CabinCard cabin={{ ...mockCabin, id: '2', title: 'Kebnekaise Fjällstation', available: false, pricePerNight: 890 }} />
+      <CabinCard cabin={{ ...mockCabin, id: '2', title: 'Kebnekaise Fjällstation', pricePerNight: 890 }} />
       <CabinCard cabin={{ ...mockCabin, id: '3', title: 'Sylarna STF Fjällstation', pricePerNight: 595, amenities: ['Sovplatser', 'Restaurang'] }} />
     </div>
   ),

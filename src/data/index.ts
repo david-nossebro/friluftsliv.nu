@@ -87,7 +87,6 @@ function toCabinExploreItem(data: Cabin): ExploreItem {
       region: data.region,
       ...(data.areaIds ? { areaIds: data.areaIds } : {}),
       amenities: data.amenities,
-      available: data.available,
       ...(data.pricePerNight != null ? { pricePerNight: data.pricePerNight } : {}),
       ...(data.imageUrl ? { imageUrl: data.imageUrl } : {}),
     },

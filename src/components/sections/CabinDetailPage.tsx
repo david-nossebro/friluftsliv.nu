@@ -37,8 +37,6 @@ export function CabinDetailPage({
   onBack,
   className,
 }: CabinDetailPageProps) {
-  const availabilityVariant = cabin.available ? 'moss' : 'ember'
-  const availabilityLabel  = cabin.available ? 'Tillgänglig' : 'Bokad'
   const featureLayers = cabin.coordinates
     ? [
         {
@@ -79,7 +77,6 @@ export function CabinDetailPage({
             )}
             <div className="flex items-center gap-2 flex-wrap">
               <Badge variant="mist" size="sm">{serviceTypeLabels[cabin.serviceType]}</Badge>
-              <Badge variant={availabilityVariant} size="sm">{availabilityLabel}</Badge>
             </div>
             <h1 className="font-display text-2xl md:text-3xl font-light text-snow leading-tight">
               {cabin.title}

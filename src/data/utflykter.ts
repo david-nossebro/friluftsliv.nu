@@ -5,6 +5,10 @@ export const utflykter: UtflyktDetail[] = [
     id: 'skaralid-kopparhatten',
     title: 'Skäralid och Kopparhatten',
     region: 'Skåne län',
+    landskap: ['skane'],
+    kommun: ['Klippan', 'Svalöv'],
+    publicTransport: { mode: 'reachable', lines: ['Buss 521'] },
+    dogsAllowed: true,
     summary: 'En lätt dagsutflykt med naturum, bokskog och en utsiktspunkt du når utan lång planering.',
     description:
       'Skäralid är en trygg start för dig som vill komma ut i naturen över dagen. Du börjar vid naturum, går genom bokskogen och kan fortsätta upp till Kopparhatten för utsikt över Söderåsens sprickdal. Det passar lika bra för en lugn förmiddag som för flera timmar med fika, kort vandring och stopp längs vägen.',
@@ -33,6 +37,10 @@ export const utflykter: UtflyktDetail[] = [
     id: 'tyresta-by-och-skogsstig',
     title: 'Tyresta by och skogsstigen mot Stensjön',
     region: 'Stockholms län',
+    landskap: ['sodermanland'],
+    kommun: ['Tyresö', 'Haninge'],
+    publicTransport: { mode: 'reachable', lines: ['Buss 807'] },
+    dogsAllowed: true,
     summary: 'En nära-Stockholm-utflykt med naturum, grillplatser och enkla stigar som funkar fint utan heldagslogistik.',
     description:
       'Tyresta by är en lugn plats att börja i när du vill ut i skogen utan att göra en stor expedition av dagen. Här finns naturum, öppna ytor för paus och flera stigar som går att anpassa efter ork, väder och sällskap. Du kan gå en kort runda, stanna vid grillplatsen eller fortsätta mot Stensjön om du vill vara ute längre.',
@@ -61,6 +69,10 @@ export const utflykter: UtflyktDetail[] = [
     id: 'hellasgarden-och-kalltorpssjon',
     title: 'Hellasgården och Källtorpssjön',
     region: 'Stockholms län',
+    landskap: ['sodermanland'],
+    kommun: ['Nacka'],
+    publicTransport: { mode: 'reachable', lines: ['Buss 401'] },
+    dogsAllowed: true,
     summary: 'Bad, bastu, skogsstigar och enkel kollektivtrafik gör Hellasgården till en mjuk utflykt över dagen.',
     description:
       'Hellasgården är en av de enklaste platserna att välja när du vill komma ut i naturen men ändå ha service nära. Här kan du bada, gå en kort runda runt sjön, stanna för lunch eller ta bastu innan du åker hem. Utflykten fungerar både för spontana vardagseftermiddagar och långsamma helgdagar.',
@@ -89,6 +101,10 @@ export const utflykter: UtflyktDetail[] = [
     id: 'abisko-canyon-och-naturum',
     title: 'Abisko canyon och naturum',
     region: 'Norrbotten, Lappland',
+    landskap: ['lappland'],
+    kommun: ['Kiruna'],
+    publicTransport: { mode: 'reachable', lines: ['Nattåg 95'] },
+    dogsAllowed: true,
     summary: 'En lättillgänglig fjällutflykt med broar, utsikt och naturum precis vid tåget.',
     description:
       'Abisko är ovanligt enkelt att börja i om du vill känna fjällmiljö utan att planera flera dagar. Från turiststationen når du canyon, broar och utsiktspunkter på kort tid. Det gör platsen bra för dig som vill känna fjället för första gången eller fylla en dag med korta promenader och många stopp.',

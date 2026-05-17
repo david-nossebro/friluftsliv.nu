@@ -18,6 +18,13 @@ export const longHikes: LongHike[] = [
     id: 'kungsleden-abisko-nikkaluokta',
     title: 'Kungsleden — Abisko till Nikkaluokta',
     region: 'Norrbotten, Lappland',
+    landskap: ['lappland', 'norrbotten'],
+    kommun: ['Kiruna', 'Gällivare'],
+    routeShape: 'point-to-point',
+    publicTransport: { mode: 'reachable', lines: ['Nattåg 95', 'Buss 91'] },
+    dogsAllowed: false,
+    tentingAllowed: true,
+    cabinIds: ['abiskojaure', 'salka', 'kebnekaise-fjallstation'],
     summary:
       'En klassisk långvandring genom öppen fjällterräng, med stugor ungefär en dagsetapp från varandra och tydliga delmål längs vägen.',
     description:

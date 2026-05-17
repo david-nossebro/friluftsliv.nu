@@ -45,6 +45,8 @@ export const Default: Story = {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('heading', { name: mockRoute.title })).toBeInTheDocument()
     await expect(canvas.getByText('Distans')).toBeInTheDocument()
+    await expect(canvas.getByText('Upp')).toBeInTheDocument()
+    await expect(canvas.getByText('Ned')).toBeInTheDocument()
   },
 }
 

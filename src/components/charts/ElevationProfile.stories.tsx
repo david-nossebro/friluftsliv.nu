@@ -34,7 +34,12 @@ export const Default: Story = {
     await expect(
       canvas.getByRole('slider', { name: /höjdprofil/i }),
     ).toBeInTheDocument()
-    await expect(canvas.getByText(/höjd:.*höjdmeter.*km/i)).toBeInTheDocument()
+    await expect(canvas.getByText('Upp')).toBeInTheDocument()
+    await expect(canvas.getByText('Ned')).toBeInTheDocument()
+    await expect(canvas.queryByText('Vandring')).toBeNull()
+    await expect(canvas.queryByText(/höjd:.*höjdmeter.*km/i)).toBeNull()
+    await expect(canvasElement.querySelector('defs')).toBeNull()
+    await expect(canvasElement.querySelectorAll('[data-steepness-column="true"]').length).toBeGreaterThan(40)
   },
 }
 

@@ -98,7 +98,8 @@ export const WithElevation: Story = {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('heading', { name: 'Rutten på karta' })).toBeInTheDocument()
     await expect(canvas.getByRole('slider', { name: /höjdprofil/i })).toBeInTheDocument()
-    await expect(canvas.getByText(/höjdmeter/i)).toBeInTheDocument()
+    await expect(canvas.getByText('Upp')).toBeInTheDocument()
+    await expect(canvas.getByText('Ned')).toBeInTheDocument()
   },
 }
 

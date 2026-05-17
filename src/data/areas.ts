@@ -14,6 +14,9 @@ export const areas: Area[] = [
       'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=70&auto=format',
       'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=70&auto=format',
     ],
+    landskap: ['lappland'],
+    kommun: ['Kiruna'],
+    coordinates: { lat: 68.3530, lng: 18.8200 },
   },
   {
     id: 'soderasen',
@@ -28,6 +31,9 @@ export const areas: Area[] = [
       'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=70&auto=format',
       'https://images.unsplash.com/photo-1511497584788-876760111969?w=800&q=70&auto=format',
     ],
+    landskap: ['skane'],
+    kommun: ['Klippan', 'Svalöv'],
+    coordinates: { lat: 56.0420, lng: 13.2380 },
   },
   {
     id: 'tyresta',
@@ -42,6 +48,9 @@ export const areas: Area[] = [
       'https://images.unsplash.com/photo-1448375240586-882707db888b?w=800&q=70&auto=format',
       'https://images.unsplash.com/photo-1511497584788-876760111969?w=800&q=70&auto=format',
     ],
+    landskap: ['sodermanland'],
+    kommun: ['Tyresö', 'Haninge'],
+    coordinates: { lat: 59.1670, lng: 18.2780 },
   },
   {
     id: 'padjelanta',
@@ -56,6 +65,9 @@ export const areas: Area[] = [
       'https://images.unsplash.com/photo-1455156218388-5e61b526818b?w=800&q=70&auto=format',
       'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=70&auto=format',
     ],
+    landskap: ['lappland'],
+    kommun: ['Jokkmokk', 'Gällivare'],
+    coordinates: { lat: 67.4050, lng: 17.4450 },
   },
   {
     id: 'nackareservatet',
@@ -66,6 +78,9 @@ export const areas: Area[] = [
     description:
       'Nackareservatet är ett enkelt sätt att komma ut i naturen utan lång resa. Här finns badsjöar, motionsspår och markerade leder som passar bra för en halvdag eller heldag i skogen. Området är särskilt bra för dig som vill kombinera kollektivtrafik med en lugn vandring.',
     imageUrl: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=70&auto=format',
+    landskap: ['sodermanland'],
+    kommun: ['Nacka'],
+    coordinates: { lat: 59.2870, lng: 18.1240 },
   },
   {
     id: 'erstavik',
@@ -76,6 +91,9 @@ export const areas: Area[] = [
     description:
       'Erstavik ligger nära Stockholm men bjuder på ett lugn som känns långt från vardagen. Här rör du dig mellan skog, öppna marker och småsjöar. Reservatet passar bra för dagsvandring och för dig som vill avsluta turen nära kollektivtrafik.',
     imageUrl: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&q=70&auto=format',
+    landskap: ['sodermanland'],
+    kommun: ['Nacka'],
+    coordinates: { lat: 59.2320, lng: 18.2710 },
   },
   {
     id: 'dalslands-kanal',
@@ -86,5 +104,8 @@ export const areas: Area[] = [
     description:
       'Dalslands kanal är ett område där paddling och naturupplevelse går hand i hand. Här rör du dig genom sjöar, smala sund och gamla kanalavsnitt i en miljö som är lätt att läsa även för dig som inte paddlat många längre turer tidigare.',
     imageUrl: 'https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=800&q=70&auto=format',
+    landskap: ['dalsland'],
+    kommun: ['Bengtsfors', 'Mellerud'],
+    coordinates: { lat: 59.0290, lng: 12.2320 },
   },
 ]

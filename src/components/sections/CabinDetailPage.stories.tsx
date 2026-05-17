@@ -8,9 +8,9 @@ import type { Cabin } from '@/types'
 
 const mockCabin = cabins[0]
 const staffedCabin = cabins.find((c) => c.serviceType === 'betjänad') ?? cabins[1]
-const unavailableCabin = cabins.find((c) => !c.available) ?? cabins[3]
+const selfServiceCabin = cabins.find((c) => c.serviceType === 'självhushåll') ?? cabins[3]
 
-if (!mockCabin || !staffedCabin || !unavailableCabin) {
+if (!mockCabin || !staffedCabin || !selfServiceCabin) {
   throw new Error('Expected seeded cabin fixtures for CabinDetailPage stories.')
 }
 
@@ -25,12 +25,11 @@ const {
 const relatedCabins: Cabin[] = cabins
   .filter((c) => c.id !== mockCabin.id)
   .slice(0, 3)
-  .map(({ id, title, region, amenities, pricePerNight, available, imageUrl }) => ({
+  .map(({ id, title, region, amenities, pricePerNight, imageUrl }) => ({
     id,
     title,
     region,
     amenities,
-    available,
     ...(pricePerNight != null ? { pricePerNight } : {}),
     ...(imageUrl ? { imageUrl } : {}),
   }))
@@ -88,9 +87,9 @@ export const StaffedCabin: Story = {
   },
 }
 
-export const Unavailable: Story = {
+export const SelfServiceCabin: Story = {
   args: {
-    cabin: unavailableCabin,
-    facilityItems: toFacilityItems(unavailableCabin.facilities),
+    cabin: selfServiceCabin,
+    facilityItems: toFacilityItems(selfServiceCabin.facilities),
   },
 }

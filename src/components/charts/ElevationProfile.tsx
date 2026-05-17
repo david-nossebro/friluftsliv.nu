@@ -9,7 +9,8 @@ import {
   type KeyboardEvent,
   type PointerEvent,
 } from 'react'
-import { cumulativeDistanceKm } from '@/lib/elevation'
+import { ArrowDown, ArrowUp } from 'lucide-react'
+import { cumulativeDistanceKm, summarizeElevation } from '@/lib/elevation'
 import { getActivityColor } from '@/lib/activityColor'
 import type { ActivityType, MapPosition } from '@/types'
 
@@ -26,13 +27,18 @@ export interface ElevationProfileProps {
   onScrub?: (distanceKm: number | null) => void
 }
 
-const ACTIVITY_LABELS: Record<ActivityType, string> = {
-  vandring: 'Vandring',
-  topptur: 'Topptur',
-  skidtur: 'Skidtur',
-  cykeltur: 'Cykeltur',
-  paddeltur: 'Paddeltur',
-  stugtur: 'Stugtur',
+interface SteepnessStop {
+  distanceKm: number
+  steepnessRatio: number
+}
+
+function getSteepnessColor(ratio: number): string {
+  if (ratio >= 0.85) return 'var(--color-pine)'
+  if (ratio >= 0.65) return 'var(--color-pine-light)'
+  if (ratio >= 0.45) return 'var(--color-moss)'
+  if (ratio >= 0.25) return 'var(--color-moss-light)'
+  if (ratio >= 0.1) return 'var(--color-birch)'
+  return 'var(--color-birch-pale)'
 }
 
 function formatKm(km: number): string {
@@ -48,20 +54,32 @@ export function ElevationProfile({
   onScrub,
 }: ElevationProfileProps) {
   const data = useMemo(() => {
-    if (track.length < 2) return null
-    if (track.some((p) => p.ele === undefined)) return null
+    const elevation = summarizeElevation(track)
+    if (!elevation) return null
     const cumKm = cumulativeDistanceKm(track)
     const totalKm = cumKm[cumKm.length - 1] ?? 0
     if (totalKm <= 0) return null
-    const eles = track.map((p) => p.ele as number)
-    const minE = Math.min(...eles)
-    const maxE = Math.max(...eles)
-    let gain = 0
-    for (let i = 1; i < eles.length; i++) {
-      const d = (eles[i] ?? 0) - (eles[i - 1] ?? 0)
-      if (d > 0) gain += d
-    }
-    return { cumKm, totalKm, minE, maxE, gain }
+
+    const segmentSteepness = track.slice(1).map((point, index) => {
+      const previousPoint = track[index]
+      const segmentKm = (cumKm[index + 1] ?? 0) - (cumKm[index] ?? 0)
+      if (!previousPoint || segmentKm <= 0) return 0
+      return Math.abs((point.ele as number) - (previousPoint.ele as number)) / segmentKm
+    })
+
+    const maxSteepness = Math.max(...segmentSteepness, 0)
+    const pointSteepness = track.map((_, index) => {
+      if (index === 0) return segmentSteepness[0] ?? 0
+      if (index === track.length - 1) return segmentSteepness[segmentSteepness.length - 1] ?? 0
+      return ((segmentSteepness[index - 1] ?? 0) + (segmentSteepness[index] ?? 0)) / 2
+    })
+
+    const steepnessStops: SteepnessStop[] = pointSteepness.map((value, index) => ({
+      distanceKm: cumKm[index] ?? 0,
+      steepnessRatio: maxSteepness === 0 ? 0 : value / maxSteepness,
+    }))
+
+    return { cumKm, totalKm, steepnessStops, ...elevation }
   }, [track])
 
   const captionId = useId()
@@ -82,23 +100,21 @@ export function ElevationProfile({
 
   if (!data) return null
 
-  const { cumKm, totalKm, minE, maxE, gain } = data
+  const { cumKm, totalKm, minElevation, maxElevation, ascent, descent, steepnessStops } = data
   const color = getActivityColor(activityType)
   const plotW = Math.max(1, width - PADDING.left - PADDING.right)
   const plotH = Math.max(1, height - PADDING.top - PADDING.bottom)
-  const eleRange = Math.max(1, maxE - minE)
+  const eleRange = Math.max(1, maxElevation - minElevation)
   const baselineY = height - PADDING.bottom
 
   const xForKm = (km: number) => PADDING.left + (km / totalKm) * plotW
-  const yForEle = (ele: number) => PADDING.top + (1 - (ele - minE) / eleRange) * plotH
+  const yForEle = (ele: number) =>
+    PADDING.top + (1 - (ele - minElevation) / eleRange) * plotH
 
   const pts = track.map(
     (p, i) => `${xForKm(cumKm[i] ?? 0).toFixed(2)},${yForEle(p.ele as number).toFixed(2)}`,
   )
   const linePath = `M ${pts.join(' L ')}`
-  const areaPath =
-    `M ${xForKm(0).toFixed(2)},${baselineY} L ${pts.join(' L ')} ` +
-    `L ${xForKm(totalKm).toFixed(2)},${baselineY} Z`
 
   const cursorEle =
     cursorKm === null
@@ -162,11 +178,12 @@ export function ElevationProfile({
     report(null)
   }
 
-  const minLabel = Math.round(minE)
-  const maxLabel = Math.round(maxE)
+  const minLabel = Math.round(minElevation)
+  const maxLabel = Math.round(maxElevation)
   const totalLabel = Math.round(totalKm)
-  const gainLabel = Math.round(gain)
-  const caption = `Höjd: ${minLabel}–${maxLabel} m · totalt ${gainLabel} höjdmeter över ${totalLabel} km`
+  const ascentLabel = Math.round(ascent)
+  const descentLabel = Math.round(descent)
+  const accessibleSummary = `Totalt ${ascentLabel} meter uppför och ${descentLabel} meter nedför. Höjd mellan ${minLabel} och ${maxLabel} meter över ${totalLabel} kilometer.`
   const computedAriaLabel =
     ariaLabel ?? `Höjdprofil: ${minLabel} till ${maxLabel} meter över ${totalLabel} kilometer`
 
@@ -192,6 +209,41 @@ export function ElevationProfile({
     cursorKm !== null && cursorEle !== null
       ? `${formatKm(cursorKm)} km · ${Math.round(cursorEle)} m`
       : ''
+
+  const columnCount = Math.max(48, Math.floor(plotW / 5))
+  const columnWidth = Math.max(2.25, Math.min(4.25, plotW / (columnCount * 1.22)))
+  const steepnessColumns = Array.from({ length: columnCount }, (_, index) => {
+    const ratioAlongTrack = columnCount === 1 ? 0 : index / (columnCount - 1)
+    const distanceKm = totalKm * ratioAlongTrack
+
+    let segmentIndex = 1
+    while (
+      segmentIndex < cumKm.length &&
+      (cumKm[segmentIndex] ?? 0) < distanceKm
+    ) {
+      segmentIndex++
+    }
+
+    const prevDistance = cumKm[segmentIndex - 1] ?? 0
+    const nextDistance = cumKm[segmentIndex] ?? prevDistance
+    const segmentSpan = nextDistance - prevDistance
+    const segmentRatio = segmentSpan === 0 ? 0 : (distanceKm - prevDistance) / segmentSpan
+    const previousElevation = track[segmentIndex - 1]?.ele ?? 0
+    const nextElevation = track[segmentIndex]?.ele ?? previousElevation
+    const elevation = previousElevation + (nextElevation - previousElevation) * segmentRatio
+
+    const previousSteepness = steepnessStops[segmentIndex - 1]?.steepnessRatio ?? 0
+    const nextSteepness = steepnessStops[segmentIndex]?.steepnessRatio ?? previousSteepness
+    const steepnessRatio =
+      previousSteepness + (nextSteepness - previousSteepness) * segmentRatio
+
+    return {
+      x: xForKm(distanceKm) - columnWidth / 2,
+      y: yForEle(elevation),
+      height: Math.max(0, baselineY - yForEle(elevation)),
+      color: getSteepnessColor(steepnessRatio),
+    }
+  })
 
   return (
     <figure className="flex flex-col gap-2" data-activity={activityType ?? 'default'}>
@@ -220,7 +272,19 @@ export function ElevationProfile({
           aria-hidden="true"
           style={{ display: 'block' }}
         >
-          <path d={areaPath} fill={color} opacity="0.12" />
+          {steepnessColumns.map((column, index) => (
+            <rect
+              key={index}
+              x={column.x}
+              y={column.y}
+              width={columnWidth}
+              height={column.height}
+              fill={column.color}
+              opacity="0.58"
+              rx={columnWidth / 2}
+              data-steepness-column="true"
+            />
+          ))}
           <path
             d={linePath}
             fill="none"
@@ -310,19 +374,18 @@ export function ElevationProfile({
           </div>
         )}
       </div>
-      <figcaption id={captionId} className="flex items-center gap-2 font-body text-xs text-stone">
-        {activityType && (
-          <span className="inline-flex items-center gap-1.5">
-            <span
-              aria-hidden="true"
-              className="inline-block w-2.5 h-2.5 rounded-full"
-              style={{ backgroundColor: color }}
-            />
-            <span className="text-pine font-medium">{ACTIVITY_LABELS[activityType]}</span>
-            <span aria-hidden="true">·</span>
-          </span>
-        )}
-        <span>{caption}</span>
+      <figcaption id={captionId} className="flex flex-wrap items-center gap-2 font-body text-xs text-stone">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-mist px-2.5 py-1 text-ink-soft">
+          <ArrowUp size={13} strokeWidth={1.75} aria-hidden="true" className="text-pine" />
+          <span className="font-medium text-pine">Upp</span>
+          <span>{ascentLabel} m</span>
+        </span>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-mist px-2.5 py-1 text-ink-soft">
+          <ArrowDown size={13} strokeWidth={1.75} aria-hidden="true" className="text-pine" />
+          <span className="font-medium text-pine">Ned</span>
+          <span>{descentLabel} m</span>
+        </span>
+        <span className="sr-only">{accessibleSummary}</span>
       </figcaption>
     </figure>
   )

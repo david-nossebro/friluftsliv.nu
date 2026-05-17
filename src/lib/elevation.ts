@@ -2,6 +2,13 @@ import type { MapPosition } from '@/types'
 
 const EARTH_RADIUS_KM = 6371
 
+export interface ElevationSummary {
+  minElevation: number
+  maxElevation: number
+  ascent: number
+  descent: number
+}
+
 function toRad(deg: number): number {
   return (deg * Math.PI) / 180
 }
@@ -30,6 +37,31 @@ export function cumulativeDistanceKm(track: MapPosition[]): number[] {
     out[i] = (out[i - 1] ?? 0) + haversineKm(track[i - 1]!, track[i]!)
   }
   return out
+}
+
+export function summarizeElevation(track: MapPosition[]): ElevationSummary | null {
+  if (track.length < 2) return null
+  if (track.some((point) => point.ele === undefined)) return null
+
+  const elevations = track.map((point) => point.ele as number)
+  let ascent = 0
+  let descent = 0
+
+  for (let i = 1; i < elevations.length; i++) {
+    const delta = (elevations[i] ?? 0) - (elevations[i - 1] ?? 0)
+    if (delta > 0) {
+      ascent += delta
+    } else if (delta < 0) {
+      descent += Math.abs(delta)
+    }
+  }
+
+  return {
+    minElevation: Math.min(...elevations),
+    maxElevation: Math.max(...elevations),
+    ascent,
+    descent,
+  }
 }
 
 /**

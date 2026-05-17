@@ -29,6 +29,12 @@ export interface Utflykt {
   visitDuration: string
   highlights: string[]
   imageUrl?: string
+  // Filter dimensions
+  landskap?: Landskap[]
+  kommun?: string[]
+  publicTransport?: PublicTransport
+  dogsAllowed?: boolean
+  coordinates?: { lat: number; lng: number }
 }
 
 export interface UtflyktDetail extends Utflykt {
@@ -52,6 +58,47 @@ export type Month =
 
 export type Season = { from: Month; to: Month } | 'year-round'
 
+// ─── Filter taxonomy ─────────────────────────────────────────────────────────
+
+/** All 25 Swedish landskap, normalized to ASCII slugs. */
+export type Landskap =
+  | 'skane' | 'blekinge' | 'halland' | 'smaland' | 'oland' | 'gotland'
+  | 'vastergotland' | 'bohuslan' | 'dalsland' | 'ostergotland' | 'sodermanland'
+  | 'narke' | 'vastmanland' | 'uppland' | 'varmland' | 'dalarna' | 'gastrikland'
+  | 'halsingland' | 'medelpad' | 'angermanland' | 'jamtland' | 'harjedalen'
+  | 'vasterbotten' | 'norrbotten' | 'lappland'
+
+export type RouteShape = 'roundtrip' | 'out-and-back' | 'point-to-point'
+
+export type PublicTransportMode = 'reachable' | 'partial' | 'none'
+
+export interface PublicTransport {
+  mode: PublicTransportMode
+  /** Optional list of lines (e.g. "Buss 91", "Nattåg 95"). */
+  lines?: string[]
+  /** Free-text supplement shown alongside the structured mode. */
+  note?: string
+}
+
+/** Structured facility tags for cabins (replaces free-form strings). */
+export type Facility =
+  | 'vedspis'
+  | 'koksutrustning'
+  | 'restaurang'
+  | 'cafe'
+  | 'bastu'
+  | 'proviantforsaljning'
+  | 'wifi'
+  | 'el'
+  | 'vatten'
+  | 'utedass'
+  | 'torrtoalett'
+  | 'dusch'
+  | 'guideservice'
+  | 'familjevanlig'
+
+// ─── Domain entities ─────────────────────────────────────────────────────────
+
 export interface Route {
   id: string
   title: string
@@ -64,6 +111,15 @@ export interface Route {
   duration: number
   difficulty: Difficulty
   imageUrl?: string
+  // Filter dimensions
+  landskap?: Landskap[]
+  kommun?: string[]
+  routeShape?: RouteShape
+  publicTransport?: PublicTransport
+  dogsAllowed?: boolean
+  tentingAllowed?: boolean
+  /** Curated cabin IDs that lie along this route. */
+  cabinIds?: string[]
 }
 
 export interface RouteDetail extends Route {
@@ -131,6 +187,14 @@ export interface LongHike {
   gpxTrack?: MapPosition[]
   coordinates?: { lat: number; lng: number }
   endCoordinates?: { lat: number; lng: number }
+  // Filter dimensions
+  landskap?: Landskap[]
+  kommun?: string[]
+  routeShape?: RouteShape
+  publicTransport?: PublicTransport
+  dogsAllowed?: boolean
+  tentingAllowed?: boolean
+  cabinIds?: string[]
 }
 
 export interface Cabin {
@@ -140,8 +204,13 @@ export interface Cabin {
   areaIds?: string[]
   amenities: string[]
   pricePerNight?: number
-  available: boolean
   imageUrl?: string
+  // Filter dimensions
+  landskap?: Landskap[]
+  kommun?: string
+  facilityTags?: Facility[]
+  publicTransport?: PublicTransport
+  dogsAllowed?: boolean
 }
 
 export interface CabinDetail extends Cabin {
@@ -169,6 +238,10 @@ export interface Area {
   description: string
   imageUrl?: string
   images?: string[]
+  // Filter dimensions
+  landskap?: Landskap[]
+  kommun?: string[]
+  coordinates?: { lat: number; lng: number }
 }
 
 export interface AreaListItem {

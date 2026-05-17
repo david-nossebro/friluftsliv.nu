@@ -1,21 +1,7 @@
 import {
-  Flame,
-  Utensils,
-  Bath,
-  ShoppingBag,
-  Wifi,
-  Coffee,
-  Compass,
-  Mountain,
-  Trees,
-  Bike,
-  BedDouble,
-  Users,
-  Dog,
-  MapPinned,
-  Footprints,
-  Home,
-  type LucideIcon,
+  Flame, Utensils, Bath, ShoppingBag, Wifi, Coffee, Compass,
+  Mountain, Trees, Bike, BedDouble, Users, Dog, MapPinned,
+  Footprints, Home, type LucideIcon,
 } from 'lucide-react'
 import type { FacilityItem } from '@/components/common/FacilityGrid'
 

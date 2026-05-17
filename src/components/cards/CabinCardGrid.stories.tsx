@@ -9,7 +9,6 @@ const mockCabins: Cabin[] = [
     region: 'Abisko, Norrbotten',
     amenities: ['Sovplatser', 'Kök', 'Torrtoalett'],
     pricePerNight: 350,
-    available: true,
     imageUrl: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=560&q=70&auto=format',
   },
   {
@@ -18,7 +17,6 @@ const mockCabins: Cabin[] = [
     region: 'Kebnekaise, Norrbotten',
     amenities: ['Sovplatser', 'Restaurang', 'Bastu', 'Utrustningsuthyrning'],
     pricePerNight: 890,
-    available: false,
     imageUrl: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=560&q=70&auto=format',
   },
   {
@@ -27,7 +25,6 @@ const mockCabins: Cabin[] = [
     region: 'Jämtlandsfjällen',
     amenities: ['Sovplatser', 'Restaurang', 'Bastu'],
     pricePerNight: 595,
-    available: true,
   },
 ]
 

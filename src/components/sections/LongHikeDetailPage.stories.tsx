@@ -31,5 +31,7 @@ export const Default: Story = {
 
     await expect(canvas.getByRole('heading', { name: mockLongHike.title })).toBeInTheDocument()
     await expect(canvas.getByRole('heading', { name: 'Etapper i ordning' })).toBeInTheDocument()
+    await expect(canvas.getByText('Upp')).toBeInTheDocument()
+    await expect(canvas.getByText('Ned')).toBeInTheDocument()
   },
 }

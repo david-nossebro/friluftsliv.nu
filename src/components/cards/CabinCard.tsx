@@ -27,11 +27,6 @@ export function CabinCard({ cabin, className, onClick, priority = false }: Cabin
         ) : (
           <div className="absolute inset-0 bg-gradient-to-br from-earth/15 to-pine/20" />
         )}
-        <span className="absolute top-2 right-2">
-          <Badge variant={cabin.available ? 'moss' : 'ember'} size="sm">
-            {cabin.available ? 'Tillgänglig' : 'Bokad'}
-          </Badge>
-        </span>
       </div>
 
       <div className="flex flex-col flex-1 p-4 gap-3">
