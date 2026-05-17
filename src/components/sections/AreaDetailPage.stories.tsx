@@ -1,12 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { expect, within } from '@storybook/test'
+import { expect, userEvent, within } from '@storybook/test'
 import { AreaDetailPage } from './AreaDetailPage'
 import { getAreaById, getAreaRoutesByCategory, getCabinsForAreaId } from '@/data'
 
 const area = getAreaById('soderasen')
+const groupedArea = getAreaById('abisko')
 
 if (!area) {
   throw new Error('Expected seeded area fixture for AreaDetailPage stories.')
+}
+
+if (!groupedArea) {
+  throw new Error('Expected seeded Abisko fixture for grouped hiking story.')
 }
 
 const meta = {
@@ -25,7 +30,7 @@ export const Default: Story = {
     cabins: getCabinsForAreaId(area.id),
     hikingRoutes: getAreaRoutesByCategory(area.id, 'vandring'),
     mountainRoutes: getAreaRoutesByCategory(area.id, 'fjallvandring'),
-    canoeRoutes: getAreaRoutesByCategory(area.id, 'kanotleder'),
+    canoeRoutes: getAreaRoutesByCategory(area.id, 'kanot'),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
@@ -40,6 +45,25 @@ export const NatureReserve: Story = {
     cabins: getCabinsForAreaId('nackareservatet'),
     hikingRoutes: getAreaRoutesByCategory('nackareservatet', 'vandring'),
     mountainRoutes: getAreaRoutesByCategory('nackareservatet', 'fjallvandring'),
-    canoeRoutes: getAreaRoutesByCategory('nackareservatet', 'kanotleder'),
+    canoeRoutes: getAreaRoutesByCategory('nackareservatet', 'kanot'),
+  },
+}
+
+export const GroupedHikingPreview: Story = {
+  args: {
+    area: groupedArea,
+    cabins: getCabinsForAreaId(groupedArea.id),
+    hikingRoutes: getAreaRoutesByCategory('soderasen', 'vandring'),
+    mountainRoutes: getAreaRoutesByCategory(groupedArea.id, 'fjallvandring'),
+    canoeRoutes: getAreaRoutesByCategory(groupedArea.id, 'kanot'),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Vandring' }))
+    await expect(
+      canvas.getByText('Hoppa direkt till den typ av vandring du vill utforska i området.'),
+    ).toBeInTheDocument()
+    await expect(canvas.getByRole('link', { name: /fjällvandring/i })).toBeInTheDocument()
   },
 }

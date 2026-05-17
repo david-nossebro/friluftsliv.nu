@@ -3,11 +3,11 @@
 import * as React from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ExploreFilters } from './ExploreFilters'
-import { allExploreSections } from './exploreTabs'
 import { AreaCardGrid } from '@/components/cards/AreaCardGrid'
 import { CabinCardGrid } from '@/components/cards/CabinCardGrid'
 import { LongHikeCardGrid } from '@/components/cards/LongHikeCardGrid'
 import { RouteCardGrid } from '@/components/cards/RouteCardGrid'
+import { SectionJumpNav } from '@/components/common/SectionJumpNav'
 import type { Area, AreaListItem, Cabin, ExploreTab, LongHike, Route } from '@/types'
 
 export interface ExploreViewProps {
@@ -20,12 +20,10 @@ export interface ExploreViewProps {
   className?: string
 }
 
-type RouteExploreTab = Extract<ExploreTab, 'vandring' | 'fjallvandring' | 'kanotleder' | 'skidturer'>
+type RouteExploreTab = Extract<ExploreTab, 'kanot' | 'skidturer'>
 
 const routeSectionTitles: Record<RouteExploreTab, string> = {
-  vandring: 'Vandring',
-  fjallvandring: 'Fjällvandring',
-  kanotleder: 'Kanotleder',
+  kanot: 'Kanot',
   skidturer: 'Skidturer',
 }
 
@@ -121,75 +119,143 @@ export function ExploreView({
     () => cabins.filter((cabin) => matchesCabinQuery(cabin, query)),
     [cabins, query],
   )
+  const hikingRoutes = React.useMemo(
+    () => filteredRoutes.filter((route) => route.exploreCategory === 'vandring'),
+    [filteredRoutes],
+  )
+  const mountainRoutes = React.useMemo(
+    () => filteredRoutes.filter((route) => route.exploreCategory === 'fjallvandring'),
+    [filteredRoutes],
+  )
+  const canoeRoutes = React.useMemo(
+    () => filteredRoutes.filter((route) => route.exploreCategory === 'kanot'),
+    [filteredRoutes],
+  )
+  const skiRoutes = React.useMemo(
+    () => filteredRoutes.filter((route) => route.exploreCategory === 'skidturer'),
+    [filteredRoutes],
+  )
 
   const allCount =
     filteredAreas.length + filteredRoutes.length + filteredLongHikes.length + filteredCabins.length
 
   let content: React.ReactNode
 
-  if (tab === 'alla') {
-    const allSections = allExploreSections.flatMap((section) => {
-      if (section.value === 'langvandring') {
-        return filteredLongHikes.length > 0
-          ? [
-              <LongHikeCardGrid
-                key={section.value}
-                title={section.label}
-                longHikes={filteredLongHikes}
-                className="py-10 bg-snow"
-              />,
-            ]
-          : []
-      }
-
-      if (section.value === 'stugor') {
-        return filteredCabins.length > 0
-          ? [
-              <CabinCardGrid
-                key={section.value}
-                title={section.label}
-                cabins={filteredCabins}
-                className="py-10 bg-mist"
-              />,
-            ]
-          : []
-      }
-
-      if (section.value === 'nationalparker' || section.value === 'naturreservat') {
-        const areaKind = section.value === 'nationalparker' ? 'nationalpark' : 'naturreservat'
-        const areaResults = filteredAreas.filter(({ area }) => area.kind === areaKind)
-
-        return areaResults.length > 0
-          ? [
-              <AreaCardGrid
-                key={section.value}
-                title={section.label}
-                areas={areaResults}
-                className="py-10"
-              />,
-            ]
-          : []
-      }
-
-      const routeResults = filteredRoutes.filter((route) => route.exploreCategory === section.value)
-
-      return routeResults.length > 0
-        ? [
+  const hikingSections = [
+    hikingRoutes.length > 0
+      ? {
+          id: 'vandring',
+          label: 'Vandring',
+          count: hikingRoutes.length,
+          content: (
             <RouteCardGrid
-              key={section.value}
-              title={section.label}
-              routes={routeResults}
+              title="Vandring"
+              routes={hikingRoutes}
               className="py-10 bg-snow"
-            />,
-          ]
-        : []
-    })
+            />
+          ),
+        }
+      : null,
+    mountainRoutes.length > 0
+      ? {
+          id: 'fjallvandring',
+          label: 'Fjällvandring',
+          count: mountainRoutes.length,
+          content: (
+            <RouteCardGrid
+              title="Fjällvandring"
+              routes={mountainRoutes}
+              className="py-10 bg-mist"
+            />
+          ),
+        }
+      : null,
+    filteredLongHikes.length > 0
+      ? {
+          id: 'langvandring',
+          label: 'Långvandring',
+          count: filteredLongHikes.length,
+          content: (
+            <LongHikeCardGrid
+              title="Långvandring"
+              longHikes={filteredLongHikes}
+              className="py-10 bg-snow"
+            />
+          ),
+        }
+      : null,
+  ].filter(
+    (
+      section,
+    ): section is { id: string; label: string; count: number; content: React.ReactElement } =>
+      section !== null,
+  )
+  const hikingJumpItems = hikingSections.map(({ id, label, count }) => ({
+    href: `#${id}`,
+    label,
+    count,
+  }))
 
+  if (tab === 'alla') {
     content =
       allCount === 0 ? (
         <EmptyState message="Inget matchade din sökning. Försök med ett annat område eller ett kortare ord." />
       ) : (
-        <>{allSections}</>
+        <>
+          {hikingSections.map((section) => (
+            <div key={section.id} id={section.id} className="scroll-mt-24">
+              {section.content}
+            </div>
+          ))}
+          {canoeRoutes.length > 0 && (
+            <RouteCardGrid title="Kanot" routes={canoeRoutes} className="py-10 bg-snow" />
+          )}
+          {skiRoutes.length > 0 && (
+            <RouteCardGrid title="Skidturer" routes={skiRoutes} className="py-10 bg-mist" />
+          )}
+          {filteredCabins.length > 0 && (
+            <CabinCardGrid title="Stugor" cabins={filteredCabins} className="py-10 bg-mist" />
+          )}
+          {filteredAreas.filter(({ area }) => area.kind === 'nationalpark').length > 0 && (
+            <AreaCardGrid
+              title="Nationalparker"
+              areas={filteredAreas.filter(({ area }) => area.kind === 'nationalpark')}
+              className="py-10"
+            />
+          )}
+          {filteredAreas.filter(({ area }) => area.kind === 'naturreservat').length > 0 && (
+            <AreaCardGrid
+              title="Naturreservat"
+              areas={filteredAreas.filter(({ area }) => area.kind === 'naturreservat')}
+              className="py-10"
+            />
+          )}
+        </>
+      )
+  } else if (tab === 'vandring') {
+    content =
+      hikingSections.length === 0 ? (
+        <EmptyState message="Inga vandringsturer matchade din sökning just nu." />
+      ) : (
+        <>
+          {hikingJumpItems.length > 1 && (
+            <div className="px-6 pt-8">
+              <div className="mx-auto max-w-[1200px]">
+                <SectionJumpNav
+                  description="Hoppa direkt till den typ av vandring du vill utforska."
+                  ariaLabel="Hoppa mellan vandringstyper"
+                  items={hikingJumpItems}
+                />
+              </div>
+            </div>
+          )}
+
+          {hikingSections.map((section) => (
+            <div key={section.id} id={section.id} className="scroll-mt-24">
+              {section.content}
+            </div>
+          ))}
+        </>
       )
   } else if (tab === 'stugor') {
     content =
@@ -209,19 +275,8 @@ export function ExploreView({
       ) : (
         <AreaCardGrid title={areaTitle} areas={areaResults} className="py-10" />
       )
-  } else if (tab === 'langvandring') {
-    content =
-      filteredLongHikes.length === 0 ? (
-        <EmptyState message="Inga långvandringar matchade din sökning just nu." />
-      ) : (
-        <LongHikeCardGrid
-          title="Långvandring"
-          longHikes={filteredLongHikes}
-          className="py-10 bg-snow"
-        />
-      )
   } else {
-    const routeResults = filteredRoutes.filter((route) => route.exploreCategory === tab)
+    const routeResults = tab === 'kanot' ? canoeRoutes : skiRoutes
 
     content =
       routeResults.length === 0 ? (

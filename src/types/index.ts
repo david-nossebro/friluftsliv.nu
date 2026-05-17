@@ -8,9 +8,7 @@ export type ExploreTab =
   | 'alla'
   | 'stugor'
   | 'vandring'
-  | 'fjallvandring'
-  | 'langvandring'
-  | 'kanotleder'
+  | 'kanot'
   | 'skidturer'
   | 'nationalparker'
   | 'naturreservat'
@@ -18,7 +16,7 @@ export type ExploreTab =
 export type RouteExploreCategory =
   | 'vandring'
   | 'fjallvandring'
-  | 'kanotleder'
+  | 'kanot'
   | 'skidturer'
 
 export type ProtectedAreaKind = 'nationalpark' | 'naturreservat'

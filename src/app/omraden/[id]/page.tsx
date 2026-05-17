@@ -46,7 +46,7 @@ export default async function AreaDetailRoute({
         cabins={getCabinsForAreaId(area.id)}
         hikingRoutes={getAreaRoutesByCategory(area.id, 'vandring')}
         mountainRoutes={getAreaRoutesByCategory(area.id, 'fjallvandring')}
-        canoeRoutes={getAreaRoutesByCategory(area.id, 'kanotleder')}
+        canoeRoutes={getAreaRoutesByCategory(area.id, 'kanot')}
       />
     </PageLayout>
   )

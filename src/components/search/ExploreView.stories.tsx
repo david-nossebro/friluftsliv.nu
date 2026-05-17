@@ -26,7 +26,7 @@ export const Default: Story = {
       'Vandring',
       'Fjällvandring',
       'Långvandring',
-      'Kanotleder',
+      'Kanot',
       'Skidturer',
       'Stugor',
       'Nationalparker',
@@ -40,20 +40,28 @@ export const Default: Story = {
 
     await expect(sectionHeadings).toEqual(expectedOrder)
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Fjällvandring' }))
-    await expect(canvas.getByText('Kungsleden — Abisko till Nikkaluokta')).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: 'Vandring' }))
+    await expect(canvas.getAllByText('Kungsleden — Abisko till Nikkaluokta')).toHaveLength(2)
+    await expect(canvas.getByRole('heading', { name: 'Långvandring' })).toBeInTheDocument()
     await expect(canvas.queryByText('Söderåsen vandrarhem')).not.toBeInTheDocument()
     await expect(canvas.queryByRole('searchbox')).not.toBeInTheDocument()
   },
 }
 
-export const PreFilteredMountainHikes: Story = {
+export const PreFilteredHiking: Story = {
   args: {
     areas: getAreaListItems(),
     routes,
     longHikes,
     cabins,
-    initialTab: 'fjallvandring',
+    initialTab: 'vandring',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await expect(canvas.getByText('Hoppa direkt till den typ av vandring du vill utforska.')).toBeInTheDocument()
+    await expect(canvas.getByRole('link', { name: /fjällvandring/i })).toBeInTheDocument()
+    await expect(canvas.getByRole('link', { name: /långvandring/i })).toBeInTheDocument()
   },
 }
 
@@ -73,20 +81,21 @@ export const MobileFilters: Story = {
     const canvas = within(canvasElement)
 
     await userEvent.click(canvas.getByRole('button', { name: /kategori: alla/i }))
-    await userEvent.click(canvas.getByRole('button', { name: 'Fjällvandring' }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Vandring' }))
 
-    await expect(canvas.getByText('Kungsleden — Abisko till Nikkaluokta')).toBeInTheDocument()
+    await expect(canvas.getAllByText('Kungsleden — Abisko till Nikkaluokta')).toHaveLength(2)
+    await expect(canvas.getByRole('heading', { name: 'Långvandring' })).toBeInTheDocument()
     await expect(canvas.queryByText('Söderåsen vandrarhem')).not.toBeInTheDocument()
   },
 }
 
-export const PreFilteredLongDistanceHikes: Story = {
+export const PreFilteredCanoe: Story = {
   args: {
     areas: getAreaListItems(),
     routes,
     longHikes,
     cabins,
-    initialTab: 'langvandring',
+    initialTab: 'kanot',
   },
 }
 

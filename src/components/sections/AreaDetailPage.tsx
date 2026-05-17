@@ -8,11 +8,12 @@ import { Badge } from '@/components/ui/badge'
 import { FilterChip } from '@/components/ui/filter-chip'
 import { CabinCard } from '@/components/cards/CabinCard'
 import { RouteCard } from '@/components/cards/RouteCard'
+import { SectionJumpNav } from '@/components/common/SectionJumpNav'
 import { ImageGallery } from '@/components/sections/ImageGallery'
 import { ContentBlock } from '@/components/sections/ContentBlock'
 import type { Area, Cabin, Route } from '@/types'
 
-type AreaContentTab = 'stugor' | 'vandring' | 'fjallvandring' | 'kanotleder'
+type AreaContentTab = 'stugor' | 'vandring' | 'kanot'
 
 const areaKindLabels: Record<Area['kind'], string> = {
   nationalpark: 'Nationalpark',
@@ -22,8 +23,7 @@ const areaKindLabels: Record<Area['kind'], string> = {
 const contentTabs: { value: AreaContentTab; label: string }[] = [
   { value: 'stugor', label: 'Stugor' },
   { value: 'vandring', label: 'Vandring' },
-  { value: 'fjallvandring', label: 'Fjällvandring' },
-  { value: 'kanotleder', label: 'Kanotleder' },
+  { value: 'kanot', label: 'Kanot' },
 ]
 
 export interface AreaDetailPageProps {
@@ -103,6 +103,19 @@ export function AreaDetailPage({
   const galleryImages = area.images?.filter(
     (image, index, images) => image !== area.imageUrl && images.indexOf(image) === index,
   )
+  const hikingContentSections = [
+    hikingRoutes.length > 0
+      ? { id: 'omrade-vandring', title: 'Vandring', routes: hikingRoutes }
+      : null,
+    mountainRoutes.length > 0
+      ? { id: 'omrade-fjallvandring', title: 'Fjällvandring', routes: mountainRoutes }
+      : null,
+  ].filter((section): section is { id: string; title: string; routes: Route[] } => section !== null)
+  const hikingJumpItems = hikingContentSections.map((section) => ({
+    href: `#${section.id}`,
+    label: section.title,
+    count: section.routes.length,
+  }))
 
   return (
     <article className={cn('bg-snow min-h-screen', className)}>
@@ -166,9 +179,35 @@ export function AreaDetailPage({
           </div>
 
           {activeTab === 'stugor' && <CardGrid items={cabins} kind="cabin" />}
-          {activeTab === 'vandring' && <CardGrid items={hikingRoutes} kind="route" />}
-          {activeTab === 'fjallvandring' && <CardGrid items={mountainRoutes} kind="route" />}
-          {activeTab === 'kanotleder' && <CardGrid items={canoeRoutes} kind="route" />}
+          {activeTab === 'vandring' && (
+            hikingContentSections.length === 0 ? (
+              <p className="font-body text-sm text-stone">
+                Det finns inget innehåll i den här kategorin än.
+              </p>
+            ) : (
+              <div className="flex flex-col gap-8">
+                {hikingJumpItems.length > 1 && (
+                  <SectionJumpNav
+                    description="Hoppa direkt till den typ av vandring du vill utforska i området."
+                    ariaLabel="Hoppa mellan vandringstyper i området"
+                    items={hikingJumpItems}
+                  />
+                )}
+
+                {hikingContentSections.map((section) => (
+                  <div
+                    key={section.id}
+                    id={section.id}
+                    className="scroll-mt-24 flex flex-col gap-4"
+                  >
+                    <h3 className="font-display text-xl font-light text-pine">{section.title}</h3>
+                    <CardGrid items={section.routes} kind="route" />
+                  </div>
+                ))}
+              </div>
+            )
+          )}
+          {activeTab === 'kanot' && <CardGrid items={canoeRoutes} kind="route" />}
         </ContentBlock>
       </div>
     </article>

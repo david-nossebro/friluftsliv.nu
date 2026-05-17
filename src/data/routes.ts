@@ -394,7 +394,7 @@ export const routes: RouteDetail[] = [
     title: 'Dalslands kanal — Bengtsfors till Baldersnäs',
     region: 'Dalsland',
     activityType: 'paddeltur',
-    exploreCategory: 'kanotleder',
+    exploreCategory: 'kanot',
     areaIds: ['dalslands-kanal'],
     distance: 23,
     elevation: 0,

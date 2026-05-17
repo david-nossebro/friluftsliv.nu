@@ -4,8 +4,8 @@ import { Logo } from '@/components/brand/Logo'
 const contentLinks = [
   { label: 'Utforska', href: '/utforska' },
   { label: 'Karta', href: '/karta' },
-  { label: 'Rutter', href: '/rutter' },
-  { label: 'Stugor', href: '/stugor' },
+  { label: 'Vandring', href: '/utforska?tab=vandring' },
+  { label: 'Stugor', href: '/utforska?tab=stugor' },
   { label: 'Naturområden', href: '/omraden' },
 ]
 
