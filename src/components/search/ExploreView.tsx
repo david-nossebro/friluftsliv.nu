@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ExploreFilters } from './ExploreFilters'
 import { allExploreSections } from './exploreTabs'
 import { AreaCardGrid } from '@/components/cards/AreaCardGrid'
@@ -77,6 +78,9 @@ export function ExploreView({
 }: ExploreViewProps) {
   const [tab, setTab] = React.useState<ExploreTab>(initialTab)
   const [query, setQuery] = React.useState(initialQuery)
+  const pathname = usePathname()
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
   React.useEffect(() => {
     setTab(initialTab)
@@ -85,6 +89,21 @@ export function ExploreView({
   React.useEffect(() => {
     setQuery(initialQuery)
   }, [initialQuery])
+
+  const handleTabChange = React.useCallback(
+    (nextTab: ExploreTab) => {
+      if (nextTab === tab) return
+
+      setTab(nextTab)
+
+      const nextParams = new URLSearchParams(searchParams.toString())
+      nextParams.set('tab', nextTab)
+
+      const nextUrl = `${pathname}?${nextParams.toString()}`
+      router.push(nextUrl, { scroll: false })
+    },
+    [pathname, router, searchParams, tab],
+  )
 
   const filteredAreas = React.useMemo(
     () => areas.filter(({ area }) => matchesAreaQuery(area, query)),
@@ -214,7 +233,7 @@ export function ExploreView({
 
   return (
     <div className={className}>
-      <ExploreFilters activeTab={tab} onTabChange={setTab} />
+      <ExploreFilters activeTab={tab} onTabChange={handleTabChange} />
       {content}
     </div>
   )

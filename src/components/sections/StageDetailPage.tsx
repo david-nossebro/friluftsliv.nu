@@ -106,6 +106,31 @@ export function StageDetailPage({
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12 flex flex-col gap-10">
         <ContentBlock heading="Om etappen" body={stage.description} />
 
+        {stage.startPoint && (
+          <ContentBlock heading="Start och riktning" body={stage.startPoint} />
+        )}
+
+        {stage.season && (
+          <ContentBlock heading="Säsong">
+            <p className="font-body text-sm text-ink leading-relaxed">{formatSeason(stage.season)}</p>
+          </ContentBlock>
+        )}
+
+        {stage.tips && stage.tips.length > 0 && (
+          <ContentBlock heading="Tips för etappen">
+            <ul className="list-disc marker:text-moss pl-5 flex flex-col gap-2 font-body text-sm text-ink leading-relaxed">
+              {stage.tips.map((tip) => (
+                <li key={tip}>{tip}</li>
+              ))}
+            </ul>
+          </ContentBlock>
+        )}
+
+        <RouteDetailAccessSection
+          {...(stage.accessByCar ? { accessByCar: stage.accessByCar } : {})}
+          {...(stage.accessByTransport ? { accessByTransport: stage.accessByTransport } : {})}
+        />
+
         <RouteMapSection
           title="Etappen på karta"
           description={`Sträckan från ${stage.startLocation} till ${stage.endLocation}.`}
@@ -130,31 +155,6 @@ export function StageDetailPage({
               </Button>
             </>
           }
-        />
-
-        {stage.startPoint && (
-          <ContentBlock heading="Start och riktning" body={stage.startPoint} />
-        )}
-
-        {stage.season && (
-          <ContentBlock heading="Säsong">
-            <p className="font-body text-sm text-ink leading-relaxed">{formatSeason(stage.season)}</p>
-          </ContentBlock>
-        )}
-
-        {stage.tips && stage.tips.length > 0 && (
-          <ContentBlock heading="Tips för etappen">
-            <ul className="list-disc marker:text-moss pl-5 flex flex-col gap-2 font-body text-sm text-ink leading-relaxed">
-              {stage.tips.map((tip) => (
-                <li key={tip}>{tip}</li>
-              ))}
-            </ul>
-          </ContentBlock>
-        )}
-
-        <RouteDetailAccessSection
-          {...(stage.accessByCar ? { accessByCar: stage.accessByCar } : {})}
-          {...(stage.accessByTransport ? { accessByTransport: stage.accessByTransport } : {})}
         />
 
         <section aria-labelledby="stage-nav-heading" className="flex flex-col gap-4">

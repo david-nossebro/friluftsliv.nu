@@ -79,6 +79,31 @@ export function RouteDetailPage({ route, relatedRoutes, className }: RouteDetail
       <div className="max-w-[1200px] mx-auto px-4 md:px-6 py-8 md:py-12 flex flex-col gap-10">
         <ContentBlock heading="Om turen" body={route.description} />
 
+        {route.startPoint && (
+          <ContentBlock heading="Startpunkt & parkering" body={route.startPoint} />
+        )}
+
+        {route.season && (
+          <ContentBlock heading="Säsong">
+            <p className="font-body text-sm text-ink leading-relaxed">{formatSeason(route.season)}</p>
+          </ContentBlock>
+        )}
+
+        {route.tips && route.tips.length > 0 && (
+          <ContentBlock heading="Tips för turen">
+            <ul className="list-disc marker:text-moss pl-5 flex flex-col gap-2 font-body text-sm text-ink leading-relaxed">
+              {route.tips.map((tip) => (
+                <li key={tip}>{tip}</li>
+              ))}
+            </ul>
+          </ContentBlock>
+        )}
+
+        <RouteDetailAccessSection
+          {...(route.accessByCar ? { accessByCar: route.accessByCar } : {})}
+          {...(route.accessByTransport ? { accessByTransport: route.accessByTransport } : {})}
+        />
+
         <RouteMapSection
           title="Rutten på karta"
           description="Se var rutten går innan du packar — det gör det lättare att planera dagen."
@@ -103,31 +128,6 @@ export function RouteDetailPage({ route, relatedRoutes, className }: RouteDetail
               </Button>
             </>
           }
-        />
-
-        {route.startPoint && (
-          <ContentBlock heading="Startpunkt & parkering" body={route.startPoint} />
-        )}
-
-        {route.season && (
-          <ContentBlock heading="Säsong">
-            <p className="font-body text-sm text-ink leading-relaxed">{formatSeason(route.season)}</p>
-          </ContentBlock>
-        )}
-
-        {route.tips && route.tips.length > 0 && (
-          <ContentBlock heading="Tips för turen">
-            <ul className="list-disc marker:text-moss pl-5 flex flex-col gap-2 font-body text-sm text-ink leading-relaxed">
-              {route.tips.map((tip) => (
-                <li key={tip}>{tip}</li>
-              ))}
-            </ul>
-          </ContentBlock>
-        )}
-
-        <RouteDetailAccessSection
-          {...(route.accessByCar ? { accessByCar: route.accessByCar } : {})}
-          {...(route.accessByTransport ? { accessByTransport: route.accessByTransport } : {})}
         />
       </div>
 

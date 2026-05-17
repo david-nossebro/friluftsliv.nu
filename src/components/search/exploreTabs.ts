@@ -13,3 +13,7 @@ export const exploreTabs: { value: ExploreTab; label: string }[] = [
 ]
 
 export const allExploreSections = exploreTabs.filter((tab) => tab.value !== 'alla')
+
+export function getExploreTabLabel(tab: ExploreTab) {
+  return exploreTabs.find((item) => item.value === tab)?.label ?? 'Alla'
+}

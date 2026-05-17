@@ -16,7 +16,7 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     await expect(canvas.getByRole('heading', { name: /tanken bakom/i })).toBeInTheDocument()
-    await expect(canvas.getByAltText(/svensk fjälldal/i)).toBeInTheDocument()
+    await expect(canvas.getByAltText(/svensk skog/i)).toBeInTheDocument()
   },
 }
 

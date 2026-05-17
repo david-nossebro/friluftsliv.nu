@@ -29,12 +29,64 @@ const InteractiveDemo = () => {
 }
 
 export const Interactive: Story = {
-  render: () => <InteractiveDemo />,
+  render: () => (
+    <div className="w-[1200px] max-w-none">
+      <InteractiveDemo />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const longDistanceButton = canvas.queryByRole('button', { name: 'Långvandring' })
+
+    if (longDistanceButton) {
+      await userEvent.click(longDistanceButton)
+    } else {
+      await userEvent.click(canvas.getByRole('button', { name: /kategori: alla/i }))
+      await userEvent.click(canvas.getByRole('button', { name: 'Långvandring' }))
+    }
+
+    await expect(canvas.getByText(/visar: langvandring/i)).toBeInTheDocument()
+    await expect(canvas.queryByRole('searchbox')).not.toBeInTheDocument()
+  },
+}
+
+export const MobileDisclosure: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+  },
+  render: () => (
+    <div className="max-w-sm">
+      <InteractiveDemo />
+    </div>
+  ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Långvandring' }))
-    await expect(canvas.getByText(/visar: langvandring/i)).toBeInTheDocument()
-    await expect(canvas.queryByRole('searchbox')).not.toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: /kategori: alla/i }))
+    await expect(canvas.getByRole('button', { name: 'Naturreservat' })).toBeInTheDocument()
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Fjällvandring' }))
+    await expect(canvas.getByText(/visar: fjallvandring/i)).toBeInTheDocument()
+    await expect(canvas.queryByRole('button', { name: 'Naturreservat' })).not.toBeInTheDocument()
+  },
+}
+
+export const ConstrainedWidthDisclosure: Story = {
+  render: () => (
+    <div className="max-w-[720px]">
+      <InteractiveDemo />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await expect(canvas.getByRole('button', { name: /kategori: alla/i })).toBeInTheDocument()
+
+    await userEvent.click(canvas.getByRole('button', { name: /kategori: alla/i }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Kanotleder' }))
+
+    await expect(canvas.getByText(/visar: kanotleder/i)).toBeInTheDocument()
   },
 }

@@ -26,6 +26,11 @@ export const CalmHero: Story = {
     featuredRoutes: getFeaturedRoutes(4),
     featuredCabins: getFeaturedCabins(4),
     heroHeadline: 'Sök bland Sveriges leder, stugor och naturområden',
-    heroImageUrl: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=70&auto=format',
+    heroImages: [
+      {
+        url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1600&q=70&auto=format',
+        label: 'Lugn naturvy',
+      },
+    ],
   },
 }

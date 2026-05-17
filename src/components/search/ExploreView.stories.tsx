@@ -57,6 +57,29 @@ export const PreFilteredMountainHikes: Story = {
   },
 }
 
+export const MobileFilters: Story = {
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+  },
+  args: {
+    areas: getAreaListItems(),
+    routes,
+    longHikes,
+    cabins,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+
+    await userEvent.click(canvas.getByRole('button', { name: /kategori: alla/i }))
+    await userEvent.click(canvas.getByRole('button', { name: 'Fjällvandring' }))
+
+    await expect(canvas.getByText('Kungsleden — Abisko till Nikkaluokta')).toBeInTheDocument()
+    await expect(canvas.queryByText('Söderåsen vandrarhem')).not.toBeInTheDocument()
+  },
+}
+
 export const PreFilteredLongDistanceHikes: Story = {
   args: {
     areas: getAreaListItems(),

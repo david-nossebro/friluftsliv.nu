@@ -4,14 +4,22 @@ import { ActivityShortcuts } from '@/components/search/ActivityShortcuts'
 import { RouteCardGrid } from '@/components/cards/RouteCardGrid'
 import { CabinCardGrid } from '@/components/cards/CabinCardGrid'
 import { MapPromo } from '@/components/map/MapPromo'
+import type { HeroImageOption } from '@/components/search/HeroSearch'
 import type { Cabin, Route, SearchSuggestion } from '@/types'
+
+const DEFAULT_HERO_IMAGES: HeroImageOption[] = [
+  { url: '/hero-home-tiveden-urskog.jpg', label: 'Tiveden urskog' },
+  { url: '/hero-home-dawn-lake.jpg', label: 'Spegelblank skogssjö vid gryning' },
+  { url: '/hero-home-kungsleden-fjall.jpg', label: 'Kungsleden i kvällsljus' },
+  { url: '/hero-home-skansk-bokskog.jpg', label: 'Skånsk bokskog i vårljus' },
+]
 
 export interface HomePageViewProps {
   suggestions: SearchSuggestion[]
   featuredRoutes: Route[]
   featuredCabins: Cabin[]
   heroHeadline?: string
-  heroImageUrl?: string
+  heroImages?: HeroImageOption[]
 }
 
 export function HomePageView({
@@ -19,13 +27,13 @@ export function HomePageView({
   featuredRoutes,
   featuredCabins,
   heroHeadline = 'Välkommen till den svenska naturen.',
-  heroImageUrl = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600&q=70&auto=format',
+  heroImages = DEFAULT_HERO_IMAGES,
 }: HomePageViewProps) {
   return (
     <PageLayout currentPath="/">
       <HomeHero
         headline={heroHeadline}
-        imageUrl={heroImageUrl}
+        images={heroImages}
         suggestions={suggestions}
       />
       <ActivityShortcuts title="Vad vill du göra?" />

@@ -18,8 +18,8 @@ export interface AboutMissionSectionProps {
 export function AboutMissionSection({
   heading = 'Tanken bakom',
   paragraphs = defaultParagraphs,
-  imageUrl = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&q=70&auto=format',
-  imageAlt = 'En vandrare ser ut över en svensk fjälldal',
+  imageUrl = '/about-tanken-bakom.jpg',
+  imageAlt = 'Ett par står vid en träskylt vid stigen i en grön svensk skog en klar sommardag',
   className,
 }: AboutMissionSectionProps) {
   return (

@@ -59,12 +59,12 @@ export function LongHikeDetailPage({
 
   const anchors = [
     { id: 'om-leden', label: 'Om leden' },
-    { id: 'karta', label: 'Karta' },
-    { id: 'etapper', label: 'Etapper' },
     { id: 'tillgang', label: 'Hur du tar dig dit' },
     ...(longHike.tips && longHike.tips.length > 0
       ? [{ id: 'bra-att-veta', label: 'Bra att veta' }]
       : []),
+    { id: 'karta', label: 'Karta' },
+    { id: 'etapper', label: 'Etapper' },
   ]
 
   return (
@@ -120,22 +120,6 @@ export function LongHikeDetailPage({
           </div>
         </section>
 
-        <div id="karta" className="scroll-mt-24">
-          <RouteMapSection
-            title="Översikt på karta"
-            description="Se hela sträckan först. Det gör det lättare att förstå hur etapperna hänger ihop."
-            ariaLabel={`Karta för ${longHike.title}`}
-            activityType="vandring"
-            {...(longHike.coordinates ? { center: longHike.coordinates, zoom: 8 } : {})}
-            {...(featureLayers ? { featureLayers } : {})}
-            {...(longHike.gpxTrack ? { tracks: [longHike.gpxTrack] } : {})}
-          />
-        </div>
-
-        <div id="etapper" className="scroll-mt-24">
-          <LongHikeStageList stages={stages} />
-        </div>
-
         <div id="tillgang" className="scroll-mt-24">
           <RouteDetailAccessSection
             {...(longHike.accessByCar ? { accessByCar: longHike.accessByCar } : {})}
@@ -154,6 +138,22 @@ export function LongHikeDetailPage({
             </ContentBlock>
           </div>
         )}
+
+        <div id="karta" className="scroll-mt-24">
+          <RouteMapSection
+            title="Översikt på karta"
+            description="Se hela sträckan först. Det gör det lättare att förstå hur etapperna hänger ihop."
+            ariaLabel={`Karta för ${longHike.title}`}
+            activityType="vandring"
+            {...(longHike.coordinates ? { center: longHike.coordinates, zoom: 8 } : {})}
+            {...(featureLayers ? { featureLayers } : {})}
+            {...(longHike.gpxTrack ? { tracks: [longHike.gpxTrack] } : {})}
+          />
+        </div>
+
+        <div id="etapper" className="scroll-mt-24">
+          <LongHikeStageList stages={stages} />
+        </div>
       </div>
     </article>
   )

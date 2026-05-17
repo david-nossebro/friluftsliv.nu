@@ -36,3 +36,15 @@ export const WithSubheadline: Story = {
     suggestions: mockSuggestions,
   },
 }
+
+export const WithImages: Story = {
+  args: {
+    images: [
+      { url: '/hero-home-tiveden-urskog.jpg', label: 'Tiveden urskog' },
+      { url: '/hero-home-dawn-lake.jpg', label: 'Spegelblank skogssjö vid gryning' },
+      { url: '/hero-home-kungsleden-fjall.jpg', label: 'Kungsleden i kvällsljus' },
+      { url: '/hero-home-skansk-bokskog.jpg', label: 'Skånsk bokskog i vårljus' },
+    ],
+    suggestions: mockSuggestions,
+  },
+}
