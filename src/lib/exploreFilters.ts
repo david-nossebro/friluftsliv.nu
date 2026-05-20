@@ -16,7 +16,6 @@ import type {
 } from '@/types'
 import { ALL_MONTHS, seasonCoversAnyMonth } from './season'
 import { ALL_LANDSKAP } from './landskap'
-import { KOMMUN_BY_LANDSKAP, getKommunForLandskap } from './kommun'
 import { haversineKm, type LatLng } from './geo'
 
 // ─── State shape ─────────────────────────────────────────────────────────────
@@ -29,15 +28,12 @@ export interface FilterState {
   distanceMinKm: number
   /** null = no upper bound (300+) */
   distanceMaxKm: number | null
-  durationUnit: 'hours' | 'days'
-  /** null = no upper bound. Interpreted in `durationUnit`. */
+  /** Stored in hours so the UI can mix hours + days on one scale. */
+  durationMin: number
+  /** null = no upper bound. Stored in hours so the UI can mix hours + days on one scale. */
   durationMax: number | null
+  /** Empty array = `Alla` / all landskap. */
   landskap: Landskap[]
-  /**
-   * Explicit kommun selection. Empty array = "Alla" (all in-scope kommun pass).
-   * Non-empty = filter to exactly these kommun.
-   */
-  selectedKommun: string[]
   months: Month[]
   /** Binary: true requires kollektivtrafik (reachable or partial). */
   publicTransport: boolean
@@ -51,8 +47,11 @@ export interface FilterState {
 }
 
 export const DEFAULT_DISTANCE_MIN = 0
-export const DEFAULT_DURATION_UNIT: 'hours' | 'days' = 'hours'
+export const DEFAULT_DURATION_MIN = 0
 export const DEFAULT_NEAR_ME_RADIUS_KM = 25
+export const DURATION_RANGE_HOURS = [
+  0, 2, 4, 6, 8, 12, 24, 48, 72, 96, 120, 144, 168, 240, 336,
+] as const
 
 export const defaultFilterState: FilterState = {
   query: '',
@@ -61,10 +60,9 @@ export const defaultFilterState: FilterState = {
   routeShape: null,
   distanceMinKm: DEFAULT_DISTANCE_MIN,
   distanceMaxKm: null,
-  durationUnit: DEFAULT_DURATION_UNIT,
+  durationMin: DEFAULT_DURATION_MIN,
   durationMax: null,
   landskap: [],
-  selectedKommun: [],
   months: [],
   publicTransport: false,
   nearMe: false,
@@ -89,14 +87,20 @@ const VALID_FACILITIES: readonly Facility[] = [
   'vedspis', 'koksutrustning', 'restaurang', 'cafe', 'bastu', 'proviantforsaljning',
   'wifi', 'el', 'vatten', 'utedass', 'torrtoalett', 'dusch', 'guideservice', 'familjevanlig',
 ]
-const ALL_KOMMUN = Array.from(new Set(Object.values(KOMMUN_BY_LANDSKAP).flat()))
-
 function parseList<T extends string>(raw: string | null, valid: readonly T[]): T[] {
   if (!raw) return []
   return raw
     .split(',')
     .map((v) => v.trim())
     .filter((v): v is T => (valid as readonly string[]).includes(v))
+}
+
+export function normalizeSelectedLandskap(landskap: readonly Landskap[]): Landskap[] {
+  const normalized = Array.from(new Set(landskap)).filter((value): value is Landskap =>
+    (ALL_LANDSKAP as readonly string[]).includes(value),
+  )
+
+  return normalized.length === 0 || normalized.length === ALL_LANDSKAP.length ? [] : normalized
 }
 
 function parseNumber(raw: string | null): number | null {
@@ -118,8 +122,14 @@ export function parseFilters(params: URLSearchParams | ReadonlyURLSearchParams):
 
   const distanceMin = parseNumber(get('dmin')) ?? DEFAULT_DISTANCE_MIN
   const distanceMax = parseNumber(get('dmax'))
+  const durationMinRaw = parseNumber(get('tmin'))
+  const durationMaxRaw = parseNumber(get('tmax'))
   const durationUnitRaw = get('du')
-  const durationUnit: 'hours' | 'days' = durationUnitRaw === 'd' ? 'days' : 'hours'
+  const durationMinHours = normalizeDurationHours(durationMinRaw, 'min') ?? DEFAULT_DURATION_MIN
+  const durationMaxHours =
+    durationMaxRaw == null
+      ? null
+      : normalizeDurationHours(durationUnitRaw === 'd' ? durationMaxRaw * 24 : durationMaxRaw, 'max')
 
   return {
     query: get('q') ?? '',
@@ -131,10 +141,9 @@ export function parseFilters(params: URLSearchParams | ReadonlyURLSearchParams):
     })(),
     distanceMinKm: distanceMin,
     distanceMaxKm: distanceMax,
-    durationUnit,
-    durationMax: parseNumber(get('tmax')),
-    landskap: parseList(get('l'), ALL_LANDSKAP),
-    selectedKommun: parseList(get('k'), ALL_KOMMUN),
+    durationMin: durationMinHours,
+    durationMax: durationMaxHours != null && durationMaxHours < durationMinHours ? durationMinHours : durationMaxHours,
+    landskap: normalizeSelectedLandskap(parseList(get('l'), ALL_LANDSKAP)),
     months: parseList(get('m'), ALL_MONTHS),
     publicTransport: parseBool(get('pt')),
     nearMe: parseBool(get('nm')),
@@ -154,16 +163,16 @@ interface ReadonlyURLSearchParams {
 /** Serialize state to URLSearchParams, omitting defaults to keep URLs compact. */
 export function serializeFilters(state: FilterState): URLSearchParams {
   const params = new URLSearchParams()
+  const normalizedLandskap = normalizeSelectedLandskap(state.landskap)
   if (state.query) params.set('q', state.query)
   if (state.tab !== 'alla') params.set('tab', state.tab)
   if (state.difficulty.length > 0) params.set('d', state.difficulty.join(','))
   if (state.routeShape) params.set('rs', state.routeShape)
   if (state.distanceMinKm !== DEFAULT_DISTANCE_MIN) params.set('dmin', String(state.distanceMinKm))
   if (state.distanceMaxKm != null) params.set('dmax', String(state.distanceMaxKm))
-  if (state.durationUnit !== DEFAULT_DURATION_UNIT) params.set('du', 'd')
+  if (state.durationMin !== DEFAULT_DURATION_MIN) params.set('tmin', String(state.durationMin))
   if (state.durationMax != null) params.set('tmax', String(state.durationMax))
-  if (state.landskap.length > 0) params.set('l', state.landskap.join(','))
-  if (state.selectedKommun.length > 0) params.set('k', state.selectedKommun.join(','))
+  if (normalizedLandskap.length > 0) params.set('l', normalizedLandskap.join(','))
   if (state.months.length > 0) params.set('m', state.months.join(','))
   if (state.publicTransport) params.set('pt', '1')
   if (state.nearMe) params.set('nm', '1')
@@ -184,9 +193,9 @@ export function countActiveFilters(state: FilterState): number {
   if (state.difficulty.length > 0) n++
   if (state.routeShape) n++
   if (state.distanceMinKm !== DEFAULT_DISTANCE_MIN || state.distanceMaxKm != null) n++
-  if (state.durationMax != null) n++
-  if (state.landskap.length > 0) n++
-  if (state.selectedKommun.length > 0) n++
+  if (state.durationMin !== DEFAULT_DURATION_MIN || state.durationMax != null) n++
+  // Landskap is only counted when Nära mig is off — Nära mig takes precedence.
+  if (!state.nearMe && normalizeSelectedLandskap(state.landskap).length > 0) n++
   if (state.months.length > 0) n++
   if (state.publicTransport) n++
   if (state.nearMe) n++
@@ -206,25 +215,134 @@ export function isFilterStateActive(state: FilterState): boolean {
 
 export type FilterDimension =
   | 'difficulty' | 'routeShape' | 'distance' | 'duration' | 'season'
-  | 'landskap' | 'kommun' | 'publicTransport' | 'nearMe' | 'dogsAllowed'
+  | 'landskap' | 'publicTransport' | 'nearMe' | 'dogsAllowed'
   | 'tentingAllowed' | 'hasCabinsAlong'
   | 'cabinFacilities' | 'cabinServiceType'
 
+export function countActiveFiltersForDimensions(
+  state: FilterState,
+  dimensions: readonly FilterDimension[],
+): number {
+  let n = 0
+
+  for (const dimension of dimensions) {
+    switch (dimension) {
+      case 'difficulty':
+        if (state.difficulty.length > 0) n++
+        break
+      case 'routeShape':
+        if (state.routeShape) n++
+        break
+      case 'distance':
+        if (state.distanceMinKm !== DEFAULT_DISTANCE_MIN || state.distanceMaxKm != null) n++
+        break
+      case 'duration':
+        if (state.durationMin !== DEFAULT_DURATION_MIN || state.durationMax != null) n++
+        break
+      case 'landskap':
+        // Landskap is suppressed by Nära mig — see passesShared().
+        if (!state.nearMe && normalizeSelectedLandskap(state.landskap).length > 0) n++
+        break
+      case 'season':
+        if (state.months.length > 0) n++
+        break
+      case 'publicTransport':
+        if (state.publicTransport) n++
+        break
+      case 'nearMe':
+        if (state.nearMe) n++
+        break
+      case 'dogsAllowed':
+        if (state.dogsAllowed) n++
+        break
+      case 'tentingAllowed':
+        if (state.tentingAllowed) n++
+        break
+      case 'hasCabinsAlong':
+        if (state.hasCabinsAlong) n++
+        break
+      case 'cabinFacilities':
+        if (state.cabinFacilities.length > 0) n++
+        break
+      case 'cabinServiceType':
+        if (state.cabinServiceType !== 'any') n++
+        break
+    }
+  }
+
+  return n
+}
+
+export function createFilterResetPatch(
+  dimensions: readonly FilterDimension[],
+): Partial<FilterState> {
+  const patch: Partial<FilterState> = {}
+
+  for (const dimension of dimensions) {
+    switch (dimension) {
+      case 'difficulty':
+        patch.difficulty = defaultFilterState.difficulty
+        break
+      case 'routeShape':
+        patch.routeShape = defaultFilterState.routeShape
+        break
+      case 'distance':
+        patch.distanceMinKm = defaultFilterState.distanceMinKm
+        patch.distanceMaxKm = defaultFilterState.distanceMaxKm
+        break
+      case 'duration':
+        patch.durationMin = defaultFilterState.durationMin
+        patch.durationMax = defaultFilterState.durationMax
+        break
+      case 'landskap':
+        patch.landskap = defaultFilterState.landskap
+        break
+      case 'season':
+        patch.months = defaultFilterState.months
+        break
+      case 'publicTransport':
+        patch.publicTransport = defaultFilterState.publicTransport
+        break
+      case 'nearMe':
+        patch.nearMe = defaultFilterState.nearMe
+        patch.nearMeRadiusKm = defaultFilterState.nearMeRadiusKm
+        break
+      case 'dogsAllowed':
+        patch.dogsAllowed = defaultFilterState.dogsAllowed
+        break
+      case 'tentingAllowed':
+        patch.tentingAllowed = defaultFilterState.tentingAllowed
+        break
+      case 'hasCabinsAlong':
+        patch.hasCabinsAlong = defaultFilterState.hasCabinsAlong
+        break
+      case 'cabinFacilities':
+        patch.cabinFacilities = defaultFilterState.cabinFacilities
+        break
+      case 'cabinServiceType':
+        patch.cabinServiceType = defaultFilterState.cabinServiceType
+        break
+    }
+  }
+
+  return patch
+}
+
 const ROUTE_FILTERS: FilterDimension[] = [
   'difficulty', 'routeShape', 'distance', 'duration', 'season',
-  'landskap', 'kommun', 'publicTransport', 'nearMe', 'dogsAllowed',
+  'landskap', 'publicTransport', 'nearMe', 'dogsAllowed',
   'tentingAllowed', 'hasCabinsAlong',
 ]
 const CABIN_FILTERS: FilterDimension[] = [
-  'landskap', 'kommun', 'publicTransport', 'nearMe', 'dogsAllowed',
+  'landskap', 'publicTransport', 'nearMe', 'dogsAllowed',
   'cabinFacilities', 'cabinServiceType',
 ]
 const SHARED_FILTERS: FilterDimension[] = [
-  'landskap', 'kommun', 'season', 'publicTransport', 'nearMe', 'dogsAllowed',
+  'landskap', 'season', 'publicTransport', 'nearMe', 'dogsAllowed',
 ]
-const AREA_FILTERS: FilterDimension[] = ['landskap', 'kommun', 'nearMe']
+const AREA_FILTERS: FilterDimension[] = ['landskap', 'nearMe']
 const UTFLYKT_FILTERS: FilterDimension[] = [
-  'landskap', 'kommun', 'season', 'publicTransport', 'nearMe', 'dogsAllowed',
+  'landskap', 'season', 'publicTransport', 'nearMe', 'dogsAllowed',
 ]
 
 export function getApplicableFilters(tab: ExploreTab): FilterDimension[] {
@@ -257,19 +375,10 @@ function matchesLandskap(
   itemLandskap: Landskap[] | undefined,
   selected: Landskap[],
 ): boolean {
-  if (selected.length === 0) return true
+  const normalizedSelected = normalizeSelectedLandskap(selected)
+  if (normalizedSelected.length === 0) return true
   if (!itemLandskap || itemLandskap.length === 0) return false
-  return itemLandskap.some((l) => selected.includes(l))
-}
-
-function matchesKommun(
-  itemKommun: string[] | string | undefined,
-  selectedKommun: string[],
-): boolean {
-  if (selectedKommun.length === 0) return true
-  if (!itemKommun) return false
-  const itemKommunList = Array.isArray(itemKommun) ? itemKommun : [itemKommun]
-  return itemKommunList.some((k) => selectedKommun.includes(k))
+  return itemLandskap.some((l) => normalizedSelected.includes(l))
 }
 
 function matchesDistance(
@@ -287,22 +396,22 @@ function matchesDurationMinutes(
   durationMinutes: number | undefined,
   state: FilterState,
 ): boolean {
-  if (state.durationMax == null) return true
   if (durationMinutes == null) return true
-  const maxMinutes =
-    state.durationUnit === 'hours' ? state.durationMax * 60 : state.durationMax * 24 * 60
-  return durationMinutes <= maxMinutes
+  const durationHours = durationMinutes / 60
+  if (durationHours < state.durationMin) return false
+  if (state.durationMax != null && durationHours > state.durationMax) return false
+  return true
 }
 
 function matchesDurationDays(
   estimatedDays: number | undefined,
   state: FilterState,
 ): boolean {
-  if (state.durationMax == null) return true
   if (estimatedDays == null) return true
-  const maxDays =
-    state.durationUnit === 'days' ? state.durationMax : state.durationMax / 24
-  return estimatedDays <= maxDays
+  const durationHours = estimatedDays * 24
+  if (durationHours < state.durationMin) return false
+  if (state.durationMax != null && durationHours > state.durationMax) return false
+  return true
 }
 
 function matchesPublicTransport(
@@ -347,15 +456,41 @@ export interface ApplyFiltersOutput {
   count: number
 }
 
+interface Locatable {
+  landskap?: Landskap[]
+  coordinates?: LatLng
+}
+
 function passesShared(
-  item: { landskap?: Landskap[]; kommun?: string[] | string; coordinates?: LatLng },
+  item: Locatable,
   state: FilterState,
   origin: LatLng | null,
 ): boolean {
+  if (state.nearMe) {
+    // Nära mig takes precedence over landskap. We keep the user's landskap
+    // selection in state so it returns when they switch Nära mig off.
+    return matchesNearMe(item.coordinates, origin, state.nearMeRadiusKm)
+  }
   if (!matchesLandskap(item.landskap, state.landskap)) return false
-  if (!matchesKommun(item.kommun, state.selectedKommun)) return false
-  if (state.nearMe && !matchesNearMe(item.coordinates, origin, state.nearMeRadiusKm)) return false
   return true
+}
+
+// ─── Route category splitting ─────────────────────────────────────────────────
+
+export type RouteSplit = {
+  hiking: Route[]
+  mountain: Route[]
+  canoe: Route[]
+  ski: Route[]
+}
+
+export function splitRoutesByCategory(routes: Route[]): RouteSplit {
+  return {
+    hiking: routes.filter((r) => r.exploreCategory === 'vandring'),
+    mountain: routes.filter((r) => r.exploreCategory === 'fjallvandring'),
+    canoe: routes.filter((r) => r.exploreCategory === 'kanot'),
+    ski: routes.filter((r) => r.exploreCategory === 'skidturer'),
+  }
 }
 
 export function applyFilters({
@@ -369,7 +504,7 @@ export function applyFilters({
 }: ApplyFiltersInput): ApplyFiltersOutput {
   const filteredRoutes = routes.filter((route) => {
     if (!matchesQuery([route.title, route.region], state.query)) return false
-    if (!passesShared(route as { landskap?: Landskap[]; kommun?: string[]; coordinates?: LatLng }, state, origin)) return false
+    if (!passesShared(route as Locatable, state, origin)) return false
     if (state.difficulty.length > 0 && !state.difficulty.includes(route.difficulty)) return false
     if (state.routeShape && route.routeShape && route.routeShape !== state.routeShape) return false
     if (state.routeShape && !route.routeShape) return false
@@ -385,7 +520,7 @@ export function applyFilters({
 
   const filteredLongHikes = longHikes.filter((lh) => {
     if (!matchesQuery([lh.title, lh.region, lh.summary], state.query)) return false
-    if (!passesShared(lh as { landskap?: Landskap[]; kommun?: string[]; coordinates?: LatLng }, state, origin)) return false
+    if (!passesShared(lh as Locatable, state, origin)) return false
     if (state.difficulty.length > 0 && !state.difficulty.includes(lh.difficulty)) return false
     if (state.routeShape && lh.routeShape && lh.routeShape !== state.routeShape) return false
     if (state.routeShape && !lh.routeShape) return false
@@ -401,7 +536,7 @@ export function applyFilters({
 
   const filteredCabins = cabins.filter((cabin) => {
     if (!matchesQuery([cabin.title, cabin.region], state.query)) return false
-    if (!passesShared(cabin as { landskap?: Landskap[]; kommun?: string; coordinates?: LatLng }, state, origin)) return false
+    if (!passesShared(cabin as Locatable, state, origin)) return false
     if (!matchesPublicTransport(cabin.publicTransport, state.publicTransport)) return false
     if (state.dogsAllowed && cabin.dogsAllowed !== true) return false
     if (state.cabinFacilities.length > 0) {
@@ -455,6 +590,36 @@ function asSeason(item: unknown) {
 
 // ─── Helpers exposed for UI ──────────────────────────────────────────────────
 
+export function normalizeDurationHours(
+  hours: number | null,
+  direction: 'min' | 'max',
+): number | null {
+  if (hours == null) return null
+  if (hours <= 0) return 0
+  if (direction === 'min') {
+    const reversed = [...DURATION_RANGE_HOURS].reverse()
+    return reversed.find((option) => option <= hours) ?? 0
+  }
+  return DURATION_RANGE_HOURS.find((option) => option >= hours) ?? 336
+}
+
+export function formatDurationHours(maxHours: number): string {
+  if (maxHours === 0) return '0 tim'
+  if (maxHours < 24 || maxHours % 24 !== 0) {
+    return `${maxHours} tim`
+  }
+
+  const days = maxHours / 24
+  return days === 1 ? '1 dag' : `${days} dagar`
+}
+
+export function formatDurationFilterLabel(minHours: number, maxHours: number | null): string {
+  if (minHours === 0 && maxHours == null) return 'Alla längder'
+  if (minHours > 0 && maxHours == null) return `Från ${formatDurationHours(minHours)}`
+  if (minHours === 0 && maxHours != null) return `Upp till ${formatDurationHours(maxHours)}`
+  return `${formatDurationHours(minHours)} - ${formatDurationHours(maxHours ?? minHours)}`
+}
+
 export { ALL_MONTHS, currentMonth } from './season'
 export {
   ALL_LANDSKAP,
@@ -463,4 +628,3 @@ export {
   LANDSDEL_LABELS,
   LANDSKAP_LABELS,
 } from './landskap'
-export { KOMMUN_BY_LANDSKAP, getKommunForLandskap } from './kommun'

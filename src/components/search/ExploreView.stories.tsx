@@ -116,10 +116,45 @@ export const QueryFromHeaderSearch: Story = {
   },
 }
 
+export const DesktopFiltersCollapsed: Story = {
+  args: baseArgs,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement)
+    const page = within(document.body)
+
+    await expect(canvas.getByRole('button', { name: /öppna filter/i })).toBeInTheDocument()
+    await userEvent.click(canvas.getByRole('button', { name: /öppna filter/i }))
+    await expect(page.getByRole('heading', { name: 'Filter' })).toBeInTheDocument()
+    await expect(page.getByRole('button', { name: /stäng filter/i })).toBeInTheDocument()
+  },
+}
+
 export const WithLandskapFilter: Story = {
   args: {
     ...baseArgs,
     initialState: { ...defaultFilterState, landskap: ['lappland'] },
+  },
+}
+
+export const WithLandskapSelected: Story = {
+  args: {
+    ...baseArgs,
+    initialState: {
+      ...defaultFilterState,
+      landskap: ['skane', 'gotland', 'dalarna'],
+    },
+  },
+}
+
+export const WithNearMeActive: Story = {
+  args: {
+    ...baseArgs,
+    initialState: {
+      ...defaultFilterState,
+      nearMe: true,
+      // Preserved while Nära mig is on; reactivates when toggled off.
+      landskap: ['skane'],
+    },
   },
 }
 

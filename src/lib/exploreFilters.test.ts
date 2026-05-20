@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
+  ALL_LANDSKAP,
   type FilterState,
   applyFilters,
   countActiveFilters,
@@ -45,10 +46,17 @@ describe('exploreFilters — serde', () => {
     expect(params.get('rs')).toBeNull()
   })
 
-  it('parses durationUnit "d" as days', () => {
+  it('parses legacy duration URLs into the unified hour scale', () => {
     const parsed = parseFilters(new URLSearchParams('du=d&tmax=4'))
-    expect(parsed.durationUnit).toBe('days')
-    expect(parsed.durationMax).toBe(4)
+    expect(parsed.durationMin).toBe(0)
+    expect(parsed.durationMax).toBe(96)
+  })
+
+  it('serializes unified duration range filters without the legacy unit flag', () => {
+    const params = serializeFilters(withOverrides({ durationMin: 6, durationMax: 72 }))
+    expect(params.get('tmin')).toBe('6')
+    expect(params.get('tmax')).toBe('72')
+    expect(params.get('du')).toBeNull()
   })
 
   it('ignores unknown values gracefully', () => {
@@ -69,6 +77,13 @@ describe('exploreFilters — serde', () => {
     expect(parsed.query).toBe('lappland')
     expect(parsed.tab).toBe('stugor')
     expect(countActiveFilters(parsed)).toBe(0)
+  })
+
+  it('treats all landskap in the URL as the default "Alla" state', () => {
+    const parsed = parseFilters(new URLSearchParams(`l=${ALL_LANDSKAP.join(',')}`))
+    expect(parsed.landskap).toEqual([])
+    expect(countActiveFilters(parsed)).toBe(0)
+    expect(serializeFilters(parsed).get('l')).toBeNull()
   })
 })
 
@@ -192,6 +207,46 @@ describe('applyFilters', () => {
     expect(maxOnly.routes.map((r) => r.id)).toEqual(['r1'])
   })
 
+  it('duration range filters routes in hours and long hikes in days through one shared value', () => {
+    const longHike: LongHike = {
+      id: 'lh1',
+      title: 'Långtur',
+      region: 'Lappland',
+      summary: 'Flera dagar i fjällen',
+      description: 'Testdata',
+      distance: 80,
+      elevation: 1200,
+      duration: 2520,
+      estimatedDays: 6,
+      difficulty: 'hard',
+      stageIds: [],
+      landskap: ['lappland'],
+      publicTransport: { mode: 'reachable' },
+    }
+
+    const dayTripLimit = applyFilters({
+      state: withOverrides({ durationMin: 2, durationMax: 6 }),
+      areas: [],
+      utflykter: [],
+      routes: [route, hardRoute],
+      longHikes: [longHike],
+      cabins: [],
+    })
+    expect(dayTripLimit.routes.map((r) => r.id)).toEqual(['r1'])
+    expect(dayTripLimit.longHikes).toHaveLength(0)
+
+    const multidayLimit = applyFilters({
+      state: withOverrides({ durationMin: 72, durationMax: 144 }),
+      areas: [],
+      utflykter: [],
+      routes: [route, hardRoute],
+      longHikes: [longHike],
+      cabins: [],
+    })
+    expect(multidayLimit.routes).toHaveLength(0)
+    expect(multidayLimit.longHikes.map((lh) => lh.id)).toEqual(['lh1'])
+  })
+
   it('cabin facilities require ALL of the selected facilities', () => {
     const both = applyFilters({
       state: withOverrides({ cabinFacilities: ['bastu', 'koksutrustning'] }),
@@ -230,22 +285,20 @@ describe('applyFilters', () => {
     expect(result.utflykter).toHaveLength(1)
   })
 
-  it('selectedKommun (empty) lets every item through; non-empty acts as inclusion filter', () => {
-    const all = applyFilters({
-      state: withOverrides({ landskap: ['skane'], selectedKommun: [] }),
+  it('landskap is the only manual location filter', () => {
+    const inSkane = applyFilters({
+      state: withOverrides({ landskap: ['skane'] }),
       areas: [areaListItem], utflykter: [utflykt], routes: [route], longHikes, cabins: [cabin],
     })
-    // Empty selectedKommun = "Alla" → everything in scope still passes.
-    expect(all.routes).toHaveLength(1)
-    expect(all.cabins).toHaveLength(1)
+    expect(inSkane.routes).toHaveLength(1)
+    expect(inSkane.cabins).toHaveLength(1)
 
-    const onlyKlippan = applyFilters({
-      state: withOverrides({ landskap: ['skane'], selectedKommun: ['Svalöv'] }),
+    const inLappland = applyFilters({
+      state: withOverrides({ landskap: ['lappland'] }),
       areas: [areaListItem], utflykter: [utflykt], routes: [route], longHikes, cabins: [cabin],
     })
-    // Items with kommun=Klippan should be excluded; Svalöv is the only included kommun.
-    expect(onlyKlippan.routes).toHaveLength(0)
-    expect(onlyKlippan.cabins).toHaveLength(0)
+    expect(inLappland.routes).toHaveLength(0)
+    expect(inLappland.cabins).toHaveLength(0)
   })
 
   it('Nära mig with origin filters by haversine distance', () => {
@@ -257,5 +310,34 @@ describe('applyFilters', () => {
     })
     // Söderåsen is far from Stockholm → excluded.
     expect(result.areas).toHaveLength(0)
+  })
+
+  it('Nära mig takes precedence over landskap (preserved but ignored)', () => {
+    // A landskap that would normally filter out Söderåsen, combined with
+    // Nära mig pointing at Söderåsen with a generous radius. Nära mig wins —
+    // the area passes even though landskap doesn't list it.
+    const nearArea = { lat: 56.04, lng: 13.24 }
+    const result = applyFilters({
+      state: withOverrides({
+        nearMe: true,
+        nearMeRadiusKm: 50,
+        landskap: ['lappland'],
+      }),
+      origin: nearArea,
+      areas: [areaListItem],
+      utflykter: [],
+      routes: [],
+      longHikes,
+      cabins: [],
+    })
+    expect(result.areas).toHaveLength(1)
+  })
+
+  it('countActiveFilters suppresses landskap while Nära mig is on', () => {
+    expect(
+      countActiveFilters(
+        withOverrides({ nearMe: true, landskap: ['skane', 'gotland'] }),
+      ),
+    ).toBe(1)
   })
 })

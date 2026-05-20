@@ -7,16 +7,19 @@ import {
   type FilterState,
   countActiveFilters,
   defaultFilterState,
+  formatDurationFilterLabel,
+  normalizeSelectedLandskap,
 } from '@/lib/exploreFilters'
 import { LANDSKAP_LABELS } from '@/lib/landskap'
 import { formatRouteShape } from '@/lib/routeShape'
-import { formatMonth } from '@/lib/season'
+import { expandSeasonKeys, formatMonth, formatSeasonKey, getSelectedSeasonKeys } from '@/lib/season'
 import { FACILITY_LABELS } from '@/lib/facility'
 
 export interface ResultsHeaderProps {
   state: FilterState
   patch: (partial: Partial<FilterState>) => void
   count: number
+  showCount?: boolean
   className?: string
 }
 
@@ -26,7 +29,13 @@ interface PillSpec {
   clear: () => void
 }
 
-export function ResultsHeader({ state, patch, count, className }: ResultsHeaderProps) {
+export function ResultsHeader({
+  state,
+  patch,
+  count,
+  showCount = true,
+  className,
+}: ResultsHeaderProps) {
   const activeCount = countActiveFilters(state)
   const pills = buildPills(state, patch)
 
@@ -37,15 +46,17 @@ export function ResultsHeader({ state, patch, count, className }: ResultsHeaderP
 
   return (
     <div className={['flex flex-col gap-2', className].filter(Boolean).join(' ')}>
-      <p
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        className="font-body text-sm text-ink-soft"
-      >
-        <span className="font-medium text-pine">{count}</span>{' '}
-        {count === 1 ? 'resultat' : 'resultat'}
-      </p>
+      {showCount && (
+        <p
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          className="font-body text-sm text-ink-soft"
+        >
+          <span className="font-medium text-pine">{count}</span>{' '}
+          {count === 1 ? 'resultat' : 'resultat'}
+        </p>
+      )}
       {pills.length > 0 && (
         <div className="flex flex-wrap gap-1.5" role="group" aria-label="Aktiva filter">
           {pills.map((pill) => (
@@ -60,7 +71,7 @@ export function ResultsHeader({ state, patch, count, className }: ResultsHeaderP
               <X size={12} aria-hidden="true" />
             </button>
           ))}
-          {activeCount > 1 && (
+          {activeCount > 0 && (
             <Button
               type="button"
               variant="ghost"
@@ -79,6 +90,7 @@ export function ResultsHeader({ state, patch, count, className }: ResultsHeaderP
 
 function buildPills(state: FilterState, patch: (partial: Partial<FilterState>) => void): PillSpec[] {
   const pills: PillSpec[] = []
+  const normalizedLandskap = normalizeSelectedLandskap(state.landskap)
 
   for (const d of state.difficulty) {
     pills.push({
@@ -103,28 +115,39 @@ function buildPills(state: FilterState, patch: (partial: Partial<FilterState>) =
     })
   }
   if (state.durationMax != null) {
-    const unit = state.durationUnit === 'hours' ? 'h' : 'd'
     pills.push({
       key: 'dur',
-      label: `Upp till ${state.durationMax} ${unit}`,
-      clear: () => patch({ durationMax: null }),
+      label: formatDurationFilterLabel(state.durationMin, state.durationMax),
+      clear: () => patch({ durationMin: 0, durationMax: null }),
+    })
+  } else if (state.durationMin > 0) {
+    pills.push({
+      key: 'dur',
+      label: formatDurationFilterLabel(state.durationMin, null),
+      clear: () => patch({ durationMin: 0, durationMax: null }),
     })
   }
-  for (const l of state.landskap) {
+  for (const l of normalizedLandskap) {
     pills.push({
       key: `l-${l}`,
       label: LANDSKAP_LABELS[l],
-      clear: () => patch({ landskap: state.landskap.filter((x) => x !== l) }),
+      clear: () => patch({ landskap: normalizedLandskap.filter((item) => item !== l) }),
     })
   }
-  for (const k of state.selectedKommun) {
+  const selectedSeasons = getSelectedSeasonKeys(state.months)
+  const seasonMonths = new Set(expandSeasonKeys(selectedSeasons))
+  for (const season of selectedSeasons) {
     pills.push({
-      key: `k-${k}`,
-      label: k,
-      clear: () => patch({ selectedKommun: state.selectedKommun.filter((x) => x !== k) }),
+      key: `season-${season}`,
+      label: formatSeasonKey(season),
+      clear: () => {
+        const monthsToRemove = new Set(expandSeasonKeys([season]))
+        patch({ months: state.months.filter((month) => !monthsToRemove.has(month)) })
+      },
     })
   }
   for (const m of state.months) {
+    if (seasonMonths.has(m)) continue
     pills.push({
       key: `m-${m}`,
       label: formatMonth(m),

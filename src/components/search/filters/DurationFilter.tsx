@@ -2,79 +2,85 @@
 
 import * as React from 'react'
 import { Slider } from '@/components/ui/slider'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-
-const HOURS_MAX = 12
-const DAYS_MAX = 14
-const HOURS_STEP = 1
-const DAYS_STEP = 1
+import {
+  DURATION_RANGE_HOURS,
+  formatDurationFilterLabel,
+  formatDurationHours,
+  normalizeDurationHours,
+} from '@/lib/exploreFilters'
+import {
+  FILTER_FIELDSET_CLASS,
+  FILTER_LABEL_CLASS,
+  FILTER_VALUE_TEXT_CLASS,
+} from './filterStyles'
 
 export interface DurationFilterProps {
-  unit: 'hours' | 'days'
-  max: number | null
-  onChange: (unit: 'hours' | 'days', max: number | null) => void
+  minHours: number
+  maxHours: number | null
+  onChange: (minHours: number, maxHours: number | null) => void
 }
 
-export function DurationFilter({ unit, max, onChange }: DurationFilterProps) {
+const OPEN_ENDED_INDEX = DURATION_RANGE_HOURS.length
+
+function getIndexFromHours(hours: number | null, direction: 'min' | 'max') {
+  if (hours == null) return OPEN_ENDED_INDEX
+  const normalized = normalizeDurationHours(hours, direction)
+  const nextIndex = DURATION_RANGE_HOURS.findIndex((option) => option === normalized)
+  return nextIndex === -1 ? OPEN_ENDED_INDEX : nextIndex
+}
+
+function getHoursFromIndex(index: number) {
+  const boundedIndex = Math.min(index, DURATION_RANGE_HOURS.length - 1)
+  return DURATION_RANGE_HOURS[boundedIndex] ?? 0
+}
+
+function getMaxHoursFromIndex(index: number) {
+  if (index >= OPEN_ENDED_INDEX) return null
+  return DURATION_RANGE_HOURS[index] ?? 0
+}
+
+export function DurationFilter({ minHours, maxHours, onChange }: DurationFilterProps) {
   const headingId = React.useId()
-  const sliderMax = unit === 'hours' ? HOURS_MAX : DAYS_MAX
-  const step = unit === 'hours' ? HOURS_STEP : DAYS_STEP
-  const initial = max == null ? sliderMax : Math.max(0, Math.min(sliderMax, max))
-  const [value, setValue] = React.useState<number>(initial)
+  const [value, setValue] = React.useState<[number, number]>([
+    getIndexFromHours(minHours, 'min'),
+    getIndexFromHours(maxHours, 'max'),
+  ])
 
   React.useEffect(() => {
-    setValue(max == null ? sliderMax : Math.max(0, Math.min(sliderMax, max)))
-  }, [max, sliderMax])
+    setValue([
+      getIndexFromHours(minHours, 'min'),
+      getIndexFromHours(maxHours, 'max'),
+    ])
+  }, [minHours, maxHours])
 
-  const isUnbounded = value >= sliderMax
-  const unitShort = unit === 'hours' ? 'tim' : 'dagar'
-  const dynamicUnit = unit === 'hours' ? 'tim' : value === 1 ? 'dag' : 'dagar'
-  const valueLabel = isUnbounded ? `${sliderMax}+ ${unitShort}` : `${value} ${dynamicUnit}`
+  const minValue = getHoursFromIndex(value[0])
+  const maxValue = getMaxHoursFromIndex(value[1])
+  const summaryLabel = formatDurationFilterLabel(minValue, maxValue)
 
   return (
-    <fieldset className="flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-3 flex-wrap">
-        <legend id={headingId} className="text-sm font-medium text-pine">Längd på tur</legend>
-        <ToggleGroup
-          type="single"
-          value={unit}
-          onValueChange={(next) => {
-            if (next === 'hours' || next === 'days') onChange(next, null)
-          }}
-          className="flex gap-1"
-        >
-          <ToggleGroupItem
-            value="hours"
-            aria-label="Visa i timmar"
-            className="px-2.5 py-1 text-xs rounded-md border border-mist-dark bg-white text-ink-soft data-[state=on]:bg-pine data-[state=on]:text-snow data-[state=on]:border-pine"
-          >
-            Tim
-          </ToggleGroupItem>
-          <ToggleGroupItem
-            value="days"
-            aria-label="Visa i dagar"
-            className="px-2.5 py-1 text-xs rounded-md border border-mist-dark bg-white text-ink-soft data-[state=on]:bg-pine data-[state=on]:text-snow data-[state=on]:border-pine"
-          >
-            Dag
-          </ToggleGroupItem>
-        </ToggleGroup>
+    <fieldset className={`${FILTER_FIELDSET_CLASS} w-full`}>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <legend id={headingId} className={FILTER_LABEL_CLASS}>
+          Längd på tur
+        </legend>
+        <span className={FILTER_VALUE_TEXT_CLASS}>{summaryLabel}</span>
       </div>
       <Slider
-        value={[value]}
+        value={value}
         min={0}
-        max={sliderMax}
-        step={step}
-        onValueChange={(next) => setValue(next[0] ?? 0)}
+        max={OPEN_ENDED_INDEX}
+        step={1}
+        minStepsBetweenThumbs={0}
+        onValueChange={(next) => setValue([next[0] ?? 0, next[1] ?? OPEN_ENDED_INDEX])}
         onValueCommit={(next) => {
-          const v = next[0] ?? 0
-          onChange(unit, v >= sliderMax ? null : v)
+          onChange(getHoursFromIndex(next[0] ?? 0), getMaxHoursFromIndex(next[1] ?? OPEN_ENDED_INDEX))
         }}
         aria-labelledby={headingId}
-        aria-valuetext={`upp till ${valueLabel}`}
+        aria-valuetext={`${formatDurationHours(minValue)} till ${maxValue == null ? 'ingen max' : formatDurationHours(maxValue)}`}
       />
       <div className="flex justify-between text-2xs text-stone">
-        <span>0 {unitShort}</span>
-        <span className="font-medium text-ink-soft">upp till {valueLabel}</span>
+        <span>0 tim</span>
+        <span>14 dagar+</span>
       </div>
     </fieldset>
   )

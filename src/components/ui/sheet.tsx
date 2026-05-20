@@ -51,26 +51,31 @@ const sheetVariants = cva(
 
 interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
-    VariantProps<typeof sheetVariants> {}
+    VariantProps<typeof sheetVariants> {
+  overlayClassName?: string
+  showCloseButton?: boolean
+}
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
->(({ side = "right", className, children, ...props }, ref) => (
+>(({ side = "right", className, children, overlayClassName, showCloseButton = true, ...props }, ref) => (
   <SheetPortal>
-    <SheetOverlay />
+    <SheetOverlay className={overlayClassName} />
     <SheetPrimitive.Content
       ref={ref}
       className={cn(sheetVariants({ side }), className)}
       {...props}
     >
       {children}
-      <SheetPrimitive.Close
-        className="absolute right-3 top-3 inline-flex items-center justify-center rounded-full p-2 text-stone transition-colors hover:bg-mist hover:text-pine focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-1 disabled:pointer-events-none"
-      >
-        <X className="h-5 w-5" aria-hidden="true" />
-        <span className="sr-only">Stäng</span>
-      </SheetPrimitive.Close>
+      {showCloseButton && (
+        <SheetPrimitive.Close
+          className="absolute right-3 top-3 inline-flex items-center justify-center rounded-full p-2 text-stone transition-colors hover:bg-mist hover:text-pine focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-1 disabled:pointer-events-none"
+        >
+          <X className="h-5 w-5" aria-hidden="true" />
+          <span className="sr-only">Stäng</span>
+        </SheetPrimitive.Close>
+      )}
     </SheetPrimitive.Content>
   </SheetPortal>
 ))

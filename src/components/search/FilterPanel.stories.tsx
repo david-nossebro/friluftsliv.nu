@@ -12,7 +12,7 @@ function Wrapper({ initial, tab = 'alla' }: { initial: FilterState; tab?: Explor
   const [state, setState] = React.useState({ ...initial, tab })
   return (
     <div className="p-6 bg-snow">
-      <div className="rounded-xl border border-mist-dark bg-white shadow-card p-5">
+      <div className="rounded-xl border border-mist-dark bg-white shadow-card p-5 max-w-[24rem]">
         <FilterPanel
           state={state}
           patch={(p) => setState((prev) => ({ ...prev, ...p }))}
@@ -39,6 +39,24 @@ export const VandringTab: Story = { args: { initial: defaultFilterState, tab: 'v
 
 export const StugorTab: Story = { args: { initial: defaultFilterState, tab: 'stugor' } }
 
+export const WithLocationSelected: Story = {
+  args: {
+    initial: { ...defaultFilterState, landskap: ['skane', 'gotland', 'dalarna'] },
+    tab: 'alla',
+  },
+}
+
+export const WithNearMeActive: Story = {
+  args: {
+    initial: { ...defaultFilterState, nearMe: true, landskap: ['skane'] },
+    tab: 'alla',
+  },
+}
+
+export const AreaTabOnlyLocation: Story = {
+  args: { initial: defaultFilterState, tab: 'nationalparker' },
+}
+
 export const AllFiltersActive: Story = {
   args: {
     initial: {
@@ -49,7 +67,7 @@ export const AllFiltersActive: Story = {
       distanceMaxKm: 150,
       landskap: ['lappland'],
       months: ['juni', 'juli', 'augusti'],
-      publicTransport: 'reachable',
+      publicTransport: true,
       dogsAllowed: true,
       hasCabinsAlong: true,
     },

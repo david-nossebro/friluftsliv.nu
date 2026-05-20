@@ -7,6 +7,11 @@ import { Slider } from '@/components/ui/slider'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { useGeolocation, type GeolocationStatus } from '@/lib/useGeolocation'
+import {
+  FILTER_FIELDSET_CLASS,
+  FILTER_HELP_TEXT_CLASS,
+  FILTER_LABEL_CLASS,
+} from './filterStyles'
 
 const RADIUS_MIN = 5
 const RADIUS_MAX = 100
@@ -56,37 +61,37 @@ export function NearMeFilter({
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex flex-col gap-0.5 min-w-0">
-          <Label htmlFor={id} className="text-sm font-medium text-pine cursor-pointer flex items-center gap-1.5">
+    <div className={FILTER_FIELDSET_CLASS}>
+      <div className="flex items-start gap-3 rounded-xl border border-mist-dark bg-mist/40 p-4">
+        <Switch
+          id={id}
+          checked={active && geo.status === 'granted'}
+          onCheckedChange={handleToggle}
+          disabled={geo.status === 'unavailable'}
+          aria-describedby={helpId}
+          className="mt-0.5 shrink-0 data-[state=checked]:bg-pine data-[state=unchecked]:bg-mist-dark"
+        />
+        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          <Label htmlFor={id} className={`${FILTER_LABEL_CLASS} cursor-pointer inline-flex items-center gap-1.5`}>
             <MapPin size={14} strokeWidth={1.8} aria-hidden="true" />
             Nära mig
           </Label>
-          <span id={helpId} className="text-xs text-stone">
-            {statusHint(geo.status)}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          {geo.status === 'prompting' && (
-            <Loader2 size={14} className="animate-spin motion-reduce:animate-none text-stone" aria-hidden="true" />
-          )}
-          {(geo.status === 'denied' || geo.status === 'unavailable') && (
-            <AlertCircle size={14} className="text-ember" aria-hidden="true" />
-          )}
-          <Switch
-            id={id}
-            checked={active && geo.status === 'granted'}
-            onCheckedChange={handleToggle}
-            disabled={geo.status === 'unavailable'}
-            aria-describedby={helpId}
-            className="data-[state=checked]:bg-pine data-[state=unchecked]:bg-mist-dark"
-          />
+          <div className="flex flex-wrap items-center gap-2">
+            <span id={helpId} className={FILTER_HELP_TEXT_CLASS}>
+              {statusHint(geo.status)}
+            </span>
+            {geo.status === 'prompting' && (
+              <Loader2 size={14} className="animate-spin motion-reduce:animate-none text-stone" aria-hidden="true" />
+            )}
+            {(geo.status === 'denied' || geo.status === 'unavailable') && (
+              <AlertCircle size={14} className="text-ember" aria-hidden="true" />
+            )}
+          </div>
         </div>
       </div>
 
       {active && geo.status === 'granted' && (
-        <>
+        <div className="flex flex-col gap-3 pl-1">
           <Slider
             value={[radius]}
             min={RADIUS_MIN}
@@ -97,7 +102,7 @@ export function NearMeFilter({
             aria-label="Sökradie"
             aria-valuetext={`${radius} km från din position`}
           />
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-3">
             <span className="text-xs text-stone">{radius} km radie</span>
             <Button
               type="button"
@@ -112,7 +117,7 @@ export function NearMeFilter({
               Glöm min position
             </Button>
           </div>
-        </>
+        </div>
       )}
     </div>
   )

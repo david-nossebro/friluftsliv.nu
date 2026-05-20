@@ -52,7 +52,7 @@ export function RouteDetailPage({ route, relatedRoutes, className }: RouteDetail
   return (
     <article className={cn('bg-snow min-h-screen pb-24 md:pb-0', className)}>
       <ImageGallery
-        src={route.imageUrl ?? ''}
+        src={route.imageUrl ?? null}
         alt={route.title}
         overlay={
           <div className="flex flex-col gap-2">

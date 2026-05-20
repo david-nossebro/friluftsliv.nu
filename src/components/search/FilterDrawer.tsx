@@ -1,18 +1,18 @@
 'use client'
 
 import * as React from 'react'
-import { SlidersHorizontal } from 'lucide-react'
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { ArrowLeft, ArrowRight, SlidersHorizontal } from 'lucide-react'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
-import { FilterPanel } from './FilterPanel'
+import { cn } from '@/lib/utils'
 import { FilterCountBadge } from './FilterToolbar'
 import {
+  countActiveFiltersForDimensions,
   type FilterDimension,
   type FilterState,
-  countActiveFilters,
-  defaultFilterState,
 } from '@/lib/exploreFilters'
 import type { LatLng } from '@/lib/geo'
+import { FilterSheetPanel } from './FilterSheetPanel'
 
 export interface FilterDrawerProps {
   state: FilterState
@@ -21,6 +21,8 @@ export interface FilterDrawerProps {
   /** Total result count for the sticky footer CTA. */
   resultCount: number
   onCoordsChange?: (coords: LatLng | null) => void
+  /** 'mobile' slides up from the bottom; 'desktop' slides in from the left. */
+  variant?: 'mobile' | 'desktop'
 }
 
 export function FilterDrawer({
@@ -29,69 +31,72 @@ export function FilterDrawer({
   applicable,
   resultCount,
   onCoordsChange,
+  variant = 'mobile',
 }: FilterDrawerProps) {
   const [open, setOpen] = React.useState(false)
-  const activeCount = countActiveFilters(state)
-
-  const reset = () => {
-    const { tab, query } = state
-    patch({ ...defaultFilterState, tab, query })
-  }
+  const activeCount = countActiveFiltersForDimensions(state, applicable)
+  const isDesktop = variant === 'desktop'
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={setOpen} modal={!isDesktop}>
       <SheetTrigger asChild>
-        <Button
-          type="button"
-          variant="secondary"
-          size="md"
-          className="inline-flex items-center gap-2"
-        >
-          <SlidersHorizontal size={16} strokeWidth={1.8} aria-hidden="true" />
-          <span>Filtrera</span>
-          {activeCount > 0 && <FilterCountBadge n={activeCount} />}
-        </Button>
-      </SheetTrigger>
-      <SheetContent
-        side="bottom"
-        className="h-[85vh] p-0 flex flex-col bg-snow"
-      >
-        <SheetHeader className="px-4 py-3 border-b border-mist-dark flex flex-row items-center justify-between gap-2 space-y-0 pr-14">
-          <SheetTitle className="font-display text-lg text-pine">
-            Filter {activeCount > 0 && <span className="text-sm text-stone font-body">({activeCount})</span>}
-          </SheetTitle>
-          {activeCount > 0 && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={reset}
-              className="text-xs text-stone"
-            >
-              Rensa alla
-            </Button>
-          )}
-        </SheetHeader>
-        <div className="flex-1 overflow-y-auto p-4">
-          <FilterPanel
-            state={state}
-            patch={patch}
-            applicable={applicable}
-            {...(onCoordsChange ? { onCoordsChange } : {})}
-            className="grid-cols-1 md:grid-cols-1 xl:grid-cols-1"
-          />
-        </div>
-        <div className="px-4 py-3 border-t border-mist-dark bg-white">
+        {isDesktop ? (
           <Button
             type="button"
-            variant="primary"
-            size="lg"
-            onClick={() => setOpen(false)}
-            className="w-full"
+            variant="secondary"
+            size="sm"
+            aria-label={
+              open
+                ? 'Stäng filter'
+                : activeCount > 0
+                  ? `Öppna filter. ${activeCount} aktiva filter.`
+                  : 'Öppna filter'
+            }
+            className={cn(
+              'relative z-[60] min-h-11 rounded-full border border-mist-dark bg-white px-4 shadow-sm transition-colors',
+              open ? 'bg-mist text-pine ring-1 ring-inset ring-moss' : 'text-ink hover:bg-mist',
+            )}
           >
-            Visa {resultCount} resultat
+            <SlidersHorizontal size={17} strokeWidth={1.8} aria-hidden="true" />
+            <span>Filter</span>
+            {activeCount > 0 && <FilterCountBadge n={activeCount} />}
+            {open ? (
+              <ArrowLeft size={16} strokeWidth={1.8} aria-hidden="true" />
+            ) : (
+              <ArrowRight size={16} strokeWidth={1.8} aria-hidden="true" />
+            )}
           </Button>
-        </div>
+        ) : (
+          <Button
+            type="button"
+            variant="secondary"
+            size="md"
+            className="inline-flex items-center gap-2"
+          >
+            <SlidersHorizontal size={16} strokeWidth={1.8} aria-hidden="true" />
+            <span>Filtrera</span>
+            {activeCount > 0 && <FilterCountBadge n={activeCount} />}
+          </Button>
+        )}
+      </SheetTrigger>
+      <SheetContent
+        side={isDesktop ? 'left' : 'bottom'}
+        overlayClassName="bg-pine-dark/18 backdrop-blur-[2px] data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+        className={
+          isDesktop
+            ? 'w-[min(24rem,calc(100vw-1rem))] border-r border-mist-dark bg-snow p-0 sm:max-w-[24rem]'
+            : 'h-[85vh] p-0 flex flex-col bg-snow'
+        }
+      >
+        <FilterSheetPanel
+          state={state}
+          patch={patch}
+          applicable={applicable}
+          resultCount={resultCount}
+          onClose={() => setOpen(false)}
+          surface={isDesktop ? 'desktop' : 'mobile'}
+          {...(onCoordsChange ? { onCoordsChange } : {})}
+        />
       </SheetContent>
     </Sheet>
   )

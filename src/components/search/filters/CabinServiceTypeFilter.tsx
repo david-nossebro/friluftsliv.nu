@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import type { CabinServiceType } from '@/types'
+import { FILTER_FIELDSET_CLASS, FILTER_LABEL_CLASS, FILTER_TOGGLE_ITEM_CLASS } from './filterStyles'
 
 const OPTIONS: { value: CabinServiceType | 'any'; label: string }[] = [
   { value: 'any', label: 'Alla' },
@@ -19,8 +20,8 @@ export interface CabinServiceTypeFilterProps {
 export function CabinServiceTypeFilter({ value, onChange }: CabinServiceTypeFilterProps) {
   const headingId = React.useId()
   return (
-    <fieldset className="flex flex-col gap-2">
-      <legend id={headingId} className="text-sm font-medium text-pine">Service i stugan</legend>
+    <fieldset className={FILTER_FIELDSET_CLASS}>
+      <legend id={headingId} className={FILTER_LABEL_CLASS}>Service i stugan</legend>
       <ToggleGroup
         type="single"
         value={value}
@@ -29,13 +30,13 @@ export function CabinServiceTypeFilter({ value, onChange }: CabinServiceTypeFilt
           onChange(next as CabinServiceType | 'any')
         }}
         aria-labelledby={headingId}
-        className="flex flex-wrap gap-2 justify-start"
+        className="flex flex-wrap gap-2 justify-start pt-1"
       >
         {OPTIONS.map((option) => (
           <ToggleGroupItem
             key={option.value}
             value={option.value}
-            className="px-3 py-2 rounded-full border border-mist-dark bg-white text-ink-soft data-[state=on]:bg-pine data-[state=on]:text-snow data-[state=on]:border-pine hover:bg-mist hover:text-pine"
+            className={FILTER_TOGGLE_ITEM_CLASS}
           >
             {option.label}
           </ToggleGroupItem>

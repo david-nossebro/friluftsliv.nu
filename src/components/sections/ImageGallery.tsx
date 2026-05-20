@@ -5,8 +5,8 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
 export interface ImageGalleryProps {
-  /** Main hero image URL */
-  src: string
+  /** Main hero image URL, or null when no image is available. */
+  src: string | null
   alt: string
   /** Additional images shown as a thumbnail strip overlaying the hero. */
   images?: string[]
@@ -16,22 +16,24 @@ export interface ImageGalleryProps {
 }
 
 export function ImageGallery({ src, alt, images = [], overlay, className }: ImageGalleryProps) {
-  const all = React.useMemo(() => [src, ...images], [src, images])
-  const [active, setActive] = React.useState(src)
-  const activeIndex = Math.max(0, all.indexOf(active))
+  const all = React.useMemo(() => (src ? [src, ...images] : images), [src, images])
+  const [active, setActive] = React.useState<string | null>(src ?? images[0] ?? null)
+  const activeIndex = Math.max(0, active ? all.indexOf(active) : 0)
 
   return (
     <div className={cn('flex flex-col', className)}>
       <div className="relative w-full h-[56vw] min-h-[260px] max-h-[520px] bg-pine/20 overflow-hidden">
-        <Image
-          src={active}
-          alt={alt}
-          fill
-          priority
-          quality={70}
-          className="object-cover transition-opacity duration-300"
-          sizes="100vw"
-        />
+        {active && (
+          <Image
+            src={active}
+            alt={alt}
+            fill
+            priority
+            quality={70}
+            className="object-cover transition-opacity duration-300"
+            sizes="100vw"
+          />
+        )}
 
         {/* Top scrim — keeps breadcrumb/badges legible on bright photos. */}
         <div

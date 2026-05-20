@@ -6,6 +6,12 @@ import { cn } from '@/lib/utils'
 import type { ExploreTab } from '@/types'
 import { exploreTabs, getExploreTabLabel } from './exploreTabs'
 
+// Run the measurement effect synchronously before paint where possible so the
+// tab bar / dropdown decision lands in the first painted frame. Falls back to
+// useEffect during SSR to avoid hydration warnings.
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect
+
 export interface ExploreFiltersProps {
   activeTab?: ExploreTab
   onTabChange?: (tab: ExploreTab) => void
@@ -18,12 +24,14 @@ export function ExploreFilters({
   className,
 }: ExploreFiltersProps) {
   const [isMobilePanelOpen, setIsMobilePanelOpen] = React.useState(false)
-  const [tabsFit, setTabsFit] = React.useState<boolean | null>(null)
+  // Default to "fits" so the desktop tab bar paints first; measurement flips
+  // to false only if the row genuinely overflows the container.
+  const [tabsFit, setTabsFit] = React.useState<boolean>(true)
   const measureContainerRef = React.useRef<HTMLDivElement | null>(null)
   const measureRowRef = React.useRef<HTMLDivElement | null>(null)
   const panelId = React.useId()
   const activeTabLabel = getExploreTabLabel(activeTab)
-  const showDisclosure = tabsFit !== true
+  const showDisclosure = !tabsFit
 
   const updateTabsFit = React.useCallback(() => {
     const containerElement = measureContainerRef.current
@@ -50,7 +58,7 @@ export function ExploreFilters({
     }
   }, [tabsFit])
 
-  React.useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     let frameId = 0
     let isCancelled = false
 
@@ -61,7 +69,9 @@ export function ExploreFilters({
       })
     }
 
-    scheduleUpdate()
+    // Synchronous first measurement so the tab-bar vs dropdown choice is
+    // settled before the first paint when possible.
+    updateTabsFit()
 
     if (typeof ResizeObserver !== 'undefined') {
       const resizeObserver = new ResizeObserver(() => {

@@ -10,14 +10,14 @@ import { DifficultyFilter } from './filters/DifficultyFilter'
 import { RouteShapeFilter } from './filters/RouteShapeFilter'
 import { DistanceFilter } from './filters/DistanceFilter'
 import { DurationFilter } from './filters/DurationFilter'
-import { LocationFilter } from './filters/LocationFilter'
 import { SeasonFilter } from './filters/SeasonFilter'
-import { PublicTransportFilter } from './filters/PublicTransportFilter'
 import { NearMeFilter } from './filters/NearMeFilter'
+import { LandskapPicker } from './filters/LandskapPicker'
 import { BooleanToggleFilter } from './filters/BooleanToggleFilter'
 import { CabinFacilitiesFilter } from './filters/CabinFacilitiesFilter'
 import { CabinServiceTypeFilter } from './filters/CabinServiceTypeFilter'
 import type { LatLng } from '@/lib/geo'
+import { FILTER_LABEL_CLASS } from './filters/filterStyles'
 
 export interface FilterPanelProps {
   state: FilterState
@@ -29,10 +29,9 @@ export interface FilterPanelProps {
 }
 
 /**
- * Filter body, organised into named macro-blocks (Var / Hur lång och svår /
- * När och resa / Praktiskt / Stuga). Each block packs related sub-filters in
- * a flex-wrap row. Soft border-t separators between blocks give the panel a
- * clear vertical rhythm.
+ * Advanced filter body organised into grouped blocks. Dense controls stay on
+ * full-width rows so the sidebar remains easy to scan even without extra
+ * section headings.
  */
 export function FilterPanel({
   state,
@@ -43,24 +42,31 @@ export function FilterPanel({
 }: FilterPanelProps) {
   const can = (dim: FilterDimension) => applicable.includes(dim)
 
-  const showVar = can('landskap') || can('nearMe')
-  const showSize =
-    can('distance') || can('duration') || can('difficulty') || can('routeShape')
-  const showWhen = can('season') || can('publicTransport')
-  const showPraktiskt =
-    can('dogsAllowed') || can('tentingAllowed') || can('hasCabinsAlong')
+  const showPlats = can('nearMe') || can('landskap')
+  const showVad =
+    can('difficulty') || can('routeShape') || can('distance') || can('duration') ||
+    can('publicTransport') || can('dogsAllowed') || can('tentingAllowed') ||
+    can('hasCabinsAlong')
+  const showWhen = can('season')
   const showCabin = can('cabinServiceType') || can('cabinFacilities')
+
+  const handleNearMeChange = (active: boolean) => {
+    // Keep landskap selection intact — the matcher (passesShared) gives
+    // Nära mig precedence, so the user's choice is preserved for when they
+    // turn Nära mig off again.
+    patch({ nearMe: active })
+  }
 
   return (
     <div className={cn('flex flex-col divide-y divide-mist-dark', className)}>
-      {showVar && (
-        <Block title="Var">
+      {showPlats && (
+        <Block title="Plats">
           {can('nearMe') && (
             <SubSection className="basis-full">
               <NearMeFilter
                 active={state.nearMe}
                 radiusKm={state.nearMeRadiusKm}
-                onActiveChange={(active) => patch({ nearMe: active })}
+                onActiveChange={handleNearMeChange}
                 onRadiusChange={(r) => patch({ nearMeRadiusKm: r })}
                 {...(onCoordsChange ? { onCoordsChange } : {})}
               />
@@ -68,20 +74,36 @@ export function FilterPanel({
           )}
           {can('landskap') && (
             <SubSection className="basis-full">
-              <LocationFilter
-                landskap={state.landskap}
-                selectedKommun={state.selectedKommun}
-                onChange={(landskap, selectedKommun) => patch({ landskap, selectedKommun })}
+              <LandskapPicker
+                value={state.landskap}
+                onChange={(landskap) => patch({ landskap })}
+                disabled={state.nearMe}
               />
             </SubSection>
           )}
         </Block>
       )}
 
-      {showSize && (
-        <Block title="Hur lång och svår">
+      {showVad && (
+        <Block ariaLabel="Aktivitetsfilter">
+          {can('difficulty') && (
+            <SubSection className="basis-full">
+              <DifficultyFilter
+                value={state.difficulty}
+                onChange={(d) => patch({ difficulty: d })}
+              />
+            </SubSection>
+          )}
+          {can('routeShape') && (
+            <SubSection className="basis-full">
+              <RouteShapeFilter
+                value={state.routeShape}
+                onChange={(rs) => patch({ routeShape: rs })}
+              />
+            </SubSection>
+          )}
           {can('distance') && (
-            <SubSection className="basis-full md:basis-[280px] grow">
+            <SubSection className="basis-full">
               <DistanceFilter
                 min={state.distanceMinKm}
                 max={state.distanceMaxKm}
@@ -90,35 +112,60 @@ export function FilterPanel({
             </SubSection>
           )}
           {can('duration') && (
-            <SubSection className="basis-full md:basis-[280px] grow">
+            <SubSection className="basis-full">
               <DurationFilter
-                unit={state.durationUnit}
-                max={state.durationMax}
-                onChange={(unit, max) => patch({ durationUnit: unit, durationMax: max })}
+                minHours={state.durationMin}
+                maxHours={state.durationMax}
+                onChange={(durationMin, durationMax) => patch({ durationMin, durationMax })}
               />
             </SubSection>
           )}
-          {can('difficulty') && (
-            <SubSection className="basis-full md:basis-[240px] grow">
-              <DifficultyFilter
-                value={state.difficulty}
-                onChange={(d) => patch({ difficulty: d })}
-              />
-            </SubSection>
-          )}
-          {can('routeShape') && (
-            <SubSection className="basis-full md:basis-[320px] grow">
-              <RouteShapeFilter
-                value={state.routeShape}
-                onChange={(rs) => patch({ routeShape: rs })}
-              />
+          {(can('publicTransport') || can('dogsAllowed') || can('tentingAllowed') || can('hasCabinsAlong')) && (
+            <SubSection className="basis-full">
+              <fieldset className="flex flex-col gap-5">
+                <legend className={FILTER_LABEL_CLASS}>Praktiskt</legend>
+                <div className="flex flex-wrap gap-2">
+                  {can('publicTransport') && (
+                    <BooleanToggleFilter
+                      variant="pill"
+                      label="Kollektivtrafik"
+                      value={state.publicTransport}
+                      onChange={(v) => patch({ publicTransport: v })}
+                    />
+                  )}
+                  {can('dogsAllowed') && (
+                    <BooleanToggleFilter
+                      variant="pill"
+                      label="Hund välkommen"
+                      value={state.dogsAllowed}
+                      onChange={(v) => patch({ dogsAllowed: v })}
+                    />
+                  )}
+                  {can('tentingAllowed') && (
+                    <BooleanToggleFilter
+                      variant="pill"
+                      label="Tält tillåtet"
+                      value={state.tentingAllowed}
+                      onChange={(v) => patch({ tentingAllowed: v })}
+                    />
+                  )}
+                  {can('hasCabinsAlong') && (
+                    <BooleanToggleFilter
+                      variant="pill"
+                      label="Stugor längs leden"
+                      value={state.hasCabinsAlong}
+                      onChange={(v) => patch({ hasCabinsAlong: v })}
+                    />
+                  )}
+                </div>
+              </fieldset>
             </SubSection>
           )}
         </Block>
       )}
 
       {showWhen && (
-        <Block title="När och resa">
+        <Block ariaLabel="Säsongsfilter">
           {can('season') && (
             <SubSection className="basis-full md:basis-[360px] grow">
               <SeasonFilter
@@ -127,50 +174,6 @@ export function FilterPanel({
               />
             </SubSection>
           )}
-          {can('publicTransport') && (
-            <SubSection className="basis-full md:basis-[280px] grow">
-              <PublicTransportFilter
-                value={state.publicTransport}
-                onChange={(pt) => patch({ publicTransport: pt })}
-              />
-            </SubSection>
-          )}
-        </Block>
-      )}
-
-      {showPraktiskt && (
-        <Block title="Praktiskt">
-          <SubSection className="basis-full">
-            <fieldset className="flex flex-col gap-2">
-              <legend className="sr-only">Praktiskt</legend>
-              <div className="flex flex-wrap gap-2">
-                {can('dogsAllowed') && (
-                  <BooleanToggleFilter
-                    variant="pill"
-                    label="Hund välkommen"
-                    value={state.dogsAllowed}
-                    onChange={(v) => patch({ dogsAllowed: v })}
-                  />
-                )}
-                {can('tentingAllowed') && (
-                  <BooleanToggleFilter
-                    variant="pill"
-                    label="Tält tillåtet"
-                    value={state.tentingAllowed}
-                    onChange={(v) => patch({ tentingAllowed: v })}
-                  />
-                )}
-                {can('hasCabinsAlong') && (
-                  <BooleanToggleFilter
-                    variant="pill"
-                    label="Stugor längs leden"
-                    value={state.hasCabinsAlong}
-                    onChange={(v) => patch({ hasCabinsAlong: v })}
-                  />
-                )}
-              </div>
-            </fieldset>
-          </SubSection>
         </Block>
       )}
 
@@ -198,21 +201,32 @@ export function FilterPanel({
   )
 }
 
-function Block({ title, children }: { title: string; children: React.ReactNode }) {
+function Block({
+  title,
+  ariaLabel,
+  children,
+}: {
+  title?: string
+  ariaLabel?: string
+  children: React.ReactNode
+}) {
   const titleId = React.useId()
+  const labelledBy = title ? titleId : undefined
   return (
     <section
-      aria-labelledby={titleId}
-      className="flex flex-col gap-4 first:pt-0 pt-5 first:pb-5 pb-5"
+      {...(labelledBy ? { 'aria-labelledby': labelledBy } : { 'aria-label': ariaLabel })}
+      className="flex flex-col gap-5 first:pt-0 pt-6 first:pb-6 pb-6"
     >
-      <h3
-        id={titleId}
-        className="font-display text-base font-light text-pine flex items-center gap-2"
-      >
-        <span aria-hidden="true" className="text-moss text-sm leading-none">◆</span>
-        {title}
-      </h3>
-      <div className="flex flex-wrap gap-x-8 gap-y-5">{children}</div>
+      {title && (
+        <h3
+          id={titleId}
+          className="font-display text-base font-light text-pine flex items-center gap-2"
+        >
+          <span aria-hidden="true" className="text-moss text-sm leading-none">◆</span>
+          {title}
+        </h3>
+      )}
+      <div className="flex flex-wrap gap-x-8 gap-y-7">{children}</div>
     </section>
   )
 }

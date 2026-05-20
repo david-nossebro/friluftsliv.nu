@@ -58,10 +58,18 @@ export const WithActiveFilters: Story = {
       ...defaultFilterState,
       difficulty: ['easy'],
       dogsAllowed: true,
-      landskap: ['skane'],
+      landskap: ['skane', 'gotland'],
     },
     tab: 'vandring',
     resultCount: 7,
+  },
+}
+
+export const WithNearMeActive: Story = {
+  args: {
+    initial: { ...defaultFilterState, nearMe: true, landskap: ['skane'] },
+    tab: 'alla',
+    resultCount: 5,
   },
 }
 

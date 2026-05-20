@@ -1,21 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import * as React from 'react'
 import { FilterToolbar } from './FilterToolbar'
+import { Button } from '@/components/ui/button'
 import { defaultFilterState, type FilterState } from '@/lib/exploreFilters'
 
 function Wrapper({ initial, count }: { initial: FilterState; count: number }) {
   const [state, setState] = React.useState(initial)
-  const [open, setOpen] = React.useState(false)
   return (
     <div className="p-6 bg-snow">
       <FilterToolbar
         state={state}
         patch={(p) => setState((prev) => ({ ...prev, ...p }))}
         count={count}
-        isOpen={open}
-        onToggle={() => setOpen((v) => !v)}
-        panelId="story-panel"
-        mobileTrigger={null}
+        mobileTrigger={
+          <Button type="button" variant="secondary" size="md">
+            Filtrera
+          </Button>
+        }
       />
     </div>
   )
@@ -58,9 +59,11 @@ export const ManyPills: Story = {
       dogsAllowed: true,
       hasCabinsAlong: true,
       routeShape: 'roundtrip',
-      publicTransport: 'reachable',
+      publicTransport: true,
       distanceMinKm: 5,
       distanceMaxKm: 80,
+      durationMin: 6,
+      durationMax: 72,
     },
     count: 3,
   },

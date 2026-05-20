@@ -1,5 +1,7 @@
 import type { Month, Season } from '@/types'
 
+export type SeasonKey = 'vinter' | 'var' | 'sommar' | 'host'
+
 const MONTH_LABELS: Record<Month, string> = {
   januari: 'januari',
   februari: 'februari',
@@ -20,6 +22,17 @@ export const ALL_MONTHS: readonly Month[] = [
   'juli', 'augusti', 'september', 'oktober', 'november', 'december',
 ]
 
+export const SEASON_OPTIONS: readonly {
+  key: SeasonKey
+  label: string
+  months: readonly Month[]
+}[] = [
+  { key: 'vinter', label: 'Vinter', months: ['december', 'januari', 'februari'] },
+  { key: 'var', label: 'Vår', months: ['mars', 'april', 'maj'] },
+  { key: 'sommar', label: 'Sommar', months: ['juni', 'juli', 'augusti'] },
+  { key: 'host', label: 'Höst', months: ['september', 'oktober', 'november'] },
+]
+
 const MONTH_INDEX: Record<Month, number> = Object.fromEntries(
   ALL_MONTHS.map((m, i) => [m, i]),
 ) as Record<Month, number>
@@ -33,6 +46,30 @@ export function formatSeason(season: Season): string {
 
 export function formatMonth(month: Month): string {
   return MONTH_LABELS[month]
+}
+
+export function formatSeasonKey(key: SeasonKey): string {
+  return SEASON_OPTIONS.find((option) => option.key === key)?.label ?? key
+}
+
+export function expandSeasonKeys(keys: readonly SeasonKey[]): Month[] {
+  const months = new Set<Month>()
+
+  for (const option of SEASON_OPTIONS) {
+    if (keys.includes(option.key)) {
+      for (const month of option.months) {
+        months.add(month)
+      }
+    }
+  }
+
+  return ALL_MONTHS.filter((month) => months.has(month))
+}
+
+export function getSelectedSeasonKeys(months: readonly Month[]): SeasonKey[] {
+  return SEASON_OPTIONS
+    .filter((option) => option.months.every((month) => months.includes(month)))
+    .map((option) => option.key)
 }
 
 /** True if the given month falls inside the season (handles wrap-around). */

@@ -2,6 +2,11 @@
 
 import * as React from 'react'
 import { Slider } from '@/components/ui/slider'
+import {
+  FILTER_FIELDSET_CLASS,
+  FILTER_LABEL_CLASS,
+  FILTER_VALUE_TEXT_CLASS,
+} from './filterStyles'
 
 const MIN = 0
 const MAX = 300
@@ -31,10 +36,16 @@ export function DistanceFilter({ min, max, onCommit }: DistanceFilterProps) {
   }, [min, max, sliderMax])
 
   const maxLabel = value[1] >= sliderMax ? `${sliderMax}+ km` : `${value[1]} km`
+  const rangeLabel = value[1] >= sliderMax ? `Från ${value[0]} km` : `${value[0]} - ${maxLabel}`
 
   return (
-    <fieldset className="flex flex-col gap-2">
-      <legend id={headingId} className="text-sm font-medium text-pine">Avstånd</legend>
+    <fieldset className={`${FILTER_FIELDSET_CLASS} w-full`}>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <legend id={headingId} className={FILTER_LABEL_CLASS}>
+          Avstånd
+        </legend>
+        <span className={FILTER_VALUE_TEXT_CLASS}>{rangeLabel}</span>
+      </div>
       <Slider
         value={value}
         min={MIN}
@@ -50,8 +61,8 @@ export function DistanceFilter({ min, max, onCommit }: DistanceFilterProps) {
         aria-valuetext={`${value[0]} km till ${maxLabel}`}
       />
       <div className="flex justify-between text-2xs text-stone">
-        <span>{value[0]} km</span>
-        <span className="font-medium text-ink-soft">{maxLabel}</span>
+        <span>0 km</span>
+        <span>300+ km</span>
       </div>
     </fieldset>
   )

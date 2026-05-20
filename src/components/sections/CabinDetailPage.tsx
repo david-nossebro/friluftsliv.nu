@@ -60,7 +60,7 @@ export function CabinDetailPage({
     <article className={cn('bg-snow min-h-screen', className)}>
       {/* ── Hero ─────────────────────────────────── */}
       <ImageGallery
-        src={cabin.imageUrl ?? ''}
+        src={cabin.imageUrl ?? null}
         alt={cabin.title}
         overlay={
           <div className="flex flex-col gap-2">

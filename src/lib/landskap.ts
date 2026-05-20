@@ -36,7 +36,7 @@ export const LANDSDEL_LABELS: Record<LandsdelKey, string> = {
   norrland: 'Norrland',
 }
 
-/** Landskap grouped by landsdel — used by the LocationFilter UI. */
+/** Landskap grouped by landsdel — used by the LandskapPicker UI. */
 export const LANDSKAP_BY_LANDSDEL: Record<LandsdelKey, readonly Landskap[]> = {
   gotaland: [
     'skane', 'blekinge', 'halland', 'smaland', 'oland', 'gotland',

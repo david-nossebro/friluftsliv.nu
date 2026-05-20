@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { formatSeason, seasonCoversMonth, seasonCoversAnyMonth } from './season'
+import {
+  expandSeasonKeys,
+  formatSeason,
+  formatSeasonKey,
+  getSelectedSeasonKeys,
+  seasonCoversMonth,
+  seasonCoversAnyMonth,
+} from './season'
 
 describe('formatSeason', () => {
   it('formats year-round', () => {
@@ -54,5 +61,29 @@ describe('seasonCoversAnyMonth', () => {
     expect(
       seasonCoversAnyMonth({ from: 'juni', to: 'augusti' }, ['december', 'januari']),
     ).toBe(false)
+  })
+})
+
+describe('season helpers', () => {
+  it('formats season keys for the simplified filter', () => {
+    expect(formatSeasonKey('vinter')).toBe('Vinter')
+    expect(formatSeasonKey('host')).toBe('Höst')
+  })
+
+  it('expands selected seasons to their underlying months', () => {
+    expect(expandSeasonKeys(['sommar'])).toEqual(['juni', 'juli', 'augusti'])
+    expect(expandSeasonKeys(['vinter', 'host'])).toEqual([
+      'januari',
+      'februari',
+      'september',
+      'oktober',
+      'november',
+      'december',
+    ])
+  })
+
+  it('detects full seasons from selected months', () => {
+    expect(getSelectedSeasonKeys(['juni', 'juli', 'augusti'])).toEqual(['sommar'])
+    expect(getSelectedSeasonKeys(['mars', 'april', 'maj', 'juni'])).toEqual(['var'])
   })
 })

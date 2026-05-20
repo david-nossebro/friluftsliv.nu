@@ -8,15 +8,16 @@ import { LongHikeCardGrid } from '@/components/cards/LongHikeCardGrid'
 import { RouteCardGrid } from '@/components/cards/RouteCardGrid'
 import { UtflyktCardGrid } from '@/components/cards/UtflyktCardGrid'
 import { SectionJumpNav } from '@/components/common/SectionJumpNav'
-import { FilterPanel } from './FilterPanel'
 import { FilterDrawer } from './FilterDrawer'
 import { FilterToolbar } from './FilterToolbar'
+import { ResultsHeader } from './ResultsHeader'
 import { useExploreFilters } from '@/lib/useExploreFilters'
 import {
   type FilterState,
   applyFilters,
   defaultFilterState,
   getApplicableFilters,
+  splitRoutesByCategory,
 } from '@/lib/exploreFilters'
 import type { LatLng } from '@/lib/geo'
 import type { AreaListItem, Cabin, ExploreTab, LongHike, Route, Utflykt } from '@/types'
@@ -50,10 +51,9 @@ export function ExploreView({
 }: ExploreViewProps) {
   const { state, patch } = useExploreFilters(initialState ?? defaultFilterState)
   const [origin, setOrigin] = React.useState<LatLng | null>(null)
-  const [panelOpen, setPanelOpen] = React.useState(false)
-  const panelId = React.useId()
 
   const applicable = React.useMemo(() => getApplicableFilters(state.tab), [state.tab])
+  const hasAnyFilters = applicable.length > 0
 
   const filtered = React.useMemo(
     () =>
@@ -69,53 +69,47 @@ export function ExploreView({
     [state, origin, areas, utflykter, routes, longHikes, cabins],
   )
 
-  // Collapse the inline panel with Escape when it's open and focus is inside.
-  React.useEffect(() => {
-    if (!panelOpen) return
-    const handler = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setPanelOpen(false)
+  const { canoeRoutes, skiRoutes, hikingSections, hikingJumpItems } = React.useMemo(() => {
+    const { hiking, mountain, canoe, ski } = splitRoutesByCategory(filtered.routes)
+    const sections = [
+      hiking.length > 0 && {
+        id: 'vandring',
+        label: 'Vandring',
+        count: hiking.length,
+        content: <RouteCardGrid title="Vandring" routes={hiking} className="py-10 bg-snow" />,
+      },
+      mountain.length > 0 && {
+        id: 'fjallvandring',
+        label: 'Fjällvandring',
+        count: mountain.length,
+        content: <RouteCardGrid title="Fjällvandring" routes={mountain} className="py-10 bg-mist" />,
+      },
+      filtered.longHikes.length > 0 && {
+        id: 'langvandring',
+        label: 'Långvandring',
+        count: filtered.longHikes.length,
+        content: (
+          <LongHikeCardGrid
+            title="Långvandring"
+            longHikes={filtered.longHikes}
+            className="py-10 bg-snow"
+          />
+        ),
+      },
+    ].filter(
+      (s): s is { id: string; label: string; count: number; content: React.ReactElement } =>
+        Boolean(s),
+    )
+    return {
+      canoeRoutes: canoe,
+      skiRoutes: ski,
+      hikingSections: sections,
+      hikingJumpItems: sections.map(({ id, label, count }) => ({ href: `#${id}`, label, count })),
     }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [panelOpen])
-
-  const hikingRoutes = filtered.routes.filter((r) => r.exploreCategory === 'vandring')
-  const mountainRoutes = filtered.routes.filter((r) => r.exploreCategory === 'fjallvandring')
-  const canoeRoutes = filtered.routes.filter((r) => r.exploreCategory === 'kanot')
-  const skiRoutes = filtered.routes.filter((r) => r.exploreCategory === 'skidturer')
-
-  let content: React.ReactNode
-
-  const hikingSections = [
-    hikingRoutes.length > 0 && {
-      id: 'vandring',
-      label: 'Vandring',
-      count: hikingRoutes.length,
-      content: <RouteCardGrid title="Vandring" routes={hikingRoutes} className="py-10 bg-snow" />,
-    },
-    mountainRoutes.length > 0 && {
-      id: 'fjallvandring',
-      label: 'Fjällvandring',
-      count: mountainRoutes.length,
-      content: <RouteCardGrid title="Fjällvandring" routes={mountainRoutes} className="py-10 bg-mist" />,
-    },
-    filtered.longHikes.length > 0 && {
-      id: 'langvandring',
-      label: 'Långvandring',
-      count: filtered.longHikes.length,
-      content: <LongHikeCardGrid title="Långvandring" longHikes={filtered.longHikes} className="py-10 bg-snow" />,
-    },
-  ].filter(
-    (s): s is { id: string; label: string; count: number; content: React.ReactElement } => Boolean(s),
-  )
-
-  const hikingJumpItems = hikingSections.map(({ id, label, count }) => ({
-    href: `#${id}`,
-    label,
-    count,
-  }))
+  }, [filtered.routes, filtered.longHikes])
 
   const { tab } = state
+  let content: React.ReactNode
 
   if (tab === 'alla') {
     content =
@@ -234,54 +228,52 @@ export function ExploreView({
         onTabChange={(next: ExploreTab) => patch({ tab: next })}
       />
 
-      <div className="bg-snow border-b border-mist-dark">
+      <div className="bg-snow border-b border-mist-dark lg:hidden">
         <div className="max-w-[1200px] mx-auto px-6 py-4">
           <FilterToolbar
             state={state}
             patch={patch}
             count={filtered.count}
-            isOpen={panelOpen}
-            onToggle={() => setPanelOpen((v) => !v)}
-            panelId={panelId}
             mobileTrigger={
-              <FilterDrawer
-                state={state}
-                patch={patch}
-                applicable={applicable}
-                resultCount={filtered.count}
-                onCoordsChange={setOrigin}
-              />
-            }
-          />
-
-          {/* Inline expandable panel — desktop only. CSS-grid row trick for
-              accessible height animation (0fr ↔ 1fr) with overflow:hidden on
-              the inner cell. `inert` removes the collapsed subtree from focus +
-              AT order without unmounting (avoiding open-flash on remount). */}
-          <div
-            id={panelId}
-            role="region"
-            aria-label="Filter"
-            aria-hidden={!panelOpen}
-            {...(!panelOpen ? { inert: '' as unknown as boolean } : {})}
-            className="hidden lg:grid mt-3 transition-[grid-template-rows] duration-200 ease-out motion-reduce:transition-none"
-            style={{ gridTemplateRows: panelOpen ? '1fr' : '0fr' }}
-          >
-            <div className="overflow-hidden">
-              <div className="rounded-xl border border-mist-dark bg-white shadow-card p-5">
-                <FilterPanel
+              hasAnyFilters ? (
+                <FilterDrawer
                   state={state}
                   patch={patch}
                   applicable={applicable}
+                  resultCount={filtered.count}
                   onCoordsChange={setOrigin}
                 />
-              </div>
-            </div>
-          </div>
+              ) : undefined
+            }
+          />
         </div>
       </div>
 
-      <div className="max-w-[1200px] mx-auto px-6 py-6">{content}</div>
+      <div className="max-w-[1200px] mx-auto px-6 py-6">
+        <div className="min-w-0">
+          <div className="mb-6 hidden lg:flex items-start justify-between gap-4">
+            <ResultsHeader
+              state={state}
+              patch={patch}
+              count={filtered.count}
+              className="min-w-0 flex-1"
+            />
+            {hasAnyFilters && (
+              <div className="relative z-[60] flex shrink-0 items-center gap-3">
+                <FilterDrawer
+                  variant="desktop"
+                  state={state}
+                  patch={patch}
+                  applicable={applicable}
+                  resultCount={filtered.count}
+                  onCoordsChange={setOrigin}
+                />
+              </div>
+            )}
+          </div>
+          {content}
+        </div>
+      </div>
     </div>
   )
 }
