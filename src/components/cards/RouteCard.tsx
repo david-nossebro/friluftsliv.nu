@@ -15,6 +15,11 @@ const activityLabels: Record<RouteType['activityType'], string> = {
   stugtur:   'Stugtur',
 }
 
+function getRouteBadge(route: RouteType): string {
+  if (route.exploreCategory === 'fjallvandring') return 'Fjällvandring'
+  return activityLabels[route.activityType]
+}
+
 export interface RouteCardProps {
   route: RouteType
   className?: string
@@ -40,7 +45,7 @@ export function RouteCard({ route, className, onClick, priority = false }: Route
           <div className="absolute inset-0 bg-gradient-to-br from-moss/20 to-pine/30" />
         )}
         <span className="absolute top-2 left-2">
-          <Badge variant="pine" size="sm">{activityLabels[route.activityType]}</Badge>
+          <Badge variant="pine" size="sm">{getRouteBadge(route)}</Badge>
         </span>
       </div>
 

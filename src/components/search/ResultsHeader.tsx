@@ -14,6 +14,7 @@ import { LANDSKAP_LABELS } from '@/lib/landskap'
 import { formatRouteShape } from '@/lib/routeShape'
 import { expandSeasonKeys, formatMonth, formatSeasonKey, getSelectedSeasonKeys } from '@/lib/season'
 import { FACILITY_LABELS } from '@/lib/facility'
+import type { HikeType } from '@/types'
 
 export interface ResultsHeaderProps {
   state: FilterState
@@ -185,6 +186,24 @@ function buildPills(state: FilterState, patch: (partial: Partial<FilterState>) =
       clear: () => patch({ cabinServiceType: 'any' }),
     })
   }
+  for (const ht of state.hikeType) {
+    pills.push({
+      key: `ht-${ht}`,
+      label: hikeTypeLabel(ht),
+      clear: () => patch({ hikeType: state.hikeType.filter((x) => x !== ht) }),
+    })
+  }
 
   return pills
+}
+
+function hikeTypeLabel(ht: HikeType): string {
+  switch (ht) {
+    case 'vandring':
+      return 'Vandring'
+    case 'fjallvandring':
+      return 'Fjällvandring'
+    case 'langvandring':
+      return 'Långvandring'
+  }
 }

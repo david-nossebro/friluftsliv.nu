@@ -7,7 +7,7 @@ import { CabinCardGrid } from '@/components/cards/CabinCardGrid'
 import { LongHikeCardGrid } from '@/components/cards/LongHikeCardGrid'
 import { RouteCardGrid } from '@/components/cards/RouteCardGrid'
 import { UtflyktCardGrid } from '@/components/cards/UtflyktCardGrid'
-import { SectionJumpNav } from '@/components/common/SectionJumpNav'
+import { MixedHikeGrid } from '@/components/cards/MixedHikeGrid'
 import { FilterDrawer } from './FilterDrawer'
 import { FilterToolbar } from './FilterToolbar'
 import { ResultsHeader } from './ResultsHeader'
@@ -69,7 +69,7 @@ export function ExploreView({
     [state, origin, areas, utflykter, routes, longHikes, cabins],
   )
 
-  const { canoeRoutes, skiRoutes, hikingSections, hikingJumpItems } = React.useMemo(() => {
+  const { canoeRoutes, skiRoutes, hikingSections, allHikingRoutes } = React.useMemo(() => {
     const { hiking, mountain, canoe, ski } = splitRoutesByCategory(filtered.routes)
     const sections = [
       hiking.length > 0 && {
@@ -104,7 +104,7 @@ export function ExploreView({
       canoeRoutes: canoe,
       skiRoutes: ski,
       hikingSections: sections,
-      hikingJumpItems: sections.map(({ id, label, count }) => ({ href: `#${id}`, label, count })),
+      allHikingRoutes: [...hiking, ...mountain],
     }
   }, [filtered.routes, filtered.longHikes])
 
@@ -168,29 +168,16 @@ export function ExploreView({
         />
       )
   } else if (tab === 'vandring') {
-    content =
-      hikingSections.length === 0 ? (
-        <EmptyState message="Inga vandringsturer matchade dina filter." />
-      ) : (
-        <>
-          {hikingJumpItems.length > 1 && (
-            <div className="px-6 pt-8">
-              <div className="mx-auto max-w-[1200px]">
-                <SectionJumpNav
-                  description="Hoppa direkt till den typ av vandring du vill utforska."
-                  ariaLabel="Hoppa mellan vandringstyper"
-                  items={hikingJumpItems}
-                />
-              </div>
-            </div>
-          )}
-          {hikingSections.map((section) => (
-            <div key={section.id} id={section.id} className="scroll-mt-24">
-              {section.content}
-            </div>
-          ))}
-        </>
-      )
+    const hasHikes = allHikingRoutes.length > 0 || filtered.longHikes.length > 0
+    content = !hasHikes ? (
+      <EmptyState message="Inga vandringsturer matchade dina filter." />
+    ) : (
+      <MixedHikeGrid
+        routes={allHikingRoutes}
+        longHikes={filtered.longHikes}
+        className="py-10 bg-snow"
+      />
+    )
   } else if (tab === 'stugor') {
     content =
       filtered.cabins.length === 0 ? (

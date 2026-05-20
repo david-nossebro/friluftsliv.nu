@@ -39,6 +39,7 @@ export const ManyWithActivePills: Story = {
     initial: {
       ...defaultFilterState,
       difficulty: ['easy', 'medium'],
+      hikeType: ['fjallvandring', 'langvandring'],
       landskap: ['lappland', 'jamtland'],
       months: ['juni', 'juli'],
       dogsAllowed: true,

@@ -6,6 +6,7 @@ import type {
   Difficulty,
   ExploreTab,
   Facility,
+  HikeType,
   Landskap,
   LongHike,
   Month,
@@ -44,6 +45,7 @@ export interface FilterState {
   hasCabinsAlong: boolean
   cabinFacilities: Facility[]
   cabinServiceType: CabinServiceType | 'any'
+  hikeType: HikeType[]
 }
 
 export const DEFAULT_DISTANCE_MIN = 0
@@ -72,6 +74,7 @@ export const defaultFilterState: FilterState = {
   hasCabinsAlong: false,
   cabinFacilities: [],
   cabinServiceType: 'any',
+  hikeType: [],
 }
 
 // ─── URL serde ───────────────────────────────────────────────────────────────
@@ -80,6 +83,7 @@ const VALID_TABS: readonly ExploreTab[] = [
   'alla', 'utflykter', 'stugor', 'vandring', 'kanot',
   'skidturer', 'nationalparker', 'naturreservat',
 ]
+const VALID_HIKE_TYPES: readonly HikeType[] = ['vandring', 'fjallvandring', 'langvandring']
 const VALID_DIFFICULTIES: readonly Difficulty[] = ['easy', 'medium', 'hard']
 const VALID_ROUTE_SHAPES: readonly RouteShape[] = ['roundtrip', 'out-and-back', 'point-to-point']
 const VALID_SERVICE_TYPES: readonly (CabinServiceType | 'any')[] = ['any', 'obetjänad', 'betjänad', 'självhushåll']
@@ -153,6 +157,7 @@ export function parseFilters(params: URLSearchParams | ReadonlyURLSearchParams):
     hasCabinsAlong: parseBool(get('cab')),
     cabinFacilities: parseList(get('fac'), VALID_FACILITIES),
     cabinServiceType: parseEnum(get('cst'), VALID_SERVICE_TYPES, 'any'),
+    hikeType: parseList(get('ht'), VALID_HIKE_TYPES),
   }
 }
 
@@ -182,6 +187,7 @@ export function serializeFilters(state: FilterState): URLSearchParams {
   if (state.hasCabinsAlong) params.set('cab', '1')
   if (state.cabinFacilities.length > 0) params.set('fac', state.cabinFacilities.join(','))
   if (state.cabinServiceType !== 'any') params.set('cst', state.cabinServiceType)
+  if (state.hikeType.length > 0) params.set('ht', state.hikeType.join(','))
   return params
 }
 
@@ -204,6 +210,7 @@ export function countActiveFilters(state: FilterState): number {
   if (state.hasCabinsAlong) n++
   if (state.cabinFacilities.length > 0) n++
   if (state.cabinServiceType !== 'any') n++
+  if (state.hikeType.length > 0) n++
   return n
 }
 
@@ -218,6 +225,7 @@ export type FilterDimension =
   | 'landskap' | 'publicTransport' | 'nearMe' | 'dogsAllowed'
   | 'tentingAllowed' | 'hasCabinsAlong'
   | 'cabinFacilities' | 'cabinServiceType'
+  | 'hikeType'
 
 export function countActiveFiltersForDimensions(
   state: FilterState,
@@ -266,6 +274,9 @@ export function countActiveFiltersForDimensions(
         break
       case 'cabinServiceType':
         if (state.cabinServiceType !== 'any') n++
+        break
+      case 'hikeType':
+        if (state.hikeType.length > 0) n++
         break
     }
   }
@@ -322,6 +333,9 @@ export function createFilterResetPatch(
       case 'cabinServiceType':
         patch.cabinServiceType = defaultFilterState.cabinServiceType
         break
+      case 'hikeType':
+        patch.hikeType = defaultFilterState.hikeType
+        break
     }
   }
 
@@ -329,7 +343,7 @@ export function createFilterResetPatch(
 }
 
 const ROUTE_FILTERS: FilterDimension[] = [
-  'difficulty', 'routeShape', 'distance', 'duration', 'season',
+  'difficulty', 'hikeType', 'routeShape', 'distance', 'duration', 'season',
   'landskap', 'publicTransport', 'nearMe', 'dogsAllowed',
   'tentingAllowed', 'hasCabinsAlong',
 ]
@@ -358,7 +372,7 @@ export function getApplicableFilters(tab: ExploreTab): FilterDimension[] {
     case 'utflykter': return UTFLYKT_FILTERS
     case 'alla':
     default:
-      return [...SHARED_FILTERS, 'difficulty', 'routeShape', 'distance', 'duration',
+      return [...SHARED_FILTERS, 'difficulty', 'hikeType', 'routeShape', 'distance', 'duration',
         'tentingAllowed', 'hasCabinsAlong', 'cabinFacilities', 'cabinServiceType']
   }
 }
@@ -515,6 +529,10 @@ export function applyFilters({
     if (state.dogsAllowed && route.dogsAllowed !== true) return false
     if (state.tentingAllowed && route.tentingAllowed !== true) return false
     if (state.hasCabinsAlong && (!route.cabinIds || route.cabinIds.length === 0)) return false
+    if (state.hikeType.length > 0) {
+      const routeHikeType = route.exploreCategory ?? 'vandring'
+      if (!state.hikeType.includes(routeHikeType as HikeType)) return false
+    }
     return true
   })
 
@@ -531,6 +549,7 @@ export function applyFilters({
     if (state.dogsAllowed && lh.dogsAllowed !== true) return false
     if (state.tentingAllowed && lh.tentingAllowed !== true) return false
     if (state.hasCabinsAlong && (!lh.cabinIds || lh.cabinIds.length === 0)) return false
+    if (state.hikeType.length > 0 && !state.hikeType.includes('langvandring')) return false
     return true
   })
 

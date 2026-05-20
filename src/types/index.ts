@@ -20,6 +20,8 @@ export type RouteExploreCategory =
   | 'kanot'
   | 'skidturer'
 
+export type HikeType = 'vandring' | 'fjallvandring' | 'langvandring'
+
 export interface Utflykt {
   id: string
   title: string

@@ -62,6 +62,7 @@ export const AllFiltersActive: Story = {
     initial: {
       ...defaultFilterState,
       difficulty: ['medium', 'hard'],
+      hikeType: ['fjallvandring', 'langvandring'],
       routeShape: 'point-to-point',
       distanceMinKm: 20,
       distanceMaxKm: 150,

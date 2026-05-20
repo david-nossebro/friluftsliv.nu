@@ -5,11 +5,10 @@ import { Loader2, MapPin, AlertCircle } from 'lucide-react'
 import { Switch } from '@/components/ui/switch'
 import { Slider } from '@/components/ui/slider'
 import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
-import { useGeolocation, type GeolocationStatus } from '@/lib/useGeolocation'
+
+import { useGeolocation } from '@/lib/useGeolocation'
 import {
   FILTER_FIELDSET_CLASS,
-  FILTER_HELP_TEXT_CLASS,
   FILTER_LABEL_CLASS,
 } from './filterStyles'
 
@@ -34,7 +33,6 @@ export function NearMeFilter({
   onCoordsChange,
 }: NearMeFilterProps) {
   const id = React.useId()
-  const helpId = `${id}-help`
   const geo = useGeolocation()
   const [radius, setRadius] = React.useState(radiusKm)
 
@@ -62,32 +60,24 @@ export function NearMeFilter({
 
   return (
     <div className={FILTER_FIELDSET_CLASS}>
-      <div className="flex items-start gap-3 rounded-xl border border-mist-dark bg-mist/40 p-4">
+      <div className="flex items-center gap-3">
         <Switch
           id={id}
           checked={active && geo.status === 'granted'}
           onCheckedChange={handleToggle}
           disabled={geo.status === 'unavailable'}
-          aria-describedby={helpId}
-          className="mt-0.5 shrink-0 data-[state=checked]:bg-pine data-[state=unchecked]:bg-mist-dark"
+          className="shrink-0 data-[state=checked]:bg-pine data-[state=unchecked]:bg-mist-dark"
         />
-        <div className="flex min-w-0 flex-1 flex-col gap-1.5">
-          <Label htmlFor={id} className={`${FILTER_LABEL_CLASS} cursor-pointer inline-flex items-center gap-1.5`}>
-            <MapPin size={14} strokeWidth={1.8} aria-hidden="true" />
-            Nära mig
-          </Label>
-          <div className="flex flex-wrap items-center gap-2">
-            <span id={helpId} className={FILTER_HELP_TEXT_CLASS}>
-              {statusHint(geo.status)}
-            </span>
-            {geo.status === 'prompting' && (
-              <Loader2 size={14} className="animate-spin motion-reduce:animate-none text-stone" aria-hidden="true" />
-            )}
-            {(geo.status === 'denied' || geo.status === 'unavailable') && (
-              <AlertCircle size={14} className="text-ember" aria-hidden="true" />
-            )}
-          </div>
-        </div>
+        <Label htmlFor={id} className={`${FILTER_LABEL_CLASS} cursor-pointer inline-flex items-center gap-1.5`}>
+          <MapPin size={14} strokeWidth={1.8} aria-hidden="true" />
+          Nära mig
+        </Label>
+        {geo.status === 'prompting' && (
+          <Loader2 size={14} className="animate-spin motion-reduce:animate-none text-stone" aria-hidden="true" />
+        )}
+        {(geo.status === 'denied' || geo.status === 'unavailable') && (
+          <AlertCircle size={14} className="text-ember" aria-hidden="true" />
+        )}
       </div>
 
       {active && geo.status === 'granted' && (
@@ -102,33 +92,11 @@ export function NearMeFilter({
             aria-label="Sökradie"
             aria-valuetext={`${radius} km från din position`}
           />
-          <div className="flex justify-between items-center gap-3">
-            <span className="text-xs text-stone">{radius} km radie</span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                geo.forget()
-                onActiveChange(false)
-              }}
-              className="text-xs text-stone"
-            >
-              Glöm min position
-            </Button>
-          </div>
+          <span className="text-xs text-stone">{radius} km radie</span>
         </div>
       )}
     </div>
   )
 }
 
-function statusHint(status: GeolocationStatus): string {
-  switch (status) {
-    case 'idle': return 'Visa det som ligger nära din nuvarande position.'
-    case 'prompting': return 'Väntar på platsdelning…'
-    case 'granted': return 'Din position används bara här i webbläsaren.'
-    case 'denied': return 'Tillåt platsdelning i webbläsaren för att använda Nära mig.'
-    case 'unavailable': return 'Din webbläsare stöder inte platsdelning.'
-  }
-}
+

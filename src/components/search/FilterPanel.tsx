@@ -7,6 +7,7 @@ import {
   type FilterState,
 } from '@/lib/exploreFilters'
 import { DifficultyFilter } from './filters/DifficultyFilter'
+import { HikeTypeFilter } from './filters/HikeTypeFilter'
 import { RouteShapeFilter } from './filters/RouteShapeFilter'
 import { DistanceFilter } from './filters/DistanceFilter'
 import { DurationFilter } from './filters/DurationFilter'
@@ -44,7 +45,7 @@ export function FilterPanel({
 
   const showPlats = can('nearMe') || can('landskap')
   const showVad =
-    can('difficulty') || can('routeShape') || can('distance') || can('duration') ||
+    can('difficulty') || can('hikeType') || can('routeShape') || can('distance') || can('duration') ||
     can('publicTransport') || can('dogsAllowed') || can('tentingAllowed') ||
     can('hasCabinsAlong')
   const showWhen = can('season')
@@ -60,7 +61,7 @@ export function FilterPanel({
   return (
     <div className={cn('flex flex-col divide-y divide-mist-dark', className)}>
       {showPlats && (
-        <Block title="Plats">
+        <Block ariaLabel="Plats">
           {can('nearMe') && (
             <SubSection className="basis-full">
               <NearMeFilter
@@ -91,6 +92,14 @@ export function FilterPanel({
               <DifficultyFilter
                 value={state.difficulty}
                 onChange={(d) => patch({ difficulty: d })}
+              />
+            </SubSection>
+          )}
+          {can('hikeType') && (
+            <SubSection className="basis-full">
+              <HikeTypeFilter
+                value={state.hikeType}
+                onChange={(ht) => patch({ hikeType: ht })}
               />
             </SubSection>
           )}

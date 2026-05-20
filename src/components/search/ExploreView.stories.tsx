@@ -55,9 +55,10 @@ export const PreFilteredHiking: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
 
-    await expect(canvas.getByText('Hoppa direkt till den typ av vandring du vill utforska.')).toBeInTheDocument()
-    await expect(canvas.getByRole('link', { name: /fjällvandring/i })).toBeInTheDocument()
-    await expect(canvas.getByRole('link', { name: /långvandring/i })).toBeInTheDocument()
+    // Unified "Vandring" section — no jump nav, single heading
+    await expect(canvas.getByRole('heading', { name: 'Vandring' })).toBeInTheDocument()
+    // Grid contains both route cards and long-hike cards
+    await expect(canvas.getAllByRole('link').length).toBeGreaterThan(0)
   },
 }
 

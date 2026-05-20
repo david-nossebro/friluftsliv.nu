@@ -40,10 +40,10 @@ export function LongHikeCard({
           <div className="absolute inset-0 bg-gradient-to-br from-birch/40 to-pine/30" />
         )}
         <div className="absolute top-2 left-2 flex items-center gap-2 flex-wrap">
-          <Badge variant="moss" size="sm">
+          <Badge variant="pine" size="sm">
             Långvandring
           </Badge>
-          <Badge variant="outline" size="sm">
+          <Badge variant="pine" size="sm">
             {longHike.stageIds.length} etapper
           </Badge>
         </div>
