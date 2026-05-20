@@ -7,14 +7,8 @@ import {
   type FilterState,
   countActiveFilters,
   defaultFilterState,
-  formatDurationFilterLabel,
-  normalizeSelectedLandskap,
+  buildPills,
 } from '@/lib/exploreFilters'
-import { LANDSKAP_LABELS } from '@/lib/landskap'
-import { formatRouteShape } from '@/lib/routeShape'
-import { expandSeasonKeys, formatMonth, formatSeasonKey, getSelectedSeasonKeys } from '@/lib/season'
-import { FACILITY_LABELS } from '@/lib/facility'
-import type { HikeType } from '@/types'
 
 export interface ResultsHeaderProps {
   state: FilterState
@@ -22,12 +16,6 @@ export interface ResultsHeaderProps {
   count: number
   showCount?: boolean | undefined
   className?: string
-}
-
-interface PillSpec {
-  key: string
-  label: string
-  clear: () => void
 }
 
 export function ResultsHeader({
@@ -38,7 +26,7 @@ export function ResultsHeader({
   className,
 }: ResultsHeaderProps) {
   const activeCount = countActiveFilters(state)
-  const pills = buildPills(state, patch)
+  const pills = buildPills(state)
 
   const reset = () => {
     const { tab, query } = state
@@ -64,7 +52,7 @@ export function ResultsHeader({
             <button
               type="button"
               key={pill.key}
-              onClick={pill.clear}
+              onClick={() => patch(pill.clear())}
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-mist text-xs text-ink-soft border border-mist-dark hover:bg-white hover:text-pine focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-moss focus-visible:ring-offset-1"
               aria-label={`Ta bort filter: ${pill.label}`}
             >
@@ -87,123 +75,4 @@ export function ResultsHeader({
       )}
     </div>
   )
-}
-
-function buildPills(state: FilterState, patch: (partial: Partial<FilterState>) => void): PillSpec[] {
-  const pills: PillSpec[] = []
-  const normalizedLandskap = normalizeSelectedLandskap(state.landskap)
-
-  for (const d of state.difficulty) {
-    pills.push({
-      key: `d-${d}`,
-      label: d === 'easy' ? 'Lätt' : d === 'medium' ? 'Medel' : 'Krävande',
-      clear: () => patch({ difficulty: state.difficulty.filter((x) => x !== d) }),
-    })
-  }
-  if (state.routeShape) {
-    pills.push({
-      key: 'rs',
-      label: formatRouteShape(state.routeShape),
-      clear: () => patch({ routeShape: null }),
-    })
-  }
-  if (state.distanceMinKm !== 0 || state.distanceMaxKm != null) {
-    const maxLabel = state.distanceMaxKm == null ? '300+' : `${state.distanceMaxKm}`
-    pills.push({
-      key: 'dist',
-      label: `${state.distanceMinKm}–${maxLabel} km`,
-      clear: () => patch({ distanceMinKm: 0, distanceMaxKm: null }),
-    })
-  }
-  if (state.durationMax != null) {
-    pills.push({
-      key: 'dur',
-      label: formatDurationFilterLabel(state.durationMin, state.durationMax),
-      clear: () => patch({ durationMin: 0, durationMax: null }),
-    })
-  } else if (state.durationMin > 0) {
-    pills.push({
-      key: 'dur',
-      label: formatDurationFilterLabel(state.durationMin, null),
-      clear: () => patch({ durationMin: 0, durationMax: null }),
-    })
-  }
-  for (const l of normalizedLandskap) {
-    pills.push({
-      key: `l-${l}`,
-      label: LANDSKAP_LABELS[l],
-      clear: () => patch({ landskap: normalizedLandskap.filter((item) => item !== l) }),
-    })
-  }
-  const selectedSeasons = getSelectedSeasonKeys(state.months)
-  const seasonMonths = new Set(expandSeasonKeys(selectedSeasons))
-  for (const season of selectedSeasons) {
-    pills.push({
-      key: `season-${season}`,
-      label: formatSeasonKey(season),
-      clear: () => {
-        const monthsToRemove = new Set(expandSeasonKeys([season]))
-        patch({ months: state.months.filter((month) => !monthsToRemove.has(month)) })
-      },
-    })
-  }
-  for (const m of state.months) {
-    if (seasonMonths.has(m)) continue
-    pills.push({
-      key: `m-${m}`,
-      label: formatMonth(m),
-      clear: () => patch({ months: state.months.filter((x) => x !== m) }),
-    })
-  }
-  if (state.publicTransport) {
-    pills.push({
-      key: 'pt',
-      label: 'Med kollektivtrafik',
-      clear: () => patch({ publicTransport: false }),
-    })
-  }
-  if (state.nearMe) {
-    pills.push({
-      key: 'nm',
-      label: `Nära mig (${state.nearMeRadiusKm} km)`,
-      clear: () => patch({ nearMe: false }),
-    })
-  }
-  if (state.dogsAllowed) pills.push({ key: 'dog', label: 'Hund välkommen', clear: () => patch({ dogsAllowed: false }) })
-  if (state.tentingAllowed) pills.push({ key: 'tent', label: 'Tält tillåtet', clear: () => patch({ tentingAllowed: false }) })
-  if (state.hasCabinsAlong) pills.push({ key: 'cab', label: 'Stugor längs leden', clear: () => patch({ hasCabinsAlong: false }) })
-  for (const f of state.cabinFacilities) {
-    pills.push({
-      key: `fac-${f}`,
-      label: FACILITY_LABELS[f],
-      clear: () => patch({ cabinFacilities: state.cabinFacilities.filter((x) => x !== f) }),
-    })
-  }
-  if (state.cabinServiceType !== 'any') {
-    pills.push({
-      key: 'cst',
-      label: state.cabinServiceType.charAt(0).toUpperCase() + state.cabinServiceType.slice(1),
-      clear: () => patch({ cabinServiceType: 'any' }),
-    })
-  }
-  for (const ht of state.hikeType) {
-    pills.push({
-      key: `ht-${ht}`,
-      label: hikeTypeLabel(ht),
-      clear: () => patch({ hikeType: state.hikeType.filter((x) => x !== ht) }),
-    })
-  }
-
-  return pills
-}
-
-function hikeTypeLabel(ht: HikeType): string {
-  switch (ht) {
-    case 'vandring':
-      return 'Vandring'
-    case 'fjallvandring':
-      return 'Fjällvandring'
-    case 'langvandring':
-      return 'Långvandring'
-  }
 }
