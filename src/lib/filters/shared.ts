@@ -43,6 +43,14 @@ export const VALID_FACILITIES: readonly Facility[] = [
 
 // ─── Landskap normalization ──────────────────────────────────────────────────
 
+/**
+ * Normalize a landskap selection.
+ *
+ * - Deduplicates and filters to valid landskap values.
+ * - Returns `[]` when the selection is empty OR when **all** landskap are
+ *   selected, because the empty array is the canonical "all" state in the
+ *   filter system.
+ */
 export function normalizeSelectedLandskap(landskap: readonly Landskap[]): Landskap[] {
   const normalized = Array.from(new Set(landskap)).filter((value): value is Landskap =>
     (ALL_LANDSKAP as readonly string[]).includes(value),

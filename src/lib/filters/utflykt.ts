@@ -1,4 +1,4 @@
-import type { FilterState, PillSpec } from './types'
+import type { FilterState, PillSpec, FilterDimension } from './types'
 import type { Utflykt } from '@/types'
 import type { LatLng } from '../geo'
 import {
@@ -8,8 +8,6 @@ import {
   passesSharedBase,
   formatDurationFilterLabel,
 } from './shared'
-
-// ─── Dimensions ──────────────────────────────────────────────────────────────
 
 // ─── Apply ───────────────────────────────────────────────────────────────────
 
@@ -49,10 +47,14 @@ export function applyUtflyktFilters(
 
 // ─── Pills ───────────────────────────────────────────────────────────────────
 
-export function buildUtflyktPills(state: FilterState): PillSpec[] {
+export function buildUtflyktPills(
+  state: FilterState,
+  dimensions?: readonly FilterDimension[],
+): PillSpec[] {
   const pills: PillSpec[] = []
+  const wants = (dim: FilterDimension) => !dimensions || dimensions.includes(dim)
 
-  if (state.utflyktDurationMin > 0 || state.utflyktDurationMax != null) {
+  if (wants('utflyktDuration') && (state.utflyktDurationMin > 0 || state.utflyktDurationMax != null)) {
     pills.push({
       key: 'udur',
       label: formatDurationFilterLabel(state.utflyktDurationMin, state.utflyktDurationMax),

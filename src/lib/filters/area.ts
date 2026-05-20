@@ -1,4 +1,4 @@
-import type { FilterState, PillSpec } from './types'
+import type { FilterState } from './types'
 import type { AreaListItem } from '@/types'
 import type { LatLng } from '../geo'
 import {
@@ -20,9 +20,4 @@ export function applyAreaFilters(
   })
 }
 
-// ─── Pills ───────────────────────────────────────────────────────────────────
 
-export function buildAreaPills(): PillSpec[] {
-  // Areas have no unique pills beyond shared ones (landskap, nearMe)
-  return []
-}

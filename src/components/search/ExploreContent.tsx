@@ -25,11 +25,10 @@ export interface ExploreContentProps {
 }
 
 export function ExploreContent({ tab, filtered }: ExploreContentProps) {
-  const { hiking, mountain, canoe, ski } = React.useMemo(
-    () => splitRoutesByCategory(filtered.routes),
-    [filtered.routes],
-  )
-  const allHikingRoutes = React.useMemo(() => [...hiking, ...mountain], [hiking, mountain])
+  const { hiking, mountain, canoe, ski, allHikingRoutes } = React.useMemo(() => {
+    const split = splitRoutesByCategory(filtered.routes)
+    return { ...split, allHikingRoutes: [...split.hiking, ...split.mountain] }
+  }, [filtered.routes])
 
   if (tab === 'alla') {
     if (filtered.count === 0) {

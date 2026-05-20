@@ -385,9 +385,7 @@ export function buildPills(
   }
 
   // Utflykt-specific pills
-  if (wants('utflyktDuration')) {
-    pills.push(...buildUtflyktPills(state))
-  }
+  pills.push(...buildUtflyktPills(state, dimensions))
 
   return pills
 }

@@ -41,6 +41,13 @@ const BOOLEAN_TOGGLE_DIMENSIONS = [
   'hasCabinsAlong',
 ] as const satisfies readonly FilterDimension[]
 
+const BOOLEAN_TOGGLE_LABELS: Record<(typeof BOOLEAN_TOGGLE_DIMENSIONS)[number], string> = {
+  publicTransport: 'Kollektivtrafik',
+  dogsAllowed: 'Hund välkommen',
+  tentingAllowed: 'Tält tillåtet',
+  hasCabinsAlong: 'Stugor längs leden',
+}
+
 export function FilterPanel({
   state,
   patch,
@@ -135,25 +142,15 @@ export function FilterPanel({
               <fieldset className="flex flex-col gap-5">
                 <legend className={FILTER_LABEL_CLASS}>Praktiskt</legend>
                 <div className="flex flex-wrap gap-2">
-                  {BOOLEAN_TOGGLE_DIMENSIONS.map((dim) =>
-                    can(dim) ? (
-                      <BooleanToggleFilter
-                        key={dim}
-                        variant="pill"
-                        label={
-                          dim === 'publicTransport'
-                            ? 'Kollektivtrafik'
-                            : dim === 'dogsAllowed'
-                              ? 'Hund välkommen'
-                              : dim === 'tentingAllowed'
-                                ? 'Tält tillåtet'
-                                : 'Stugor längs leden'
-                        }
-                        value={state[dim] as boolean}
-                        onChange={(v) => patch({ [dim]: v } as Partial<FilterState>)}
-                      />
-                    ) : null,
-                  )}
+                  {BOOLEAN_TOGGLE_DIMENSIONS.filter(can).map((dim) => (
+                    <BooleanToggleFilter
+                      key={dim}
+                      variant="pill"
+                      label={BOOLEAN_TOGGLE_LABELS[dim]}
+                      value={state[dim] as boolean}
+                      onChange={(v) => patch({ [dim]: v } as Partial<FilterState>)}
+                    />
+                  ))}
                 </div>
               </fieldset>
             </div>

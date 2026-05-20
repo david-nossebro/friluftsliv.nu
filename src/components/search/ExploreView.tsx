@@ -102,7 +102,7 @@ export function ExploreView({
               patch={patch}
               reset={reset}
               applicable={applicable}
-              count={filtered.count}
+              count={visibleCount}
               showCount={false}
               className="flex-1 min-w-0"
             />
@@ -130,7 +130,7 @@ export function ExploreView({
               patch={patch}
               reset={reset}
               applicable={applicable}
-              count={filtered.count}
+              count={visibleCount}
               showCount={false}
               className="min-w-0 flex-1"
             />
