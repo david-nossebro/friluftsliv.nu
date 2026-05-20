@@ -138,14 +138,15 @@ export function matchesSeason(
 export function normalizeDurationHours(
   hours: number | null,
   direction: 'min' | 'max',
+  scale: readonly number[] = DURATION_RANGE_HOURS,
 ): number | null {
   if (hours == null) return null
   if (hours <= 0) return 0
   if (direction === 'min') {
-    const reversed = [...DURATION_RANGE_HOURS].reverse()
+    const reversed = [...scale].reverse()
     return reversed.find((option) => option <= hours) ?? 0
   }
-  return DURATION_RANGE_HOURS.find((option) => option >= hours) ?? 336
+  return scale.find((option) => option >= hours) ?? scale[scale.length - 1] ?? 336
 }
 
 export function formatDurationHours(maxHours: number): string {

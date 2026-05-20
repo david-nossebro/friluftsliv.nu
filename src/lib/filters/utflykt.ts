@@ -8,6 +8,7 @@ import {
   matchesNearMe,
   matchesSeason,
   normalizeSelectedLandskap,
+  formatDurationFilterLabel,
 } from './shared'
 
 // ─── Dimensions ──────────────────────────────────────────────────────────────
@@ -18,6 +19,7 @@ export const UTFLYKT_FILTER_DIMENSIONS = [
   'publicTransport',
   'nearMe',
   'dogsAllowed',
+  'utflyktDuration',
 ] as const
 
 export type UtflyktFilterDimension = (typeof UTFLYKT_FILTER_DIMENSIONS)[number]
@@ -36,6 +38,22 @@ function passesSharedBase(
   return true
 }
 
+function matchesUtflyktDuration(
+  item: Utflykt,
+  minHours: number,
+  maxHours: number | null,
+): boolean {
+  // Graceful fallback: items without numeric duration pass through
+  if (item.visitDurationMinHours == null || item.visitDurationMaxHours == null) return true
+
+  // Filter range must overlap with item range
+  // Item passes if its max >= filter min (item extends into filter range)
+  if (item.visitDurationMaxHours < minHours) return false
+  // And if filter has an upper bound, item's min must be <= filter max
+  if (maxHours != null && item.visitDurationMinHours > maxHours) return false
+  return true
+}
+
 export function applyUtflyktFilters(
   utflykter: Utflykt[],
   state: FilterState,
@@ -47,6 +65,9 @@ export function applyUtflyktFilters(
     if (state.months.length > 0 && !matchesSeason(u, state.months)) return false
     if (!matchesPublicTransport(u.publicTransport, state.publicTransport)) return false
     if (state.dogsAllowed && u.dogsAllowed !== true) return false
+    if (state.utflyktDurationMin > 0 || state.utflyktDurationMax != null) {
+      if (!matchesUtflyktDuration(u, state.utflyktDurationMin, state.utflyktDurationMax)) return false
+    }
     return true
   })
 }
@@ -60,6 +81,7 @@ export function countActiveUtflyktFilters(state: FilterState): number {
   if (state.publicTransport) n++
   if (state.nearMe) n++
   if (state.dogsAllowed) n++
+  if (state.utflyktDurationMin > 0 || state.utflyktDurationMax != null) n++
   return n
 }
 
@@ -71,9 +93,18 @@ export interface PillSpec {
   clear: () => Partial<FilterState>
 }
 
-export function buildUtflyktPills(): PillSpec[] {
-  // Utflykter have no unique pills beyond shared ones (landskap, season, publicTransport, nearMe, dogsAllowed)
-  return []
+export function buildUtflyktPills(state: FilterState): PillSpec[] {
+  const pills: PillSpec[] = []
+
+  if (state.utflyktDurationMin > 0 || state.utflyktDurationMax != null) {
+    pills.push({
+      key: 'udur',
+      label: formatDurationFilterLabel(state.utflyktDurationMin, state.utflyktDurationMax),
+      clear: () => ({ utflyktDurationMin: 0, utflyktDurationMax: null }),
+    })
+  }
+
+  return pills
 }
 
 // ─── Reset patch ─────────────────────────────────────────────────────────────
@@ -86,5 +117,7 @@ export function createUtflyktResetPatch(): Partial<FilterState> {
     nearMe: false,
     nearMeRadiusKm: 25,
     dogsAllowed: false,
+    utflyktDurationMin: 0,
+    utflyktDurationMax: null,
   }
 }

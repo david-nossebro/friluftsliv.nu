@@ -48,7 +48,7 @@ export function FilterPanel({
     can('difficulty') || can('hikeType') || can('routeShape') || can('distance') || can('duration') ||
     can('publicTransport') || can('dogsAllowed') || can('tentingAllowed') ||
     can('hasCabinsAlong')
-  const showWhen = can('season')
+  const showWhen = can('season') || can('utflyktDuration')
   const showCabin = can('cabinServiceType') || can('cabinFacilities')
 
   const handleNearMeChange = (active: boolean) => {
@@ -180,6 +180,19 @@ export function FilterPanel({
               <SeasonFilter
                 value={state.months}
                 onChange={(months) => patch({ months })}
+              />
+            </SubSection>
+          )}
+          {can('utflyktDuration') && (
+            <SubSection className="basis-full">
+              <DurationFilter
+                minHours={state.utflyktDurationMin}
+                maxHours={state.utflyktDurationMax}
+                onChange={(min, max) => patch({ utflyktDurationMin: min, utflyktDurationMax: max })}
+                scale={[0, 1, 1.5, 2, 3, 4, 5, 6, 8]}
+                label="Tid på plats"
+                minLabel="0 tim"
+                maxLabel="8+ tim"
               />
             </SubSection>
           )}

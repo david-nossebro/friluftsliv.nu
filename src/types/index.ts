@@ -37,6 +37,10 @@ export interface Utflykt {
   publicTransport?: PublicTransport
   dogsAllowed?: boolean
   coordinates?: { lat: number; lng: number }
+  /** Parsed from `visitDuration` for structured filtering. */
+  visitDurationMinHours?: number
+  /** Parsed from `visitDuration` for structured filtering. */
+  visitDurationMaxHours?: number
 }
 
 export interface UtflyktDetail extends Utflykt {

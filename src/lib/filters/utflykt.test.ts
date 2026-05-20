@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { applyUtflyktFilters, countActiveUtflyktFilters, createUtflyktResetPatch } from './utflykt'
+import { applyUtflyktFilters, countActiveUtflyktFilters, buildUtflyktPills, createUtflyktResetPatch } from './utflykt'
 import { defaultFilterState } from './types'
 import type { FilterState } from './types'
 import type { Utflykt } from '@/types'
@@ -14,11 +14,13 @@ const utflykt: Utflykt = {
   region: 'Skåne',
   summary: 'Kort tur',
   travelTime: '1 tim',
-  visitDuration: '2 tim',
+  visitDuration: '2–4 timmar',
   highlights: [],
   landskap: ['skane'],
   publicTransport: { mode: 'reachable' },
   dogsAllowed: true,
+  visitDurationMinHours: 2,
+  visitDurationMaxHours: 4,
 }
 
 describe('utflykt filters', () => {
@@ -50,11 +52,81 @@ describe('utflykt filters', () => {
   })
 })
 
+describe('utflyktDuration filter', () => {
+  const shortUtflykt: Utflykt = { ...utflykt, id: 'u-short', visitDurationMinHours: 1.5, visitDurationMaxHours: 2 }
+  const mediumUtflykt: Utflykt = { ...utflykt, id: 'u-medium', visitDurationMinHours: 2, visitDurationMaxHours: 4 }
+  const longUtflykt: Utflykt = { ...utflykt, id: 'u-long', visitDurationMinHours: 4, visitDurationMaxHours: 6 }
+
+  it('filters by min duration', () => {
+    const result = applyUtflyktFilters(
+      [shortUtflykt, mediumUtflykt, longUtflykt],
+      withOverrides({ utflyktDurationMin: 3 }),
+      null,
+    )
+    expect(result.map((u) => u.id)).toEqual(['u-medium', 'u-long'])
+  })
+
+  it('filters by max duration', () => {
+    const result = applyUtflyktFilters(
+      [shortUtflykt, mediumUtflykt, longUtflykt],
+      withOverrides({ utflyktDurationMax: 3 }),
+      null,
+    )
+    expect(result.map((u) => u.id)).toEqual(['u-short', 'u-medium'])
+  })
+
+  it('filters by min+max range', () => {
+    const result = applyUtflyktFilters(
+      [shortUtflykt, mediumUtflykt, longUtflykt],
+      withOverrides({ utflyktDurationMin: 2, utflyktDurationMax: 4 }),
+      null,
+    )
+    expect(result.map((u) => u.id)).toEqual(['u-short', 'u-medium', 'u-long'])
+  })
+
+  it('filters out non-overlapping items', () => {
+    const result = applyUtflyktFilters(
+      [shortUtflykt, mediumUtflykt, longUtflykt],
+      withOverrides({ utflyktDurationMin: 5 }),
+      null,
+    )
+    expect(result.map((u) => u.id)).toEqual(['u-long'])
+  })
+
+  it('gracefully passes items without numeric duration', () => {
+    const noDuration = { ...utflykt, id: 'u-none' } as Utflykt
+    delete (noDuration as unknown as Record<string, unknown>).visitDurationMinHours
+    delete (noDuration as unknown as Record<string, unknown>).visitDurationMaxHours
+    const result = applyUtflyktFilters(
+      [noDuration],
+      withOverrides({ utflyktDurationMin: 3 }),
+      null,
+    )
+    expect(result).toHaveLength(1)
+  })
+})
+
 describe('countActiveUtflyktFilters', () => {
   it('counts only utflykt-specific filter dimensions', () => {
     expect(countActiveUtflyktFilters(defaultFilterState)).toBe(0)
     expect(countActiveUtflyktFilters(withOverrides({ landskap: ['skane'] }))).toBe(1)
     expect(countActiveUtflyktFilters(withOverrides({ landskap: ['skane'], dogsAllowed: true }))).toBe(2)
+    expect(countActiveUtflyktFilters(withOverrides({ utflyktDurationMin: 2 }))).toBe(1)
+    expect(countActiveUtflyktFilters(withOverrides({ utflyktDurationMax: 4 }))).toBe(1)
+  })
+})
+
+describe('buildUtflyktPills', () => {
+  it('builds a pill for active duration filter', () => {
+    const pills = buildUtflyktPills(withOverrides({ utflyktDurationMin: 2, utflyktDurationMax: 4 }))
+    expect(pills).toHaveLength(1)
+    expect(pills[0]!.key).toBe('udur')
+    expect(pills[0]!.label).toBe('2 tim - 4 tim')
+  })
+
+  it('returns empty array when no duration filter is active', () => {
+    const pills = buildUtflyktPills(defaultFilterState)
+    expect(pills).toHaveLength(0)
   })
 })
 
@@ -64,5 +136,7 @@ describe('createUtflyktResetPatch', () => {
     expect(patch.landskap).toEqual([])
     expect(patch.months).toEqual([])
     expect(patch.dogsAllowed).toBe(false)
+    expect(patch.utflyktDurationMin).toBe(0)
+    expect(patch.utflyktDurationMax).toBeNull()
   })
 })

@@ -14,6 +14,8 @@ export const utflykter: UtflyktDetail[] = [
       'Skäralid är en trygg start för dig som vill komma ut i naturen över dagen. Du börjar vid naturum, går genom bokskogen och kan fortsätta upp till Kopparhatten för utsikt över Söderåsens sprickdal. Det passar lika bra för en lugn förmiddag som för flera timmar med fika, kort vandring och stopp längs vägen.',
     travelTime: '1 tim från Helsingborg',
     visitDuration: '2–4 timmar',
+    visitDurationMinHours: 2,
+    visitDurationMaxHours: 4,
     highlights: ['Naturum nära', 'Familjevänlig', 'Utsikt'],
     imageUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=70&auto=format',
     images: [
@@ -46,6 +48,8 @@ export const utflykter: UtflyktDetail[] = [
       'Tyresta by är en lugn plats att börja i när du vill ut i skogen utan att göra en stor expedition av dagen. Här finns naturum, öppna ytor för paus och flera stigar som går att anpassa efter ork, väder och sällskap. Du kan gå en kort runda, stanna vid grillplatsen eller fortsätta mot Stensjön om du vill vara ute längre.',
     travelTime: '40 min från Stockholm',
     visitDuration: '2–5 timmar',
+    visitDurationMinHours: 2,
+    visitDurationMaxHours: 5,
     highlights: ['Kollektivtrafik', 'Året runt', 'Grillplats'],
     imageUrl: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1200&q=70&auto=format',
     images: [
@@ -78,6 +82,8 @@ export const utflykter: UtflyktDetail[] = [
       'Hellasgården är en av de enklaste platserna att välja när du vill komma ut i naturen men ändå ha service nära. Här kan du bada, gå en kort runda runt sjön, stanna för lunch eller ta bastu innan du åker hem. Utflykten fungerar både för spontana vardagseftermiddagar och långsamma helgdagar.',
     travelTime: '25 min från Slussen',
     visitDuration: '2–6 timmar',
+    visitDurationMinHours: 2,
+    visitDurationMaxHours: 6,
     highlights: ['Badplats', 'Kollektivtrafik', 'Bastu'],
     imageUrl: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1200&q=70&auto=format',
     images: [
@@ -110,6 +116,8 @@ export const utflykter: UtflyktDetail[] = [
       'Abisko är ovanligt enkelt att börja i om du vill känna fjällmiljö utan att planera flera dagar. Från turiststationen når du canyon, broar och utsiktspunkter på kort tid. Det gör platsen bra för dig som vill känna fjället för första gången eller fylla en dag med korta promenader och många stopp.',
     travelTime: 'Några min från stationen',
     visitDuration: '1,5–4 timmar',
+    visitDurationMinHours: 1.5,
+    visitDurationMaxHours: 4,
     highlights: ['Tåg nära', 'Naturum', 'Fjällutsikt'],
     imageUrl: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=70&auto=format',
     images: [

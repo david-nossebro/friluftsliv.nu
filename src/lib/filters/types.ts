@@ -34,6 +34,10 @@ export interface FilterState {
   cabinFacilities: Facility[]
   cabinServiceType: CabinServiceType | 'any'
   hikeType: HikeType[]
+  /** Utflykt visit duration filter — min hours. */
+  utflyktDurationMin: number
+  /** Utflykt visit duration filter — max hours (null = no upper bound). */
+  utflyktDurationMax: number | null
 }
 
 export const DEFAULT_DISTANCE_MIN = 0
@@ -60,6 +64,8 @@ export const defaultFilterState: FilterState = {
   cabinFacilities: [],
   cabinServiceType: 'any',
   hikeType: [],
+  utflyktDurationMin: 0,
+  utflyktDurationMax: null,
 }
 
 export type FilterDimension =
@@ -68,3 +74,4 @@ export type FilterDimension =
   | 'tentingAllowed' | 'hasCabinsAlong'
   | 'cabinFacilities' | 'cabinServiceType'
   | 'hikeType'
+  | 'utflyktDuration'

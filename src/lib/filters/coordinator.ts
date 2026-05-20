@@ -30,6 +30,7 @@ import {
 } from './cabin'
 import {
   applyUtflyktFilters,
+  buildUtflyktPills,
 } from './utflykt'
 import {
   applyAreaFilters,
@@ -136,6 +137,8 @@ export function parseFilters(params: URLSearchParams | ReadonlyURLSearchParams):
     cabinFacilities: parseList(get('fac'), VALID_FACILITIES),
     cabinServiceType: parseEnum(get('cst'), VALID_SERVICE_TYPES, 'any'),
     hikeType: parseList(get('ht'), VALID_HIKE_TYPES),
+    utflyktDurationMin: parseNumber(get('umin')) ?? 0,
+    utflyktDurationMax: parseNumber(get('umax')),
   }
 }
 
@@ -166,6 +169,8 @@ export function serializeFilters(state: FilterState): URLSearchParams {
   if (state.cabinFacilities.length > 0) params.set('fac', state.cabinFacilities.join(','))
   if (state.cabinServiceType !== 'any') params.set('cst', state.cabinServiceType)
   if (state.hikeType.length > 0) params.set('ht', state.hikeType.join(','))
+  if (state.utflyktDurationMin > 0) params.set('umin', String(state.utflyktDurationMin))
+  if (state.utflyktDurationMax != null) params.set('umax', String(state.utflyktDurationMax))
   return params
 }
 
@@ -186,6 +191,7 @@ const SHARED_FILTERS: FilterDimension[] = [
 const AREA_FILTERS: FilterDimension[] = ['landskap', 'nearMe']
 const UTFLYKT_FILTERS: FilterDimension[] = [
   'landskap', 'season', 'publicTransport', 'nearMe', 'dogsAllowed',
+  'utflyktDuration',
 ]
 
 export function getApplicableFilters(tab: ExploreTab): FilterDimension[] {
@@ -202,7 +208,8 @@ export function getApplicableFilters(tab: ExploreTab): FilterDimension[] {
     case 'alla':
     default:
       return [...SHARED_FILTERS, 'difficulty', 'hikeType', 'routeShape', 'distance', 'duration',
-        'tentingAllowed', 'hasCabinsAlong', 'cabinFacilities', 'cabinServiceType']
+        'tentingAllowed', 'hasCabinsAlong', 'cabinFacilities', 'cabinServiceType',
+        'utflyktDuration']
   }
 }
 
@@ -226,6 +233,7 @@ export function countActiveFilters(state: FilterState): number {
   if (state.hasCabinsAlong) n++
   if (state.cabinFacilities.length > 0) n++
   if (state.cabinServiceType !== 'any') n++
+  if (state.utflyktDurationMin > 0 || state.utflyktDurationMax != null) n++
   return n
 }
 
@@ -282,6 +290,9 @@ export function countActiveFiltersForDimensions(
         break
       case 'hikeType':
         if (state.hikeType.length > 0) n++
+        break
+      case 'utflyktDuration':
+        if (state.utflyktDurationMin > 0 || state.utflyktDurationMax != null) n++
         break
     }
   }
@@ -340,6 +351,10 @@ export function createFilterResetPatch(
         break
       case 'hikeType':
         patch.hikeType = defaultFilterState.hikeType
+        break
+      case 'utflyktDuration':
+        patch.utflyktDurationMin = defaultFilterState.utflyktDurationMin
+        patch.utflyktDurationMax = defaultFilterState.utflyktDurationMax
         break
     }
   }
@@ -474,6 +489,9 @@ export function buildPills(state: FilterState): PillSpec[] {
 
   // Cabin-specific pills
   pills.push(...buildCabinPills(state))
+
+  // Utflykt-specific pills
+  pills.push(...buildUtflyktPills(state))
 
   return pills
 }
