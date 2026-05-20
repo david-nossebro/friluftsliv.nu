@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { applyUtflyktFilters, countActiveUtflyktFilters, buildUtflyktPills, createUtflyktResetPatch } from './utflykt'
+import { applyUtflyktFilters, buildUtflyktPills } from './utflykt'
 import { defaultFilterState } from './types'
 import type { FilterState } from './types'
 import type { Utflykt } from '@/types'
@@ -106,16 +106,6 @@ describe('utflyktDuration filter', () => {
   })
 })
 
-describe('countActiveUtflyktFilters', () => {
-  it('counts only utflykt-specific filter dimensions', () => {
-    expect(countActiveUtflyktFilters(defaultFilterState)).toBe(0)
-    expect(countActiveUtflyktFilters(withOverrides({ landskap: ['skane'] }))).toBe(1)
-    expect(countActiveUtflyktFilters(withOverrides({ landskap: ['skane'], dogsAllowed: true }))).toBe(2)
-    expect(countActiveUtflyktFilters(withOverrides({ utflyktDurationMin: 2 }))).toBe(1)
-    expect(countActiveUtflyktFilters(withOverrides({ utflyktDurationMax: 4 }))).toBe(1)
-  })
-})
-
 describe('buildUtflyktPills', () => {
   it('builds a pill for active duration filter', () => {
     const pills = buildUtflyktPills(withOverrides({ utflyktDurationMin: 2, utflyktDurationMax: 4 }))
@@ -130,13 +120,3 @@ describe('buildUtflyktPills', () => {
   })
 })
 
-describe('createUtflyktResetPatch', () => {
-  it('resets all utflykt-related filter fields', () => {
-    const patch = createUtflyktResetPatch()
-    expect(patch.landskap).toEqual([])
-    expect(patch.months).toEqual([])
-    expect(patch.dogsAllowed).toBe(false)
-    expect(patch.utflyktDurationMin).toBe(0)
-    expect(patch.utflyktDurationMax).toBeNull()
-  })
-})

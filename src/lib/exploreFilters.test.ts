@@ -46,12 +46,6 @@ describe('exploreFilters — serde', () => {
     expect(params.get('rs')).toBeNull()
   })
 
-  it('parses legacy duration URLs into the unified hour scale', () => {
-    const parsed = parseFilters(new URLSearchParams('du=d&tmax=4'))
-    expect(parsed.durationMin).toBe(0)
-    expect(parsed.durationMax).toBe(96)
-  })
-
   it('serializes unified duration range filters without the legacy unit flag', () => {
     const params = serializeFilters(withOverrides({ durationMin: 6, durationMax: 72 }))
     expect(params.get('tmin')).toBe('6')

@@ -3,16 +3,19 @@
 import * as React from 'react'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import {
   type FilterState,
-  countActiveFilters,
-  defaultFilterState,
+  type FilterDimension,
+  countActiveFiltersForDimensions,
   buildPills,
 } from '@/lib/exploreFilters'
 
 export interface ResultsHeaderProps {
   state: FilterState
   patch: (partial: Partial<FilterState>) => void
+  reset: () => void
+  applicable: FilterDimension[]
   count: number
   showCount?: boolean | undefined
   className?: string
@@ -21,20 +24,18 @@ export interface ResultsHeaderProps {
 export function ResultsHeader({
   state,
   patch,
+  reset,
+  applicable,
   count,
   showCount = true,
   className,
 }: ResultsHeaderProps) {
-  const activeCount = countActiveFilters(state)
-  const pills = buildPills(state)
-
-  const reset = () => {
-    const { tab, query } = state
-    patch({ ...defaultFilterState, tab, query })
-  }
+  const activeCount = countActiveFiltersForDimensions(state, applicable)
+  const applicableSet = React.useMemo(() => new Set(applicable), [applicable])
+  const pills = buildPills(state).filter((pill) => applicableSet.has(pill.dimension))
 
   return (
-    <div className={['flex flex-col gap-2', className].filter(Boolean).join(' ')}>
+    <div className={cn('flex flex-col gap-2', className)}>
       {showCount && (
         <p
           role="status"

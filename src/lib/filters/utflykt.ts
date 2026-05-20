@@ -1,42 +1,17 @@
-import type { FilterState } from './types'
+import type { FilterState, PillSpec } from './types'
 import type { Utflykt } from '@/types'
 import type { LatLng } from '../geo'
 import {
   matchesQuery,
-  matchesLandskap,
   matchesPublicTransport,
-  matchesNearMe,
   matchesSeason,
-  normalizeSelectedLandskap,
+  passesSharedBase,
   formatDurationFilterLabel,
 } from './shared'
 
 // ─── Dimensions ──────────────────────────────────────────────────────────────
 
-export const UTFLYKT_FILTER_DIMENSIONS = [
-  'landskap',
-  'season',
-  'publicTransport',
-  'nearMe',
-  'dogsAllowed',
-  'utflyktDuration',
-] as const
-
-export type UtflyktFilterDimension = (typeof UTFLYKT_FILTER_DIMENSIONS)[number]
-
 // ─── Apply ───────────────────────────────────────────────────────────────────
-
-function passesSharedBase(
-  item: { landskap?: string[]; coordinates?: LatLng },
-  state: FilterState,
-  origin: LatLng | null,
-): boolean {
-  if (state.nearMe) {
-    return matchesNearMe(item.coordinates, origin, state.nearMeRadiusKm)
-  }
-  if (!matchesLandskap(item.landskap as import('@/types').Landskap[], state.landskap)) return false
-  return true
-}
 
 function matchesUtflyktDuration(
   item: Utflykt,
@@ -72,26 +47,7 @@ export function applyUtflyktFilters(
   })
 }
 
-// ─── Active count ────────────────────────────────────────────────────────────
-
-export function countActiveUtflyktFilters(state: FilterState): number {
-  let n = 0
-  if (!state.nearMe && normalizeSelectedLandskap(state.landskap).length > 0) n++
-  if (state.months.length > 0) n++
-  if (state.publicTransport) n++
-  if (state.nearMe) n++
-  if (state.dogsAllowed) n++
-  if (state.utflyktDurationMin > 0 || state.utflyktDurationMax != null) n++
-  return n
-}
-
 // ─── Pills ───────────────────────────────────────────────────────────────────
-
-export interface PillSpec {
-  key: string
-  label: string
-  clear: () => Partial<FilterState>
-}
 
 export function buildUtflyktPills(state: FilterState): PillSpec[] {
   const pills: PillSpec[] = []
@@ -100,24 +56,10 @@ export function buildUtflyktPills(state: FilterState): PillSpec[] {
     pills.push({
       key: 'udur',
       label: formatDurationFilterLabel(state.utflyktDurationMin, state.utflyktDurationMax),
+      dimension: 'utflyktDuration',
       clear: () => ({ utflyktDurationMin: 0, utflyktDurationMax: null }),
     })
   }
 
   return pills
-}
-
-// ─── Reset patch ─────────────────────────────────────────────────────────────
-
-export function createUtflyktResetPatch(): Partial<FilterState> {
-  return {
-    landskap: [],
-    months: [],
-    publicTransport: false,
-    nearMe: false,
-    nearMeRadiusKm: 25,
-    dogsAllowed: false,
-    utflyktDurationMin: 0,
-    utflyktDurationMax: null,
-  }
 }

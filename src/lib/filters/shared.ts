@@ -5,10 +5,12 @@ import type {
   Month,
   PublicTransportMode,
   RouteShape,
+  Season,
 } from '@/types'
 import { seasonCoversAnyMonth } from '../season'
 import { ALL_LANDSKAP } from '../landskap'
 import { haversineKm, type LatLng } from '../geo'
+import type { FilterState } from './types'
 
 // Re-exports (kept here so the barrel can expose them from one place)
 export { ALL_MONTHS, currentMonth } from '../season'
@@ -113,7 +115,7 @@ export function matchesNearMe(
   origin: LatLng | null,
   radiusKm: number,
 ): boolean {
-  if (!origin) return true
+  if (!origin) return false
   if (!coords) return false
   return haversineKm(origin, coords) <= radiusKm
 }
@@ -121,16 +123,12 @@ export function matchesNearMe(
 // ─── Season helpers ───────────────────────────────────────────────────────────
 
 export function matchesSeason(
-  item: unknown,
+  item: { season?: Season },
   months: Month[],
 ): boolean {
   if (months.length === 0) return true
-  const season =
-    item && typeof item === 'object' && 'season' in item
-      ? (item as { season?: import('@/types').Season }).season
-      : undefined
-  if (!season) return false
-  return seasonCoversAnyMonth(season, months)
+  if (!item.season) return false
+  return seasonCoversAnyMonth(item.season, months)
 }
 
 // ─── Duration formatting (UI helpers) ────────────────────────────────────────
@@ -157,6 +155,18 @@ export function formatDurationHours(maxHours: number): string {
 
   const days = maxHours / 24
   return days === 1 ? '1 dag' : `${days} dagar`
+}
+
+export function passesSharedBase(
+  item: { landskap?: Landskap[]; coordinates?: LatLng },
+  state: FilterState,
+  origin: LatLng | null,
+): boolean {
+  if (state.nearMe) {
+    return matchesNearMe(item.coordinates, origin, state.nearMeRadiusKm)
+  }
+  if (!matchesLandskap(item.landskap, state.landskap)) return false
+  return true
 }
 
 export function formatDurationFilterLabel(minHours: number, maxHours: number | null): string {

@@ -1,12 +1,15 @@
 'use client'
 
 import * as React from 'react'
+import { cn } from '@/lib/utils'
 import { ResultsHeader } from './ResultsHeader'
-import { type FilterState } from '@/lib/exploreFilters'
+import { type FilterState, type FilterDimension } from '@/lib/exploreFilters'
 
 export interface FilterToolbarProps {
   state: FilterState
   patch: (partial: Partial<FilterState>) => void
+  reset: () => void
+  applicable: FilterDimension[]
   count: number
   showCount?: boolean
   /** Slot for the mobile-only Sheet trigger (rendered <lg). */
@@ -17,6 +20,8 @@ export interface FilterToolbarProps {
 export function FilterToolbar({
   state,
   patch,
+  reset,
+  applicable,
   count,
   showCount,
   mobileTrigger,
@@ -24,14 +29,16 @@ export function FilterToolbar({
 }: FilterToolbarProps) {
   return (
     <div
-      className={[
+      className={cn(
         'flex items-start justify-between gap-3 flex-wrap',
         className,
-      ].filter(Boolean).join(' ')}
+      )}
     >
       <ResultsHeader
         state={state}
         patch={patch}
+        reset={reset}
+        applicable={applicable}
         count={count}
         showCount={showCount}
         className="flex-1 min-w-0"
@@ -43,10 +50,4 @@ export function FilterToolbar({
   )
 }
 
-export function FilterCountBadge({ n }: { n: number }) {
-  return (
-    <span className="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full bg-pine text-snow text-2xs font-medium">
-      {n}
-    </span>
-  )
-}
+

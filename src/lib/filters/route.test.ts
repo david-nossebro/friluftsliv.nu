@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { applyRouteFilters, applyLongHikeFilters, countActiveRouteFilters, buildRoutePills, createRouteResetPatch } from './route'
+import { applyRouteFilters, applyLongHikeFilters, buildRoutePills } from './route'
 import { defaultFilterState } from './types'
 import type { FilterState } from './types'
 import type { Route, LongHike } from '@/types'
@@ -137,14 +137,6 @@ describe('longHike filters', () => {
   })
 })
 
-describe('countActiveRouteFilters', () => {
-  it('counts only route-specific filter dimensions', () => {
-    expect(countActiveRouteFilters(defaultFilterState)).toBe(0)
-    expect(countActiveRouteFilters(withOverrides({ difficulty: ['easy'] }))).toBe(1)
-    expect(countActiveRouteFilters(withOverrides({ difficulty: ['easy'], tentingAllowed: true, hasCabinsAlong: true }))).toBe(3)
-  })
-})
-
 describe('buildRoutePills', () => {
   it('builds pills for active route filters', () => {
     const pills = buildRoutePills(withOverrides({ difficulty: ['easy', 'hard'], routeShape: 'roundtrip' }))
@@ -159,13 +151,3 @@ describe('buildRoutePills', () => {
   })
 })
 
-describe('createRouteResetPatch', () => {
-  it('resets all route-related filter fields', () => {
-    const patch = createRouteResetPatch()
-    expect(patch.difficulty).toEqual([])
-    expect(patch.routeShape).toBeNull()
-    expect(patch.distanceMinKm).toBe(0)
-    expect(patch.tentingAllowed).toBe(false)
-    expect(patch.hasCabinsAlong).toBe(false)
-  })
-})

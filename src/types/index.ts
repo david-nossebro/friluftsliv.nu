@@ -36,6 +36,7 @@ export interface Utflykt {
   kommun?: string[]
   publicTransport?: PublicTransport
   dogsAllowed?: boolean
+  season?: Season
   coordinates?: { lat: number; lng: number }
   /** Parsed from `visitDuration` for structured filtering. */
   visitDurationMinHours?: number
@@ -124,6 +125,7 @@ export interface Route {
   publicTransport?: PublicTransport
   dogsAllowed?: boolean
   tentingAllowed?: boolean
+  season?: Season
   /** Curated cabin IDs that lie along this route. */
   cabinIds?: string[]
 }
@@ -217,6 +219,7 @@ export interface Cabin {
   facilityTags?: Facility[]
   publicTransport?: PublicTransport
   dogsAllowed?: boolean
+  serviceType?: CabinServiceType
 }
 
 export interface CabinDetail extends Cabin {

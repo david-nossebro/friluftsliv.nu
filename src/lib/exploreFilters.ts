@@ -1,7 +1,7 @@
 // Backward-compatibility barrel — all filter logic has moved into
 // `src/lib/filters/*.ts`. Import from `@/lib/filters/*` for new code.
 
-export type { FilterState, FilterDimension } from './filters/types'
+export type { FilterState, FilterDimension, PillSpec } from './filters/types'
 export { defaultFilterState } from './filters/types'
 
 export {
@@ -39,5 +39,4 @@ export type {
   ApplyFiltersInput,
   ApplyFiltersOutput,
   RouteSplit,
-  PillSpec,
 } from './filters/coordinator'

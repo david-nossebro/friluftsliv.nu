@@ -22,7 +22,7 @@ export interface NearMeFilterProps {
   onActiveChange: (active: boolean) => void
   onRadiusChange: (radius: number) => void
   /** Receive coords from the geolocation API so parent can use them in applyFilters. */
-  onCoordsChange?: (coords: { lat: number; lng: number } | null) => void
+  onCoordsChange?: ((coords: { lat: number; lng: number } | null) => void) | undefined
 }
 
 export function NearMeFilter({

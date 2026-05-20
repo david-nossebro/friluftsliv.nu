@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, SlidersHorizontal } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { FilterCountBadge } from './FilterToolbar'
+import { FilterCountBadge } from './FilterCountBadge'
 import {
   countActiveFiltersForDimensions,
   type FilterDimension,
@@ -95,7 +95,7 @@ export function FilterDrawer({
           resultCount={resultCount}
           onClose={() => setOpen(false)}
           surface={isDesktop ? 'desktop' : 'mobile'}
-          {...(onCoordsChange ? { onCoordsChange } : {})}
+          onCoordsChange={onCoordsChange}
         />
       </SheetContent>
     </Sheet>

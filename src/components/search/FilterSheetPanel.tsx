@@ -19,7 +19,7 @@ export interface FilterSheetPanelProps {
   applicable: FilterDimension[]
   resultCount: number
   onClose: () => void
-  onCoordsChange?: (coords: LatLng | null) => void
+  onCoordsChange?: ((coords: LatLng | null) => void) | undefined
   surface?: 'mobile' | 'desktop'
 }
 
@@ -38,43 +38,38 @@ export function FilterSheetPanel({
     patch(createFilterResetPatch(applicable))
   }
 
+  const isDesktop = surface === 'desktop'
+
+  const titleBlock = (
+    <>
+      <SheetTitle className="font-display text-lg font-normal text-pine">
+        Filter
+        {activeCount > 0 && (
+          <span className="ml-2 font-body text-sm text-stone">({activeCount})</span>
+        )}
+      </SheetTitle>
+      <SheetDescription className="mt-1 font-body text-sm text-stone">
+        {activeCount > 0
+          ? `${activeCount} filter hjälper dig att hitta rätt.`
+          : 'Välj det som passar dig bäst.'}
+      </SheetDescription>
+    </>
+  )
+
   return (
     <div className="flex h-full flex-col bg-snow">
       <div
         className={cn(
           'border-b border-mist-dark',
-          surface === 'desktop' ? 'pr-6' : 'pr-14',
-          surface === 'desktop' ? 'px-6 py-5' : 'px-4 py-3',
+          isDesktop ? 'px-6 py-5' : 'px-4 py-3 pr-14',
         )}
       >
         <div className="flex items-start justify-between gap-3">
-          {surface === 'desktop' ? (
-            <div className="min-w-0">
-              <SheetTitle className="font-display text-lg font-normal text-pine">
-                Filter
-                {activeCount > 0 && (
-                  <span className="ml-2 font-body text-sm text-stone">({activeCount})</span>
-                )}
-              </SheetTitle>
-              <SheetDescription className="mt-1 font-body text-sm text-stone">
-                {activeCount > 0
-                  ? `${activeCount} filter hjälper dig att hitta rätt.`
-                  : 'Välj det som passar dig bäst.'}
-              </SheetDescription>
-            </div>
+          {isDesktop ? (
+            <div className="min-w-0">{titleBlock}</div>
           ) : (
             <SheetHeader className="min-w-0 space-y-0 text-left">
-              <SheetTitle className="font-display text-lg font-normal text-pine">
-                Filter
-                {activeCount > 0 && (
-                  <span className="ml-2 font-body text-sm text-stone">({activeCount})</span>
-                )}
-              </SheetTitle>
-              <SheetDescription className="mt-1 font-body text-sm text-stone">
-                {activeCount > 0
-                  ? `${activeCount} filter hjälper dig att hitta rätt.`
-                  : 'Välj det som passar dig bäst.'}
-              </SheetDescription>
+              {titleBlock}
             </SheetHeader>
           )}
           {activeCount > 0 && (
@@ -94,22 +89,21 @@ export function FilterSheetPanel({
       <div
         className={cn(
           'flex-1 overflow-y-auto',
-          surface === 'desktop' ? 'px-6 py-6' : 'p-4',
+          isDesktop ? 'px-6 py-6' : 'p-4',
         )}
       >
         <FilterPanel
           state={state}
           patch={patch}
           applicable={applicable}
-          {...(onCoordsChange ? { onCoordsChange } : {})}
-          className="grid-cols-1 md:grid-cols-1 xl:grid-cols-1"
+          onCoordsChange={onCoordsChange}
         />
       </div>
 
       <div
         className={cn(
           'border-t border-mist-dark bg-white/95 backdrop-blur-sm',
-          surface === 'desktop' ? 'px-6 py-5' : 'px-4 py-3',
+          isDesktop ? 'px-6 py-5' : 'px-4 py-3',
         )}
       >
         <Button

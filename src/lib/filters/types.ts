@@ -75,3 +75,10 @@ export type FilterDimension =
   | 'cabinFacilities' | 'cabinServiceType'
   | 'hikeType'
   | 'utflyktDuration'
+
+export interface PillSpec {
+  key: string
+  label: string
+  dimension: FilterDimension
+  clear: () => Partial<FilterState>
+}

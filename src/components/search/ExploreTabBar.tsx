@@ -12,17 +12,17 @@ import { exploreTabs, getExploreTabLabel } from './exploreTabs'
 const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect
 
-export interface ExploreFiltersProps {
+export interface ExploreTabBarProps {
   activeTab?: ExploreTab
   onTabChange?: (tab: ExploreTab) => void
   className?: string
 }
 
-export function ExploreFilters({
+export function ExploreTabBar({
   activeTab = 'alla',
   onTabChange,
   className,
-}: ExploreFiltersProps) {
+}: ExploreTabBarProps) {
   const [isMobilePanelOpen, setIsMobilePanelOpen] = React.useState(false)
   // Default to "fits" so the desktop tab bar paints first; measurement flips
   // to false only if the row genuinely overflows the container.

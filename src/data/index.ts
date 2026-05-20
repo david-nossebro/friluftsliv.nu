@@ -16,7 +16,6 @@ import type {
   MapPosition,
   ProtectedAreaKind,
 } from '@/types'
-import type { ExploreItem } from '@/components/search/ExploreGrid'
 import { routes } from './routes'
 import { longHikes } from './longHikes'
 import { stages } from './stages'
@@ -50,47 +49,6 @@ function isSamePrimaryRegion(item: WithRegion, region: string) {
 function hasSharedAreaIds(left?: string[], right?: string[]) {
   if (!left || !right) return false
   return left.some((id) => right.includes(id))
-}
-
-function toRouteExploreItem(data: Route): ExploreItem {
-  return {
-    kind: 'route',
-    data: {
-      id: data.id,
-      title: data.title,
-      region: data.region,
-      activityType: data.activityType,
-      ...(data.exploreCategory ? { exploreCategory: data.exploreCategory } : {}),
-      ...(data.areaIds ? { areaIds: data.areaIds } : {}),
-      distance: data.distance,
-      elevation: data.elevation,
-      duration: data.duration,
-      difficulty: data.difficulty,
-      ...(data.imageUrl ? { imageUrl: data.imageUrl } : {}),
-    },
-  }
-}
-
-function toUtflyktExploreItem(data: Utflykt): ExploreItem {
-  return {
-    kind: 'utflykt',
-    data,
-  }
-}
-
-function toCabinExploreItem(data: Cabin): ExploreItem {
-  return {
-    kind: 'cabin',
-    data: {
-      id: data.id,
-      title: data.title,
-      region: data.region,
-      ...(data.areaIds ? { areaIds: data.areaIds } : {}),
-      amenities: data.amenities,
-      ...(data.pricePerNight != null ? { pricePerNight: data.pricePerNight } : {}),
-      ...(data.imageUrl ? { imageUrl: data.imageUrl } : {}),
-    },
-  }
 }
 
 function hasCoordinates<T extends WithCoordinates>(
@@ -190,17 +148,6 @@ function toAreaListItem(area: Area): AreaListItem {
   }
 }
 
-function toAreaExploreItem(area: Area): ExploreItem {
-  const listItem = toAreaListItem(area)
-
-  return {
-    kind: 'area',
-    data: listItem.area,
-    routeCount: listItem.routeCount,
-    cabinCount: listItem.cabinCount,
-  }
-}
-
 export function getAreaListItems(): AreaListItem[] {
   return areas.map(toAreaListItem)
 }
@@ -267,15 +214,6 @@ export function getRelatedCabins(cabin: CabinDetail, n = 3): Cabin[] {
 
   const others = cabins.filter((candidate) => candidate.id !== cabin.id && !sameRegion.includes(candidate))
   return [...sameRegion, ...others].slice(0, n)
-}
-
-export function getAllExploreItems(): ExploreItem[] {
-  return [
-    ...utflykter.map(toUtflyktExploreItem),
-    ...areas.map(toAreaExploreItem),
-    ...routes.map(toRouteExploreItem),
-    ...cabins.map(toCabinExploreItem),
-  ]
 }
 
 export function getMapFeatureLayers(): MapFeatureLayer[] {

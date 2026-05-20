@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { applyAreaFilters, countActiveAreaFilters, createAreaResetPatch } from './area'
+import { applyAreaFilters } from './area'
 import { defaultFilterState } from './types'
 import type { FilterState } from './types'
 import type { AreaListItem } from '@/types'
@@ -58,18 +58,3 @@ describe('area filters', () => {
   })
 })
 
-describe('countActiveAreaFilters', () => {
-  it('counts only area-specific filter dimensions', () => {
-    expect(countActiveAreaFilters(defaultFilterState)).toBe(0)
-    expect(countActiveAreaFilters(withOverrides({ landskap: ['skane'] }))).toBe(1)
-    expect(countActiveAreaFilters(withOverrides({ nearMe: true }))).toBe(1)
-  })
-})
-
-describe('createAreaResetPatch', () => {
-  it('resets all area-related filter fields', () => {
-    const patch = createAreaResetPatch()
-    expect(patch.landskap).toEqual([])
-    expect(patch.nearMe).toBe(false)
-  })
-})

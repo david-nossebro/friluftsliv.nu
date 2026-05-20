@@ -3,15 +3,15 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, userEvent, within } from '@storybook/test'
 import { useState } from 'react'
-import { ExploreFilters } from './ExploreFilters'
+import { ExploreTabBar } from './ExploreTabBar'
 import type { ExploreTab } from '@/types'
 
 const meta = {
-  title: 'Search/ExploreFilters',
-  component: ExploreFilters,
+  title: 'Search/ExploreTabBar',
+  component: ExploreTabBar,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
-} satisfies Meta<typeof ExploreFilters>
+} satisfies Meta<typeof ExploreTabBar>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -22,7 +22,7 @@ const InteractiveDemo = () => {
   const [tab, setTab] = useState<ExploreTab>('alla')
   return (
     <div>
-      <ExploreFilters activeTab={tab} onTabChange={setTab} />
+      <ExploreTabBar activeTab={tab} onTabChange={setTab} />
       <div className="p-6 font-body text-sm text-stone">Visar: {tab}</div>
     </div>
   )

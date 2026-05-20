@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { applyCabinFilters, countActiveCabinFilters, buildCabinPills, createCabinResetPatch } from './cabin'
+import { applyCabinFilters, buildCabinPills } from './cabin'
 import { defaultFilterState } from './types'
 import type { FilterState } from './types'
 import type { Cabin } from '@/types'
@@ -39,7 +39,7 @@ describe('cabin filters', () => {
       ...cabin,
       id: 'c2',
       serviceType: 'betjänad',
-    } as Cabin
+    }
 
     const result = applyCabinFilters(
       [cabin, cabinWithService],
@@ -58,14 +58,6 @@ describe('cabin filters', () => {
   })
 })
 
-describe('countActiveCabinFilters', () => {
-  it('counts only cabin-specific filter dimensions', () => {
-    expect(countActiveCabinFilters(defaultFilterState)).toBe(0)
-    expect(countActiveCabinFilters(withOverrides({ cabinFacilities: ['bastu'] }))).toBe(1)
-    expect(countActiveCabinFilters(withOverrides({ cabinFacilities: ['bastu'], cabinServiceType: 'betjänad' }))).toBe(2)
-  })
-})
-
 describe('buildCabinPills', () => {
   it('builds pills for active cabin filters', () => {
     const pills = buildCabinPills(withOverrides({ cabinFacilities: ['bastu'], cabinServiceType: 'betjänad' }))
@@ -79,11 +71,3 @@ describe('buildCabinPills', () => {
   })
 })
 
-describe('createCabinResetPatch', () => {
-  it('resets all cabin-related filter fields', () => {
-    const patch = createCabinResetPatch()
-    expect(patch.cabinFacilities).toEqual([])
-    expect(patch.cabinServiceType).toBe('any')
-    expect(patch.dogsAllowed).toBe(false)
-  })
-})

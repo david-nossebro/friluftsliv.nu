@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import * as React from 'react'
 import { ResultsHeader } from './ResultsHeader'
-import { defaultFilterState, type FilterState } from '@/lib/exploreFilters'
+import { defaultFilterState, getApplicableFilters, type FilterState } from '@/lib/exploreFilters'
 
 function Wrapper({ initial, count }: { initial: FilterState; count: number }) {
   const [state, setState] = React.useState(initial)
@@ -10,6 +10,8 @@ function Wrapper({ initial, count }: { initial: FilterState; count: number }) {
       <ResultsHeader
         state={state}
         patch={(p) => setState((prev) => ({ ...prev, ...p }))}
+        reset={() => setState({ ...defaultFilterState, tab: state.tab, query: state.query })}
+        applicable={getApplicableFilters(initial.tab)}
         count={count}
       />
     </div>
