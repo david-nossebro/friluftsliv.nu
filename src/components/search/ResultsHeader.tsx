@@ -19,7 +19,7 @@ export interface ResultsHeaderProps {
   state: FilterState
   patch: (partial: Partial<FilterState>) => void
   count: number
-  showCount?: boolean
+  showCount?: boolean | undefined
   className?: string
 }
 

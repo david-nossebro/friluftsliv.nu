@@ -8,6 +8,7 @@ export interface FilterToolbarProps {
   state: FilterState
   patch: (partial: Partial<FilterState>) => void
   count: number
+  showCount?: boolean
   /** Slot for the mobile-only Sheet trigger (rendered <lg). */
   mobileTrigger?: React.ReactNode
   className?: string
@@ -17,6 +18,7 @@ export function FilterToolbar({
   state,
   patch,
   count,
+  showCount,
   mobileTrigger,
   className,
 }: FilterToolbarProps) {
@@ -31,6 +33,7 @@ export function FilterToolbar({
         state={state}
         patch={patch}
         count={count}
+        showCount={showCount}
         className="flex-1 min-w-0"
       />
       <div className="flex items-center gap-2 shrink-0 lg:hidden">

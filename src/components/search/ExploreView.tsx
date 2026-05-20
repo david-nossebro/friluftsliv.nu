@@ -234,8 +234,9 @@ export function ExploreView({
             state={state}
             patch={patch}
             count={filtered.count}
+            showCount={false}
             mobileTrigger={
-              hasAnyFilters ? (
+              hasAnyFilters && state.tab !== 'alla' ? (
                 <FilterDrawer
                   state={state}
                   patch={patch}
@@ -256,9 +257,10 @@ export function ExploreView({
               state={state}
               patch={patch}
               count={filtered.count}
+              showCount={false}
               className="min-w-0 flex-1"
             />
-            {hasAnyFilters && (
+            {hasAnyFilters && state.tab !== 'alla' && (
               <div className="relative z-[60] flex shrink-0 items-center gap-3">
                 <FilterDrawer
                   variant="desktop"

@@ -117,7 +117,10 @@ export const QueryFromHeaderSearch: Story = {
 }
 
 export const DesktopFiltersCollapsed: Story = {
-  args: baseArgs,
+  args: {
+    ...baseArgs,
+    initialState: { ...defaultFilterState, tab: 'vandring' },
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
     const page = within(document.body)
