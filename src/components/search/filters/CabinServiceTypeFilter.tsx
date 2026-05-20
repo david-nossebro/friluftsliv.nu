@@ -3,13 +3,15 @@
 import * as React from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import type { CabinServiceType } from '@/types'
+import { CABIN_SERVICE_LABELS, ALL_CABIN_SERVICE_TYPES } from '@/lib/cabinService'
 import { FILTER_FIELDSET_CLASS, FILTER_LABEL_CLASS, FILTER_TOGGLE_ITEM_CLASS } from './filterStyles'
 
 const OPTIONS: { value: CabinServiceType | 'any'; label: string }[] = [
   { value: 'any', label: 'Alla' },
-  { value: 'betjänad', label: 'Betjänad' },
-  { value: 'självhushåll', label: 'Självhushåll' },
-  { value: 'obetjänad', label: 'Obetjänad' },
+  ...ALL_CABIN_SERVICE_TYPES.map((value) => ({
+    value,
+    label: CABIN_SERVICE_LABELS[value],
+  })),
 ]
 
 export interface CabinServiceTypeFilterProps {

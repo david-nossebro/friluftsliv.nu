@@ -31,8 +31,7 @@ export function ResultsHeader({
   className,
 }: ResultsHeaderProps) {
   const activeCount = countActiveFiltersForDimensions(state, applicable)
-  const applicableSet = React.useMemo(() => new Set(applicable), [applicable])
-  const pills = buildPills(state).filter((pill) => applicableSet.has(pill.dimension))
+  const pills = buildPills(state, applicable)
 
   return (
     <div className={cn('flex flex-col gap-2', className)}>

@@ -3,13 +3,14 @@
 import * as React from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import type { Difficulty } from '@/types'
+import { DIFFICULTY_LABELS, DIFFICULTY_HINTS, ALL_DIFFICULTIES } from '@/lib/difficulty'
 import { FILTER_FIELDSET_CLASS, FILTER_LABEL_CLASS, FILTER_TOGGLE_ITEM_CLASS } from './filterStyles'
 
-const DIFFICULTY_OPTIONS: { value: Difficulty; label: string; hint: string }[] = [
-  { value: 'easy', label: 'Lätt', hint: 'Lätta turer för korta dagar.' },
-  { value: 'medium', label: 'Medel', hint: 'Längre dagar och varierad terräng.' },
-  { value: 'hard', label: 'Krävande', hint: 'Mer tid, vana och utrustning.' },
-]
+const DIFFICULTY_OPTIONS = ALL_DIFFICULTIES.map((value) => ({
+  value,
+  label: DIFFICULTY_LABELS[value],
+  hint: DIFFICULTY_HINTS[value],
+}))
 
 export interface DifficultyFilterProps {
   value: Difficulty[]

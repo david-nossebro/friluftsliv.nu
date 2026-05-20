@@ -6,7 +6,7 @@ import {
   countActiveFiltersForDimensions,
 } from './coordinator'
 import { defaultFilterState } from './types'
-import type { FilterState, FilterDimension } from './types'
+import type { FilterState } from './types'
 
 function withOverrides(partial: Partial<FilterState>): FilterState {
   return { ...defaultFilterState, ...partial }
@@ -154,6 +154,22 @@ describe('buildPills', () => {
 
   it('returns empty array when nothing is active', () => {
     expect(buildPills(defaultFilterState)).toHaveLength(0)
+  })
+
+  it('skips non-requested dimensions when dimensions parameter is provided', () => {
+    const state = withOverrides({
+      difficulty: ['easy'],
+      cabinFacilities: ['bastu'],
+      landskap: ['skane'],
+    })
+    const allPills = buildPills(state)
+    expect(allPills.some((p) => p.dimension === 'difficulty')).toBe(true)
+    expect(allPills.some((p) => p.dimension === 'cabinFacilities')).toBe(true)
+
+    const routeOnly = buildPills(state, ['difficulty', 'landskap'])
+    expect(routeOnly.some((p) => p.dimension === 'difficulty')).toBe(true)
+    expect(routeOnly.some((p) => p.dimension === 'landskap')).toBe(true)
+    expect(routeOnly.some((p) => p.dimension === 'cabinFacilities')).toBe(false)
   })
 })
 

@@ -7,8 +7,9 @@ import { LongHikeCardGrid } from '@/components/cards/LongHikeCardGrid'
 import { RouteCardGrid } from '@/components/cards/RouteCardGrid'
 import { UtflyktCardGrid } from '@/components/cards/UtflyktCardGrid'
 import { MixedHikeGrid } from '@/components/cards/MixedHikeGrid'
+import { splitRoutesByCategory } from '@/lib/exploreFilters'
 import type { ApplyFiltersOutput } from '@/lib/exploreFilters'
-import type { ExploreTab, Route } from '@/types'
+import type { ExploreTab } from '@/types'
 
 function EmptyState({ message }: { message: string }) {
   return (
@@ -18,30 +19,17 @@ function EmptyState({ message }: { message: string }) {
   )
 }
 
-export interface HikingData {
-  hikingRoutes: Route[]
-  mountainRoutes: Route[]
-  longHikes: ApplyFiltersOutput['longHikes']
-}
-
 export interface ExploreContentProps {
   tab: ExploreTab
   filtered: ApplyFiltersOutput
-  canoeRoutes: Route[]
-  skiRoutes: Route[]
-  hikingData: HikingData
-  allHikingRoutes: Route[]
 }
 
-export function ExploreContent({
-  tab,
-  filtered,
-  canoeRoutes,
-  skiRoutes,
-  hikingData,
-  allHikingRoutes,
-}: ExploreContentProps) {
-  const { hikingRoutes, mountainRoutes, longHikes } = hikingData
+export function ExploreContent({ tab, filtered }: ExploreContentProps) {
+  const { hiking, mountain, canoe, ski } = React.useMemo(
+    () => splitRoutesByCategory(filtered.routes),
+    [filtered.routes],
+  )
+  const allHikingRoutes = React.useMemo(() => [...hiking, ...mountain], [hiking, mountain])
 
   if (tab === 'alla') {
     if (filtered.count === 0) {
@@ -63,30 +51,30 @@ export function ExploreContent({
             className="py-10 bg-mist"
           />
         )}
-        {hikingRoutes.length > 0 && (
+        {hiking.length > 0 && (
           <div id="vandring" className="scroll-mt-24">
-            <RouteCardGrid title="Vandring" routes={hikingRoutes} className="py-10 bg-snow" />
+            <RouteCardGrid title="Vandring" routes={hiking} className="py-10 bg-snow" />
           </div>
         )}
-        {mountainRoutes.length > 0 && (
+        {mountain.length > 0 && (
           <div id="fjallvandring" className="scroll-mt-24">
-            <RouteCardGrid title="Fjällvandring" routes={mountainRoutes} className="py-10 bg-mist" />
+            <RouteCardGrid title="Fjällvandring" routes={mountain} className="py-10 bg-mist" />
           </div>
         )}
-        {longHikes.length > 0 && (
+        {filtered.longHikes.length > 0 && (
           <div id="langvandring" className="scroll-mt-24">
             <LongHikeCardGrid
               title="Långvandring"
-              longHikes={longHikes}
+              longHikes={filtered.longHikes}
               className="py-10 bg-snow"
             />
           </div>
         )}
-        {canoeRoutes.length > 0 && (
-          <RouteCardGrid title="Kanot" routes={canoeRoutes} className="py-10 bg-snow" />
+        {canoe.length > 0 && (
+          <RouteCardGrid title="Kanot" routes={canoe} className="py-10 bg-snow" />
         )}
-        {skiRoutes.length > 0 && (
-          <RouteCardGrid title="Skidturer" routes={skiRoutes} className="py-10 bg-mist" />
+        {ski.length > 0 && (
+          <RouteCardGrid title="Skidturer" routes={ski} className="py-10 bg-mist" />
         )}
         {filtered.cabins.length > 0 && (
           <CabinCardGrid title="Stugor" cabins={filtered.cabins} className="py-10 bg-mist" />
@@ -147,7 +135,7 @@ export function ExploreContent({
     return <AreaCardGrid title={areaTitle} areas={areaResults} className="py-10" />
   }
 
-  const routeResults = tab === 'kanot' ? canoeRoutes : skiRoutes
+  const routeResults = tab === 'kanot' ? canoe : ski
   const sectionTitle = tab === 'kanot' ? 'Kanot' : 'Skidturer'
 
   if (routeResults.length === 0) {

@@ -1,4 +1,4 @@
-import type { FilterState, PillSpec } from './types'
+import type { FilterState, PillSpec, FilterDimension } from './types'
 import type { Cabin } from '@/types'
 import type { LatLng } from '../geo'
 import {
@@ -6,6 +6,8 @@ import {
   matchesPublicTransport,
   passesSharedBase,
 } from './shared'
+import { FACILITY_LABELS } from '../facility'
+import { CABIN_SERVICE_LABELS } from '../cabinService'
 
 // ─── Dimensions ──────────────────────────────────────────────────────────────
 
@@ -33,21 +35,27 @@ export function applyCabinFilters(
 
 // ─── Pills ───────────────────────────────────────────────────────────────────
 
-export function buildCabinPills(state: FilterState): PillSpec[] {
+export function buildCabinPills(
+  state: FilterState,
+  dimensions?: readonly FilterDimension[],
+): PillSpec[] {
   const pills: PillSpec[] = []
+  const wants = (dim: FilterDimension) => !dimensions || dimensions.includes(dim)
 
-  for (const f of state.cabinFacilities) {
-    pills.push({
-      key: `fac-${f}`,
-      label: f.charAt(0).toUpperCase() + f.slice(1),
-      dimension: 'cabinFacilities',
-      clear: () => ({ cabinFacilities: state.cabinFacilities.filter((x) => x !== f) }),
-    })
+  if (wants('cabinFacilities')) {
+    for (const f of state.cabinFacilities) {
+      pills.push({
+        key: `fac-${f}`,
+        label: FACILITY_LABELS[f],
+        dimension: 'cabinFacilities',
+        clear: () => ({ cabinFacilities: state.cabinFacilities.filter((x) => x !== f) }),
+      })
+    }
   }
-  if (state.cabinServiceType !== 'any') {
+  if (wants('cabinServiceType') && state.cabinServiceType !== 'any') {
     pills.push({
       key: 'cst',
-      label: state.cabinServiceType.charAt(0).toUpperCase() + state.cabinServiceType.slice(1),
+      label: CABIN_SERVICE_LABELS[state.cabinServiceType],
       dimension: 'cabinServiceType',
       clear: () => ({ cabinServiceType: 'any' }),
     })

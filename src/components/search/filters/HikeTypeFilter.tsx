@@ -3,13 +3,13 @@
 import * as React from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import type { HikeType } from '@/types'
+import { HIKE_TYPE_LABELS, ALL_HIKE_TYPES } from '@/lib/hikeType'
 import { FILTER_FIELDSET_CLASS, FILTER_LABEL_CLASS, FILTER_TOGGLE_ITEM_CLASS } from './filterStyles'
 
-const HIKE_TYPE_OPTIONS: { value: HikeType; label: string }[] = [
-  { value: 'vandring', label: 'Vandring' },
-  { value: 'fjallvandring', label: 'Fjällvandring' },
-  { value: 'langvandring', label: 'Långvandring' },
-]
+const HIKE_TYPE_OPTIONS = ALL_HIKE_TYPES.map((value) => ({
+  value,
+  label: HIKE_TYPE_LABELS[value],
+}))
 
 export interface HikeTypeFilterProps {
   value: HikeType[]

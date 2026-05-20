@@ -34,6 +34,13 @@ export interface FilterPanelProps {
  * full-width rows so the sidebar remains easy to scan even without extra
  * section headings.
  */
+const BOOLEAN_TOGGLE_DIMENSIONS = [
+  'publicTransport',
+  'dogsAllowed',
+  'tentingAllowed',
+  'hasCabinsAlong',
+] as const satisfies readonly FilterDimension[]
+
 export function FilterPanel({
   state,
   patch,
@@ -41,44 +48,40 @@ export function FilterPanel({
   onCoordsChange,
   className,
 }: FilterPanelProps) {
-  const can = (dim: FilterDimension) => applicable.includes(dim)
+  const applicableSet = React.useMemo(() => new Set(applicable), [applicable])
+  const can = (dim: FilterDimension) => applicableSet.has(dim)
 
   const showPlats = can('nearMe') || can('landskap')
+  const showBooleanToggles = BOOLEAN_TOGGLE_DIMENSIONS.some(can)
   const showActivityFilters =
     can('difficulty') || can('hikeType') || can('routeShape') || can('distance') || can('duration') ||
-    can('publicTransport') || can('dogsAllowed') || can('tentingAllowed') ||
-    can('hasCabinsAlong')
+    showBooleanToggles
   const showWhen = can('season') || can('utflyktDuration')
   const showCabin = can('cabinServiceType') || can('cabinFacilities')
-
-  const handleNearMeChange = (active: boolean) => {
-    // Landskap is ignored while nearMe is active; passesSharedBase handles precedence.
-    patch({ nearMe: active })
-  }
 
   return (
     <div className={cn('flex flex-col divide-y divide-mist-dark', className)}>
       {showPlats && (
         <Block ariaLabel="Plats">
           {can('nearMe') && (
-            <SubSection className="basis-full">
+            <div className="min-w-0 basis-full">
               <NearMeFilter
                 active={state.nearMe}
                 radiusKm={state.nearMeRadiusKm}
-                onActiveChange={handleNearMeChange}
+                onActiveChange={(active) => patch({ nearMe: active })}
                 onRadiusChange={(r) => patch({ nearMeRadiusKm: r })}
                 onCoordsChange={onCoordsChange}
               />
-            </SubSection>
+            </div>
           )}
           {can('landskap') && (
-            <SubSection className="basis-full">
+            <div className="min-w-0 basis-full">
               <LandskapPicker
                 value={state.landskap}
                 onChange={(landskap) => patch({ landskap })}
                 disabled={state.nearMe}
               />
-            </SubSection>
+            </div>
           )}
         </Block>
       )}
@@ -86,87 +89,74 @@ export function FilterPanel({
       {showActivityFilters && (
         <Block ariaLabel="Aktivitetsfilter">
           {can('difficulty') && (
-            <SubSection className="basis-full">
+            <div className="min-w-0 basis-full">
               <DifficultyFilter
                 value={state.difficulty}
                 onChange={(d) => patch({ difficulty: d })}
               />
-            </SubSection>
+            </div>
           )}
           {can('hikeType') && (
-            <SubSection className="basis-full">
+            <div className="min-w-0 basis-full">
               <HikeTypeFilter
                 value={state.hikeType}
                 onChange={(ht) => patch({ hikeType: ht })}
               />
-            </SubSection>
+            </div>
           )}
           {can('routeShape') && (
-            <SubSection className="basis-full">
+            <div className="min-w-0 basis-full">
               <RouteShapeFilter
                 value={state.routeShape}
                 onChange={(rs) => patch({ routeShape: rs })}
               />
-            </SubSection>
+            </div>
           )}
           {can('distance') && (
-            <SubSection className="basis-full">
+            <div className="min-w-0 basis-full">
               <DistanceFilter
                 min={state.distanceMinKm}
                 max={state.distanceMaxKm}
                 onCommit={(min, max) => patch({ distanceMinKm: min, distanceMaxKm: max })}
               />
-            </SubSection>
+            </div>
           )}
           {can('duration') && (
-            <SubSection className="basis-full">
+            <div className="min-w-0 basis-full">
               <DurationFilter
                 minHours={state.durationMin}
                 maxHours={state.durationMax}
                 onChange={(durationMin, durationMax) => patch({ durationMin, durationMax })}
               />
-            </SubSection>
+            </div>
           )}
-          {(can('publicTransport') || can('dogsAllowed') || can('tentingAllowed') || can('hasCabinsAlong')) && (
-            <SubSection className="basis-full">
+          {showBooleanToggles && (
+            <div className="min-w-0 basis-full">
               <fieldset className="flex flex-col gap-5">
                 <legend className={FILTER_LABEL_CLASS}>Praktiskt</legend>
                 <div className="flex flex-wrap gap-2">
-                  {can('publicTransport') && (
-                    <BooleanToggleFilter
-                      variant="pill"
-                      label="Kollektivtrafik"
-                      value={state.publicTransport}
-                      onChange={(v) => patch({ publicTransport: v })}
-                    />
-                  )}
-                  {can('dogsAllowed') && (
-                    <BooleanToggleFilter
-                      variant="pill"
-                      label="Hund välkommen"
-                      value={state.dogsAllowed}
-                      onChange={(v) => patch({ dogsAllowed: v })}
-                    />
-                  )}
-                  {can('tentingAllowed') && (
-                    <BooleanToggleFilter
-                      variant="pill"
-                      label="Tält tillåtet"
-                      value={state.tentingAllowed}
-                      onChange={(v) => patch({ tentingAllowed: v })}
-                    />
-                  )}
-                  {can('hasCabinsAlong') && (
-                    <BooleanToggleFilter
-                      variant="pill"
-                      label="Stugor längs leden"
-                      value={state.hasCabinsAlong}
-                      onChange={(v) => patch({ hasCabinsAlong: v })}
-                    />
+                  {BOOLEAN_TOGGLE_DIMENSIONS.map((dim) =>
+                    can(dim) ? (
+                      <BooleanToggleFilter
+                        key={dim}
+                        variant="pill"
+                        label={
+                          dim === 'publicTransport'
+                            ? 'Kollektivtrafik'
+                            : dim === 'dogsAllowed'
+                              ? 'Hund välkommen'
+                              : dim === 'tentingAllowed'
+                                ? 'Tält tillåtet'
+                                : 'Stugor längs leden'
+                        }
+                        value={state[dim] as boolean}
+                        onChange={(v) => patch({ [dim]: v } as Partial<FilterState>)}
+                      />
+                    ) : null,
                   )}
                 </div>
               </fieldset>
-            </SubSection>
+            </div>
           )}
         </Block>
       )}
@@ -174,15 +164,15 @@ export function FilterPanel({
       {showWhen && (
         <Block ariaLabel="Säsongsfilter">
           {can('season') && (
-            <SubSection className="basis-full md:basis-[360px] grow">
+            <div className="min-w-0 basis-full md:basis-[360px] grow">
               <SeasonFilter
                 value={state.months}
                 onChange={(months) => patch({ months })}
               />
-            </SubSection>
+            </div>
           )}
           {can('utflyktDuration') && (
-            <SubSection className="basis-full">
+            <div className="min-w-0 basis-full">
               <DurationFilter
                 minHours={state.utflyktDurationMin}
                 maxHours={state.utflyktDurationMax}
@@ -192,7 +182,7 @@ export function FilterPanel({
                 minLabel="0 tim"
                 maxLabel="8+ tim"
               />
-            </SubSection>
+            </div>
           )}
         </Block>
       )}
@@ -200,20 +190,20 @@ export function FilterPanel({
       {showCabin && (
         <Block title="Stuga">
           {can('cabinServiceType') && (
-            <SubSection className="basis-full">
+            <div className="min-w-0 basis-full">
               <CabinServiceTypeFilter
                 value={state.cabinServiceType}
                 onChange={(t) => patch({ cabinServiceType: t })}
               />
-            </SubSection>
+            </div>
           )}
           {can('cabinFacilities') && (
-            <SubSection className="basis-full">
+            <div className="min-w-0 basis-full">
               <CabinFacilitiesFilter
                 value={state.cabinFacilities}
                 onChange={(f) => patch({ cabinFacilities: f })}
               />
-            </SubSection>
+            </div>
           )}
         </Block>
       )}
@@ -251,6 +241,4 @@ function Block({
   )
 }
 
-function SubSection({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn('min-w-0', className)}>{children}</div>
-}
+

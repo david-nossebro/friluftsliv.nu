@@ -1,4 +1,5 @@
 import type { FilterState, PillSpec } from './types'
+import type { FilterDimension } from './types'
 import type { LongHike, Route } from '@/types'
 import type { LatLng } from '../geo'
 import {
@@ -9,10 +10,12 @@ import {
   matchesPublicTransport,
   matchesSeason,
   passesSharedBase,
-  DEFAULT_DISTANCE_MIN,
-  DEFAULT_DURATION_MIN,
   formatDurationFilterLabel,
 } from './shared'
+import { DEFAULT_DISTANCE_MIN, DEFAULT_DURATION_MIN } from './types'
+import { DIFFICULTY_LABELS } from '../difficulty'
+import { HIKE_TYPE_LABELS } from '../hikeType'
+import { ROUTE_SHAPE_LABELS } from '../routeShape'
 
 // ─── Dimensions ──────────────────────────────────────────────────────────────
 
@@ -70,26 +73,30 @@ export function applyLongHikeFilters(
 
 export function buildRoutePills(
   state: FilterState,
+  dimensions?: readonly FilterDimension[],
 ): PillSpec[] {
   const pills: PillSpec[] = []
+  const wants = (dim: FilterDimension) => !dimensions || dimensions.includes(dim)
 
-  for (const d of state.difficulty) {
-    pills.push({
-      key: `d-${d}`,
-      label: d === 'easy' ? 'Lätt' : d === 'medium' ? 'Medel' : 'Krävande',
-      dimension: 'difficulty',
-      clear: () => ({ difficulty: state.difficulty.filter((x) => x !== d) }),
-    })
+  if (wants('difficulty')) {
+    for (const d of state.difficulty) {
+      pills.push({
+        key: `d-${d}`,
+        label: DIFFICULTY_LABELS[d],
+        dimension: 'difficulty',
+        clear: () => ({ difficulty: state.difficulty.filter((x) => x !== d) }),
+      })
+    }
   }
-  if (state.routeShape) {
+  if (wants('routeShape') && state.routeShape) {
     pills.push({
       key: 'rs',
-      label: state.routeShape === 'roundtrip' ? 'Rundtur' : state.routeShape === 'out-and-back' ? 'Ut och tillbaka' : 'Punkt till punkt',
+      label: ROUTE_SHAPE_LABELS[state.routeShape],
       dimension: 'routeShape',
       clear: () => ({ routeShape: null }),
     })
   }
-  if (state.distanceMinKm !== DEFAULT_DISTANCE_MIN || state.distanceMaxKm != null) {
+  if (wants('distance') && (state.distanceMinKm !== DEFAULT_DISTANCE_MIN || state.distanceMaxKm != null)) {
     const maxLabel = state.distanceMaxKm == null ? '300+' : `${state.distanceMaxKm}`
     pills.push({
       key: 'dist',
@@ -98,34 +105,29 @@ export function buildRoutePills(
       clear: () => ({ distanceMinKm: DEFAULT_DISTANCE_MIN, distanceMaxKm: null }),
     })
   }
-  if (state.durationMax != null) {
+  if (wants('duration') && (state.durationMax != null || state.durationMin > DEFAULT_DURATION_MIN)) {
     pills.push({
       key: 'dur',
       label: formatDurationFilterLabel(state.durationMin, state.durationMax),
       dimension: 'duration',
       clear: () => ({ durationMin: DEFAULT_DURATION_MIN, durationMax: null }),
     })
-  } else if (state.durationMin > DEFAULT_DURATION_MIN) {
-    pills.push({
-      key: 'dur',
-      label: formatDurationFilterLabel(state.durationMin, null),
-      dimension: 'duration',
-      clear: () => ({ durationMin: DEFAULT_DURATION_MIN, durationMax: null }),
-    })
   }
-  if (state.tentingAllowed) {
+  if (wants('tentingAllowed') && state.tentingAllowed) {
     pills.push({ key: 'tent', label: 'Tält tillåtet', dimension: 'tentingAllowed', clear: () => ({ tentingAllowed: false }) })
   }
-  if (state.hasCabinsAlong) {
+  if (wants('hasCabinsAlong') && state.hasCabinsAlong) {
     pills.push({ key: 'cab', label: 'Stugor längs leden', dimension: 'hasCabinsAlong', clear: () => ({ hasCabinsAlong: false }) })
   }
-  for (const ht of state.hikeType) {
-    pills.push({
-      key: `ht-${ht}`,
-      label: ht === 'vandring' ? 'Vandring' : ht === 'fjallvandring' ? 'Fjällvandring' : 'Långvandring',
-      dimension: 'hikeType',
-      clear: () => ({ hikeType: state.hikeType.filter((x) => x !== ht) }),
-    })
+  if (wants('hikeType')) {
+    for (const ht of state.hikeType) {
+      pills.push({
+        key: `ht-${ht}`,
+        label: HIKE_TYPE_LABELS[ht],
+        dimension: 'hikeType',
+        clear: () => ({ hikeType: state.hikeType.filter((x) => x !== ht) }),
+      })
+    }
   }
 
   return pills

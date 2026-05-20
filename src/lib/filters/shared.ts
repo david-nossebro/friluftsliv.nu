@@ -22,11 +22,14 @@ export {
   LANDSKAP_LABELS,
 } from '../landskap'
 
+export {
+  DEFAULT_DISTANCE_MIN,
+  DEFAULT_DURATION_MIN,
+  DEFAULT_NEAR_ME_RADIUS_KM,
+} from './types'
+
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-export const DEFAULT_DISTANCE_MIN = 0
-export const DEFAULT_DURATION_MIN = 0
-export const DEFAULT_NEAR_ME_RADIUS_KM = 25
 export const DURATION_RANGE_HOURS = [
   0, 2, 4, 6, 8, 12, 24, 48, 72, 96, 120, 144, 168, 240, 336,
 ] as const

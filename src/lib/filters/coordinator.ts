@@ -69,7 +69,7 @@ function parseBool(raw: string | null): boolean {
   return raw === '1' || raw === 'true'
 }
 
-function parseEnum<T extends string>(raw: string | null, valid: readonly T[], fallback: T): T {
+function parseEnum<T extends string>(raw: string | null, valid: readonly T[], fallback: T | null): T | null {
   return raw && (valid as readonly string[]).includes(raw) ? (raw as T) : fallback
 }
 
@@ -88,12 +88,9 @@ export function parseFilters(params: URLSearchParams | Pick<URLSearchParams, 'ge
 
   return {
     query: get('q') ?? '',
-    tab: parseEnum<ExploreTab>(get('tab'), VALID_TABS, 'alla'),
+    tab: parseEnum<ExploreTab>(get('tab'), VALID_TABS, 'alla') ?? 'alla',
     difficulty: parseList(get('d'), VALID_DIFFICULTIES),
-    routeShape: (() => {
-      const raw = get('rs')
-      return raw && (VALID_ROUTE_SHAPES as readonly string[]).includes(raw) ? (raw as import('@/types').RouteShape) : null
-    })(),
+    routeShape: parseEnum(get('rs'), VALID_ROUTE_SHAPES, null),
     distanceMinKm: distanceMin,
     distanceMaxKm: distanceMax,
     durationMin: durationMinHours,
@@ -107,7 +104,7 @@ export function parseFilters(params: URLSearchParams | Pick<URLSearchParams, 'ge
     tentingAllowed: parseBool(get('tent')),
     hasCabinsAlong: parseBool(get('cab')),
     cabinFacilities: parseList(get('fac'), VALID_FACILITIES),
-    cabinServiceType: parseEnum(get('cst'), VALID_SERVICE_TYPES, 'any'),
+    cabinServiceType: parseEnum(get('cst'), VALID_SERVICE_TYPES, 'any') ?? 'any',
     hikeType: parseList(get('ht'), VALID_HIKE_TYPES),
     utflyktDurationMin: parseNumber(get('umin')) ?? 0,
     utflyktDurationMax: parseNumber(get('umax')),
@@ -183,13 +180,6 @@ export function getApplicableFilters(tab: ExploreTab): FilterDimension[] {
 
 // ─── Active count ────────────────────────────────────────────────────────────
 
-const ALL_FILTER_DIMENSIONS: FilterDimension[] = [
-  'difficulty', 'routeShape', 'distance', 'duration', 'season',
-  'landskap', 'publicTransport', 'nearMe', 'dogsAllowed',
-  'tentingAllowed', 'hasCabinsAlong', 'cabinFacilities',
-  'cabinServiceType', 'hikeType', 'utflyktDuration',
-]
-
 const ACTIVE_PREDICATES: Record<FilterDimension, (state: FilterState) => boolean> = {
   difficulty: (s) => s.difficulty.length > 0,
   routeShape: (s) => !!s.routeShape,
@@ -243,6 +233,8 @@ const RESET_BY_DIMENSION: Record<FilterDimension, Partial<FilterState>> = {
   hikeType: { hikeType: [] },
   utflyktDuration: { utflyktDurationMin: 0, utflyktDurationMax: null },
 }
+
+const ALL_FILTER_DIMENSIONS: FilterDimension[] = Object.keys(ACTIVE_PREDICATES) as FilterDimension[]
 
 export function createFilterResetPatch(
   dimensions: readonly FilterDimension[],
@@ -324,45 +316,53 @@ export function splitRoutesByCategory(routes: Route[]): RouteSplit {
 
 // ─── Pills ───────────────────────────────────────────────────────────────────
 
-export function buildPills(state: FilterState): PillSpec[] {
+export function buildPills(
+  state: FilterState,
+  dimensions?: readonly FilterDimension[],
+): PillSpec[] {
   const pills: PillSpec[] = []
   const normalizedLandskap = normalizeSelectedLandskap(state.landskap)
+  const wants = (dim: FilterDimension) => !dimensions || dimensions.includes(dim)
 
   // Shared pills
-  for (const l of normalizedLandskap) {
-    pills.push({
-      key: `l-${l}`,
-      label: LANDSKAP_LABELS[l],
-      dimension: 'landskap',
-      clear: () => ({ landskap: normalizedLandskap.filter((item) => item !== l) }),
-    })
+  if (wants('landskap')) {
+    for (const l of normalizedLandskap) {
+      pills.push({
+        key: `l-${l}`,
+        label: LANDSKAP_LABELS[l],
+        dimension: 'landskap',
+        clear: () => ({ landskap: normalizedLandskap.filter((item) => item !== l) }),
+      })
+    }
   }
-  const selectedSeasons = getSelectedSeasonKeys(state.months)
-  const seasonMonths = new Set(expandSeasonKeys(selectedSeasons))
-  for (const season of selectedSeasons) {
-    pills.push({
-      key: `season-${season}`,
-      label: formatSeasonKey(season),
-      dimension: 'season',
-      clear: () => {
-        const monthsToRemove = new Set(expandSeasonKeys([season]))
-        return { months: state.months.filter((month) => !monthsToRemove.has(month)) }
-      },
-    })
+  if (wants('season')) {
+    const selectedSeasons = getSelectedSeasonKeys(state.months)
+    const seasonMonths = new Set(expandSeasonKeys(selectedSeasons))
+    for (const season of selectedSeasons) {
+      pills.push({
+        key: `season-${season}`,
+        label: formatSeasonKey(season),
+        dimension: 'season',
+        clear: () => {
+          const monthsToRemove = new Set(expandSeasonKeys([season]))
+          return { months: state.months.filter((month) => !monthsToRemove.has(month)) }
+        },
+      })
+    }
+    for (const m of state.months) {
+      if (seasonMonths.has(m)) continue
+      pills.push({
+        key: `m-${m}`,
+        label: formatMonth(m),
+        dimension: 'season',
+        clear: () => ({ months: state.months.filter((x) => x !== m) }),
+      })
+    }
   }
-  for (const m of state.months) {
-    if (seasonMonths.has(m)) continue
-    pills.push({
-      key: `m-${m}`,
-      label: formatMonth(m),
-      dimension: 'season',
-      clear: () => ({ months: state.months.filter((x) => x !== m) }),
-    })
-  }
-  if (state.publicTransport) {
+  if (wants('publicTransport') && state.publicTransport) {
     pills.push({ key: 'pt', label: 'Med kollektivtrafik', dimension: 'publicTransport', clear: () => ({ publicTransport: false }) })
   }
-  if (state.nearMe) {
+  if (wants('nearMe') && state.nearMe) {
     pills.push({
       key: 'nm',
       label: `Nära mig (${state.nearMeRadiusKm} km)`,
@@ -370,18 +370,24 @@ export function buildPills(state: FilterState): PillSpec[] {
       clear: () => ({ nearMe: false }),
     })
   }
-  if (state.dogsAllowed) {
+  if (wants('dogsAllowed') && state.dogsAllowed) {
     pills.push({ key: 'dog', label: 'Hund välkommen', dimension: 'dogsAllowed', clear: () => ({ dogsAllowed: false }) })
   }
 
   // Route-specific pills
-  pills.push(...buildRoutePills(state))
+  if (wants('difficulty') || wants('routeShape') || wants('distance') || wants('duration') || wants('tentingAllowed') || wants('hasCabinsAlong') || wants('hikeType')) {
+    pills.push(...buildRoutePills(state, dimensions))
+  }
 
   // Cabin-specific pills
-  pills.push(...buildCabinPills(state))
+  if (wants('cabinFacilities') || wants('cabinServiceType')) {
+    pills.push(...buildCabinPills(state, dimensions))
+  }
 
   // Utflykt-specific pills
-  pills.push(...buildUtflyktPills(state))
+  if (wants('utflyktDuration')) {
+    pills.push(...buildUtflyktPills(state))
+  }
 
   return pills
 }

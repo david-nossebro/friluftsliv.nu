@@ -8,6 +8,9 @@ export {
   DEFAULT_DISTANCE_MIN,
   DEFAULT_DURATION_MIN,
   DEFAULT_NEAR_ME_RADIUS_KM,
+} from './filters/types'
+
+export {
   DURATION_RANGE_HOURS,
   normalizeSelectedLandskap,
   normalizeDurationHours,
